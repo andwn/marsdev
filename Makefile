@@ -1,12 +1,13 @@
 MARSDEV=${HOME}/mars
 
-GCC_VER      = 7.1.0
-BINUTILS_VER = 2.27
-NEWLIB_VER   = 1.19.0
+GCC_VER      = 7.2.0
+BINUTILS_VER = 2.29
 
 export
 
-all: m68k-build sh-build tools-build sgdk-build
+.PHONY: all m68k-build sh-build tools-build sgdk-build
+
+all: m68k-build sh-build tools-build
 
 m68k-build:
 	make -C toolchain ARCH=m68k
@@ -20,7 +21,9 @@ tools-build:
 sgdk-build:
 	make -C sgdk
 
-clean: toolchain-clean tools-clean sgdk-clean
+.PHONY: clean toolchain-clean tools-clean sgdk-clean
+
+clean: toolchain-clean tools-clean
 
 toolchain-clean:
 	make -C toolchain clean
