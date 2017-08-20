@@ -1,23 +1,25 @@
-SJASM = $(MARSDEV)/bin/sjasm
-Z80ASM = $(MARSDEV)/bin/z80asm
+MARSBIN = $(MARSDEV)/bin
 
-MDTILER = $(MARSDEV)/bin/mdtiler
-SLZ     = $(MARSDEV)/bin/slz
-UFTC    = $(MARSDEV)/bin/uftc
-MML2ESF = $(MARSDEV)/bin/mml2esf
-PCM2EWF = $(MARSDEV)/bin/pcm2ewf
-TFI2EIF = $(MARSDEV)/bin/tfi2eif
+SJASM   = $(MARSBIN)/sjasm
+Z80ASM  = $(MARSBIN)/z80asm
 
-.PHONY: all z80 mdt clean
+MDTILER = $(MARSBIN)/mdtiler
+SLZ     = $(MARSBIN)/slz
+UFTC    = $(MARSBIN)/uftc
+MML2ESF = $(MARSBIN)/mml2esf
+PCM2EWF = $(MARSBIN)/pcm2ewf
+TFI2EIF = $(MARSBIN)/tfi2eif
 
-all: $(MARSDEV)/bin z80 mdt
+LDSCRIPTS = $(MARSDEV)/ldscripts
 
-z80: $(SJASM) $(Z80ASM)
+.PHONY: all mdtools-build clean
 
-mdt: mdtools $(MDTILER) $(SLZ) $(UFTC) $(MML2ESF) $(PCM2EWF) $(TFI2EIF)
+all: $(MARSBIN) $(Z80ASM) $(LDSCRIPTS) mdtools-build
 
-$(MARSDEV)/bin:
-	mkdir -p $(MARSDEV)/bin
+mdtools-build: $(MDTILER) $(SLZ) $(UFTC) $(MML2ESF) $(PCM2EWF) $(TFI2EIF)
+
+$(MARSBIN):
+	mkdir -p $(MARSBIN)
 
 # Z80 Assemblers
 
@@ -40,29 +42,34 @@ $(Z80ASM):
 mdtools:
 	git clone https://github.com/sikthehedgehog/mdtools
 
-$(MDTILER):
+$(MDTILER): mdtools
 	make -C mdtools/mdtiler/tool
 	cp -f mdtools/mdtiler/tool/mdtiler $(MDTILER)
 
-$(SLZ):
+$(SLZ): mdtools
 	make -C mdtools/slz/tool
 	cp -f mdtools/slz/tool/slz $(SLZ)
 
-$(UFTC):
+$(UFTC): mdtools
 	make -C mdtools/uftc/tool
 	cp -f mdtools/uftc/tool/uftc $(UFTC)
 
-$(MML2ESF):
+$(MML2ESF): mdtools
 	make -C mdtools/mml2esf/tool
 	cp -f mdtools/mml2esf/tool/mml2esf $(MML2ESF)
 
-$(PCM2EWF):
+$(PCM2EWF): mdtools
 	make -C mdtools/pcm2ewf/tool
 	cp -f mdtools/pcm2ewf/tool/pcm2ewf $(PCM2EWF)
 
-$(TFI2EIF):
+$(TFI2EIF): mdtools
 	make -C mdtools/tfi2eif/tool
 	cp -f mdtools/tfi2eif/tool/tfi2eif $(TFI2EIF)
+
+# ldfiles
+
+$(LDSCRIPTS):
+	cp -rf ldscripts/ $(LDSCRIPTS)
 
 
 clean:
