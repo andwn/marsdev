@@ -1,0 +1,282 @@
+;****************************************************************************
+; UpdatePCM
+; Updates PCM output upon a timer event
+;****************************************************************************
+
+UpdatePCM:
+    ret                         ; $C9 = RET    = no PCM playback
+                                ; $D0 = RET NC = PCM playback
+    
+    exx                         ; Switch to PCM registers
+
+.doagain:
+    ld (ix+0), $27              ; Acknowledge timer
+    ld (ix+1), $1F
+    ;push hl
+    ;ld hl, $1F27
+    ;ld ($4000), hl
+    ;pop hl
+
+    ld a, (hl)                  ; Fetch next sample
+    inc a                       ; Check if it's the end of the waveform
+    jr z, .stop
+    ld (ix+0), $2A              ; Nope, send sample to YM2612
+    ld (ix+1), a
+    
+    inc l                       ; Update buffer position
+    jr z, .reload               ; Need to buffer more?
+
+.nopcm:
+    exx                         ; Switch to normal registers
+    ret                         ; End of subroutine
+
+.stop:
+;    ld b, $00                   ; Stop playback
+    ld a, $C9                   ; Stop playback
+    ld (UpdatePCM), a
+    ld (ix+0), $2A              ; Turn off DAC
+    ld (ix+1), $80
+    ld (ix+0), $2B
+    ld (ix+1), $00
+    exx                         ; Switch to normal registers
+    ret                         ; End of subroutine
+
+.reload:
+    ld a, (RAM_LastBank)        ; Bank switch if needed
+    cp c
+    jp z, .noswitchu
+    ld a, c
+    ld (RAM_LastBank), a
+    ld hl, $6000
+    BankSwitch
+.noswitchu:
+    
+    ld hl, RAM_PCMBuffer        ; Load samples into the buffer
+    
+    ld a, (de)                  ; Samples 1~4
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    
+    ld a, (de)                  ; Samples 5~8
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    
+    ld a, (de)                  ; Samples 9~12
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    
+    ld a, (de)                  ; Samples 13~16
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    
+    jp nz, .nobankchg           ; Update high bytes of address if needed
+    inc d
+    jp nz, .nobankchg
+    ld d, $80
+    inc c
+.nobankchg:
+    
+    ld l, RAM_PCMBuffer&$FF     ; Go back to the beginning of the buffer
+    jp .doagain                 ; We took so long we should play the next
+                                  ; sample already ._.'
+
+;****************************************************************************
+; PlayPCM* [event $0C]
+; Plays a PCM sample
+;----------------------------------------------------------------------------
+; input c .... current bank
+; input hl ... current address
+;----------------------------------------------------------------------------
+; breaks: af, b
+;****************************************************************************
+
+PlayPCMSFX:
+    call PlayPCM                ; We're just a wrapper
+    jp ProcessSFXRun            ; End of subroutine
+
+PlayPCMBGM:
+    PollPCM
+
+    ld a, (RAM_Locked+6)        ; Check if channel is free
+    or a
+    jp nz, ProcessBGMSkip1      ; Don't play sample if locked
+
+    call PlayPCM                ; We're just a wrapper
+    jp ProcessBGMRun            ; End of subroutine
+
+PlayPCM:
+    ld a, (RAM_GlobalVol+$0C)   ; Are we allowed to play PCM?
+    or a
+    ret z
+    
+    call GetParam               ; Get sample ID
+    
+    ld a, b
+    exx                         ; We'll modify PCM data now
+
+    ld h, RAM_PointerList>>8    ; Get offset in pointer list
+    ld l, a
+
+    ld d, (hl)                  ; Get PCM address
+    inc h
+    ld e, (hl)
+    inc h
+    ld c, (hl)
+    
+    ld hl, $6000                ; Initial bank switch
+    ld a, c
+    ld (RAM_LastBank), a
+    BankSwitch
+    
+    ld h, RAM_PCMBuffer>>8      ; Set buffer where the sample starts
+    ld a, e
+    or $F0
+    ld l, a
+    
+    ld b, l
+.load1st:                       ; Copy initial samples into the buffer
+    ld a, (de)
+    ld (hl), a
+    inc e
+    inc l
+    jp nz, .load1st
+    ld l, b
+    
+    ld a, e                     ; Check if the sample should skip ahead
+    or a                          ; already
+    jp nz, .noskip1st
+    inc d
+    jp nz, .noskip1st
+    ld d, $80
+    inc c
+.noskip1st:
+
+    exx                         ; Back to standard registers
+    ld a, $D0                   ; Enable PCM playback
+    ld (UpdatePCM), a
+    
+    ld (ix+0), $2B              ; Turn on DAC
+    ld (ix+1), $80
+    ld (ix+0), $2A
+    ld (ix+1), $80
+
+    ret                         ; End of subroutine
+
+;****************************************************************************
+; StopPCM*
+; Stops a PCM sample
+;****************************************************************************
+
+StopPCMSFX:
+    call StopPCM                ; We're just a wrapper
+    jp ProcessSFXRun            ; End of subroutine
+
+StopPCMBGM:
+    PollPCM
+
+    ld a, (RAM_Locked+6)        ; Check if channel is free
+    or a
+    jp nz, ProcessBGMRun        ; Don't stop sample if locked
+
+    call StopPCM                ; We're just a wrapper
+    jp ProcessBGMRun            ; End of subroutine
+
+StopPCM:
+    ld a, $C9                   ; Stop PCM playback
+    ld (UpdatePCM), a
+
+    ld (ix+0), $2B              ; Disable DAC
+    ld (ix+1), $00
+
+    ret                         ; End of subroutine
+
+;****************************************************************************
+; LockChannelPCM [event $EC]
+; Locks the PCM channel
+;****************************************************************************
+
+LockChannelPCM:
+    ld a, $01                   ; Lock PCM channel
+    ld (RAM_Locked+6), a
+    
+    call StopPCM                ; Stop PCM playback
+    jp ProcessSFXRun            ; End of subroutine
+
+;****************************************************************************
+; SetPCMRate [command $07]
+; Changes the sample rate of PCM
+;****************************************************************************
+
+SetPCMRate:
+    ld a, (RAM_ComBank)         ; Get new rate
+    cpl
+    
+    ld b, a                     ; Set high bits of timer
+    ld hl, $4000
+    ld (hl), $24
+    rrca
+    rrca
+    or $C0
+    inc l
+    ld (hl), a
+    
+    ld a, b                     ; Set low bits of timer
+    dec l
+    ld (hl), $25
+    and $03
+    inc l
+    ld (hl), a
+    
+    jp EndOfCommand             ; End of subroutine

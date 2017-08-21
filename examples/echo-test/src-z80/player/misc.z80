@@ -1,0 +1,145 @@
+;****************************************************************************
+; SetDelay* [event $FE, events $D0-$DF]
+; Adds a delay in playback
+;----------------------------------------------------------------------------
+; breaks: c, de, hl
+;****************************************************************************
+
+SetDelaySFX:
+    call SetDelay               ; We're just a wrapper
+    jp DoTick_SFXSkip           ; End of subroutine
+
+SetDelayBGM:
+    call SetDelay               ; We're just a wrapper
+    jp DoTick_BGMSkip           ; End of subroutine
+
+SetDelaySFXShort:
+    and $0F
+    inc a
+    ld b, a
+    call SetDelayShort          ; We're just a wrapper
+    jp DoTick_SFXSkip           ; End of subroutine
+
+SetDelayBGMShort:
+    and $0F
+    inc a
+    ld b, a
+    call SetDelayShort          ; We're just a wrapper
+    jp DoTick_BGMSkip           ; End of subroutine
+
+SetDelay:
+    PollPCM
+    call GetParam               ; Get delay
+    PollPCM
+
+SetDelayShort:
+    ex de, hl
+    ld (hl), d                  ; Store new address
+    dec l
+    ld (hl), e
+    dec l
+    ld (hl), c
+
+    PollPCM
+
+    dec l                       ; Store new delay
+    ld (hl), b
+
+    ret                         ; End of subroutine
+
+;****************************************************************************
+; SetFlags [event $FA]
+; Sets some of the flags.
+;----------------------------------------------------------------------------
+; breaks: c, de, hl
+;****************************************************************************
+
+SetFlagsSFX:
+    call SetFlags
+    jp ProcessSFXRun
+
+SetFlagsBGM:
+    call SetFlags
+    jp ProcessBGMRun
+
+SetFlags:
+    PollPCM                     ; Get which flags to set
+    call GetParam
+    PollPCM
+    
+    ld a, (RAM_Flags)           ; Set the flags
+    or b
+    ld (RAM_Flags), a
+    
+    ret                         ; End of subroutine
+
+;****************************************************************************
+; ClearFlags [event $FB]
+; Clears some of the flags.
+;----------------------------------------------------------------------------
+; breaks: c, de, hl
+;****************************************************************************
+
+ClearFlagsSFX:
+    call ClearFlags
+    jp ProcessSFXRun
+
+ClearFlagsBGM:
+    call ClearFlags
+    jp ProcessBGMRun
+
+ClearFlags:
+    PollPCM                     ; Get which flags to clear
+    call GetParam
+    PollPCM
+    
+    ld a, (RAM_Flags)           ; Clear the flags
+    and b
+    ld (RAM_Flags), a
+    
+    ret                         ; End of subroutine
+
+;****************************************************************************
+; RefreshVolume
+; Reloads the volume for all channels.
+;----------------------------------------------------------------------------
+; breaks: all
+;****************************************************************************
+
+RefreshVolume:
+    ld hl, $1FF0                ; Update FM volume
+    ld de, RAM_FMVol
+    ld c, 8
+.fixfmvol:
+    ld a, (de)
+    ld b, (hl)
+    add b
+    jp p, .fixfmvolok
+    ld a, $7F
+.fixfmvolok:
+    ld b, a
+    ld a, l
+    call SetFMVolLoad
+    inc l
+    inc e
+    dec c
+    PollPCM
+    jr nz, .fixfmvol
+    
+    ld hl, $1FE8                ; Update PSG volume
+    ld de, RAM_PSGData+1
+    ld bc, $0410
+.fixpsgvol:
+    ld a, (hl)
+    ld (de), a
+    inc l
+    ld a, e
+    add a, c
+    ld e, a
+    PollPCM
+    djnz .fixpsgvol
+    
+    xor a                       ; Mark that volume was refreshed
+    ld ($1FF1), a
+    
+    ret                         ; End of subroutine

@@ -1,0 +1,291 @@
+;****************************************************************************
+; EntryPoint
+; Where the program starts
+;****************************************************************************
+
+EntryPoint:
+    xor a                       ; Reset Echo status (we don't clear
+    ld (RAM_Status), a          ; RAM_Command since Echo_Init fills in values
+    ld (RAM_Command2), a        ; before Echo gets to run!)
+
+    ld sp, RAM_Stack            ; Init stack
+
+    ld hl, $7F11                ; Mute PSG
+    ld (hl), $9F
+    ld (hl), $BF
+    ld (hl), $DF
+    ld (hl), $FF
+    xor a
+    ld (RAM_PSGData), a
+    ld (RAM_PSGData+16), a
+    ld (RAM_PSGData+32), a
+    ld (RAM_PSGData+48), a
+
+    ld hl, $6000                ; Set default bank
+    ld (hl), l
+    ld (hl), l
+    ld (hl), l
+    ld (hl), l
+    ld (hl), l
+    ld (hl), l
+    ld (hl), l
+    ld (hl), l
+    ld (hl), l
+
+    ld ix, $4000                ; YM2612 I/O ports base address
+    ld iyh, $40
+
+    exx                         ; Init PCM playback status
+    ld b, $00                   ; Not playing
+    exx
+
+    ld (ix+0), $2B              ; Disable DAC by default
+    ld (ix+1), $00
+
+    ld e, $7F                   ; Mute all FM channels
+    ld a, $40
+    ld b, 4
+.mutefm:
+    ld (ix+0), a
+    ld (ix+1), e
+    ld (ix+2), a
+    ld (ix+3), e
+    inc a
+    ld (ix+0), a
+    ld (ix+1), e
+    ld (ix+2), a
+    ld (ix+3), e
+    inc a
+    ld (ix+0), a
+    ld (ix+1), e
+    ld (ix+2), a
+    ld (ix+3), e
+    inc a
+    inc a
+    djnz .mutefm
+
+    ld (ix+0), $B4              ; Ensure all channels can be heard from both
+    ld (ix+1), $C0              ; speakers (by default they're mute!)
+    ld (ix+0), $B5
+    ld (ix+1), $C0
+    ld (ix+0), $B6
+    ld (ix+1), $C0
+    ld (ix+2), $B4
+    ld (ix+3), $C0
+    ld (ix+2), $B5
+    ld (ix+3), $C0
+    ld (ix+2), $B6
+    ld (ix+3), $C0
+
+    ld (ix+0), $24              ; Init timers
+    ld (ix+1), $FE
+    ld (ix+0), $25
+    ld (ix+1), $03
+    ld (ix+0), $26
+    ld (ix+1), $C9
+    ld (ix+0), $27
+    ld (ix+1), $3F
+    
+    jp IdleLoop                 ; Go into idle loop
+
+;****************************************************************************
+; RunCommand
+; Checks which command to run
+;----------------------------------------------------------------------------
+; notes: doesn't return
+;----------------------------------------------------------------------------
+; To-do: replace with pointer list?
+;****************************************************************************
+
+RunCommand:
+    dec a                       ; Command $01: load list
+    jp z, LoadList
+    dec a                       ; Command $02: play SFX
+    jp z, PlaySFX
+    dec a                       ; Command $03: stop SFX
+    jp z, StopSFXCmd
+    dec a                       ; Command $04: play BGM
+    jp z, PlayBGM
+    dec a                       ; Command $05: stop BGM
+    jp z, StopBGMCmd
+    dec a                       ; Command $06: resume BGM
+    jp z, ResumeBGM
+    dec a                       ; Command $07: set PCM rate
+    jp z, SetPCMRate
+    dec a                       ; Command $08: pause BGM
+    jp z, PauseBGM
+
+    PollPCM
+
+    ; Bad command, ignore >:(
+
+;****************************************************************************
+; EndOfCommand
+; Cleans up when a command finishes
+;----------------------------------------------------------------------------
+; notes: doesn't return
+;****************************************************************************
+
+EndOfCommand:
+    ld hl, ($1FF8)              ; Copy second slot into first
+    ld ($1FFC), hl
+    ld hl, ($1FFA)
+    ld ($1FFE), hl
+    
+    xor a                       ; Free up second slot
+    ld (RAM_Command2), a
+    
+    PollPCM
+
+;****************************************************************************
+; IdleLoop
+; Loop that runs when not processing SFX or BGM
+;----------------------------------------------------------------------------
+; notes: doesn't return (d'oh)
+;****************************************************************************
+
+IdleLoop:
+    ld a, (RAM_Command)         ; Look for commands
+    or a
+    jr nz, RunCommand
+
+    PollPCM                     ; Poll PCM
+
+    ld a, ($4000)               ; Tick?
+    bit 1, a
+    jr nz, DoTick
+    bit 0, a                    ; Poll PCM again
+    call nz, UpdatePCM          ; Not using macro for optimization purposes
+
+    jp IdleLoop                 ; Keep idling
+
+;****************************************************************************
+; DoTick
+; Called whenever a new tick triggers
+;----------------------------------------------------------------------------
+; notes: doesn't return
+;****************************************************************************
+
+DoTick:
+    PollPCM
+
+    ld (ix+0), $27              ; Retrigger the timer
+    ld (ix+1), $2F
+
+    PollPCM
+    
+    ld a, ($1FF1)               ; Refresh volume if needed
+    or a
+    call nz, RefreshVolume
+
+DoTick_SFX:                     ; Process SFXs
+    jp DoTick_SFXSkip
+DoTick_SFXSkip:
+
+    PollPCM
+    
+    call ProcessDirect            ; Process direct events
+
+    PollPCM
+    
+    ld a, (RAM_Paused)          ; BGMs are paused?
+    or a
+    jr nz, DoTick_BGMSkip
+DoTick_BGM:                     ; Process BGMs
+    jp DoTick_BGMSkip
+DoTick_BGMSkip:
+
+    PollPCM
+
+    jp UpdatePSG                ; Update PSG envelopes
+DoTick_PSGSkip:
+
+    PollPCM
+
+    jp IdleLoop                 ; End of subroutine
+
+;****************************************************************************
+; LoadList [command $01]
+; Loads the pointer list
+;****************************************************************************
+
+LoadList:
+;    ld hl, RAM_ComBank          ; Get command parameters
+;    ld c, (hl)
+;    inc l
+;    ld e, (hl)
+;    inc l
+;    ld d, (hl)
+;    ex de, hl
+    
+    ld hl, (RAM_ComAddr)        ; Get command parameters
+    ld a, (RAM_ComBank)
+    ld c, a
+
+    ld de, RAM_PointerList      ; Where the pointer list starts
+
+.loadloop:
+    call GetParam               ; Get high byte address
+    ld a, b                     ; Is it the end of the list?
+    or a
+    jp z, .loadend
+    ld (de), a                  ; Store high byte address
+    inc d
+    
+    call GetParam               ; Get low address byte
+    ld a, b
+    ld (de), a
+    inc d
+    
+    call GetParam               ; Get bank byte
+    ld a, b
+    ld (de), a
+    
+    dec d                       ; Go for next byte
+    dec d
+    inc e
+    jp .loadloop
+
+.loadend:
+    jp EndOfCommand             ; End of subroutine
+
+;****************************************************************************
+; GetParam
+; Subroutine for getting the parameter byte
+;----------------------------------------------------------------------------
+; input c .... current bank
+; input hl ... current address
+;----------------------------------------------------------------------------
+; output b .... value
+; output c .... new bank
+; output hl ... new address
+;----------------------------------------------------------------------------
+; breaks: af
+;----------------------------------------------------------------------------
+; note: the C value gets incremented *only* when HL hits $0000 (this is
+; relevant if you consider using it to fetch from Z80 RAM, which should
+; never result in HL becoming $0000).
+;****************************************************************************
+
+GetParam:
+    ld a, (RAM_LastBank)        ; Bank switch?
+    cp c
+    jp z, .noswitchp
+    ld a, c
+    ld (RAM_LastBank), a
+    push hl
+    ld hl, $6000
+    BankSwitch
+    pop hl
+.noswitchp:
+    ld b, (hl)                  ; Get value
+
+    inc l                       ; Get next address
+    jp nz, .nonewbankp
+    inc h
+    jp nz, .nonewbankp
+    ld h, $80
+    inc c
+.nonewbankp:
+
+    ret                         ; End of subroutine

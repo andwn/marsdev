@@ -1,0 +1,668 @@
+;****************************************************************************
+; UpdatePSG
+; Updates PSG output
+;****************************************************************************
+
+UpdatePSG:
+    ld hl, RAM_PSGData+48       ; PSG envelope data of *last* channel
+    ld b, 3                     ; Go through all channels
+.loop:
+    push bc
+
+    ld a, (hl)                  ; Get channel volume
+;    bit 7, a
+;    jr nz, .noskip
+    or a
+    jp m, .noskip
+    ld b, $0F
+    inc l
+    jp .skip
+.noskip:
+    and $7F
+    ld b, a
+
+    inc l                       ; Add global volume
+    ld a, (hl)
+    add b
+    ld b, a
+
+    PollPCM
+    push bc
+
+    inc l                       ; Get current address of envelope
+    ld c, (hl)
+    inc l
+    ld e, (hl)
+    inc l
+    ld d, (hl)
+    ex de, hl
+
+.readenv:
+    PollPCM
+    call GetParam               ; Get next byte
+    PollPCM
+
+    ld a, b
+    cp $FE                      ; Set loop point?
+    jp z, .envsetloop
+    cp $FF                      ; Loop envelope?
+    jp z, .envloop
+
+    ld iyl, b                   ; Keep byte safe somewhere...
+    PollPCM
+
+    ex de, hl                   ; Store new address
+    ld (hl), d
+    dec l
+    ld (hl), e
+    dec l
+    ld (hl), c
+    dec l
+
+    pop bc
+    PollPCM
+
+    db $FD,$7D ; ld a, iyl      ; Mix envelope with volume
+    and $0F
+    add b
+    ld b, a
+
+    cp $10                      ; Check for overflow
+    jr c, .notmute
+    ld b, $0F
+.notmute:
+
+.skip:
+    PollPCM
+
+    ld a, b                     ; Set PSG channel volume
+    rlca   
+    rlca
+    rlca
+    pop bc
+    or b
+    rrca
+    rrca
+    rrca
+    or $90
+    ld ($7F11), a
+
+    ld a, l                     ; Go for next channel
+    sub 16+1
+    ld l, a
+    PollPCM
+    dec b
+    jp p, .loop
+
+    jp DoTick_PSGSkip           ; End of subroutine
+
+.envsetloop:
+    PollPCM
+    inc e                       ; Where we store the loop point
+
+    ex de, hl                   ; Store loop point
+    ld (hl), c
+    inc l
+    ld (hl), e
+    inc l
+    ld (hl), d
+    ex de, hl
+
+    dec e                       ; Back to where we were...
+    dec e
+    dec e
+    jp .readenv                 ; Go for next byte
+
+.envloop:
+    PollPCM
+    inc e                       ; Where we store the loop point
+
+    ex de, hl                   ; Retrieve loop point
+    ld c, (hl)
+    inc l
+    ld e, (hl)
+    inc l
+    ld d, (hl)
+    ex de, hl
+
+    dec e                       ; Back to where we were...
+    dec e
+    dec e
+    jp .readenv                 ; Go for next byte
+
+;****************************************************************************
+; NoteOnPSG*
+; Does a "note on" for a PSG channel
+;****************************************************************************
+
+NoteOnPSGSFX:
+    call NoteOnPSG              ; We're just a wrapper
+    jp ProcessSFXRun            ; End of subroutine
+
+NoteOnPSGBGM:
+    ld b, a
+    PollPCM
+    ld a, b
+
+    push hl
+    and $03                     ; Check if channel is free
+    ld hl, RAM_Locked+8
+    add l
+    ld l, a
+    ld a, (hl)
+    pop hl
+    or a
+    jp nz, ProcessBGMSkip1      ; Don't play if locked
+
+    ld a, b
+    call NoteOnPSG              ; We're just a wrapper
+    jp ProcessBGMRun            ; End of subroutine
+
+NoteOnPSG:
+    and $03
+    ld b, a
+    ;push af
+    ex af, af'
+    PollPCM
+
+    push hl                     ; Set channel volume
+    ld h, RAM_PSGData>>8
+    ld a, b
+    rrca
+    rrca
+    rrca
+    rrca
+    ld l, a
+    ld a, (hl)
+    or $80
+    ld (hl), a
+
+    PollPCM
+    push de
+
+    inc l                       ; Now we'll reset the envelope address...
+    inc l
+    ld d, h
+    ld a, l
+    add 6
+    ld e, a
+
+    PollPCM
+
+    ld a, (de)                  ; Reset envelope address
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+
+    pop de
+    pop hl
+
+    PollPCM
+    call GetParam               ; Get note
+    PollPCM
+
+    ;pop af
+    ex af, af'
+    push hl
+    push de
+    ld h, PSGFreqTable>>8       ; Get address of frequency data
+    ld l, b
+    ld de, $7F11
+
+    rrca                        ; Set new frequency
+    rrca
+    rrca
+    ld b, (hl)
+    or b
+    ld (de), a
+    inc l
+    ld a, (hl)
+    ld (de), a
+    pop de
+    pop hl
+
+    ret                         ; End of subroutine
+
+;****************************************************************************
+; NoteOnNoise*
+; Does a "note on" for the noise PSG channel
+;****************************************************************************
+
+NoteOnNoiseSFX:
+    call NoteOnNoise            ; We're just a wrapper
+    jp ProcessSFXRun            ; End of subroutine
+
+NoteOnNoiseBGM:
+    ld a, (RAM_Locked+11)       ; Check if channel is free
+    or a
+    jp nz, ProcessBGMSkip1      ; Don't play if locked
+
+    call NoteOnNoise            ; We're just a wrapper
+    jp ProcessBGMRun            ; End of subroutine
+
+NoteOnNoise:
+    PollPCM
+    push hl
+
+    ld hl, RAM_PSGData+48       ; Set channel volume
+    ld a, (hl)
+    or $80
+    ld (hl), a
+
+    PollPCM
+    push de
+
+    inc l                       ; Now we'll reset the envelope address...
+    inc l
+    ld d, h
+    ld a, l
+    add 6
+    ld e, a
+
+    PollPCM
+
+    ld a, (de)                  ; Reset envelope address
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+    inc l
+    inc e
+    ld a, (de)
+    ld (hl), a
+
+    pop de
+    pop hl
+
+SetNoteNoise:
+    PollPCM
+    call GetParam               ; Get noise type
+    PollPCM
+
+    ld a, $E0                   ; Set new noise type
+    or b
+    ld ($7F11), a
+
+    ret                         ; End of subroutine
+
+;****************************************************************************
+; NoteOffPSG*
+; Does a "note off" for a PSG channel
+;****************************************************************************
+
+NoteOffPSGSFX:
+    call NoteOffPSG             ; We're just a wrapper
+    jp ProcessSFXRun            ; End of subroutine
+
+NoteOffPSGBGM:
+    ld b, a
+    PollPCM
+    ld a, b
+
+    push hl
+    and $03                     ; Check if channel is free
+    ld hl, RAM_Locked+8
+    add l
+    ld l, a
+    ld a, (hl)
+    pop hl
+    or a
+    jp nz, ProcessBGMRun        ; Don't stop if locked
+
+    ld a, b
+    call NoteOffPSG             ; We're just a wrapper
+    jp ProcessBGMRun            ; End of subroutine
+
+NoteOffPSG:
+    and $03
+    ld b, a
+    PollPCM
+
+    push hl                     ; Mark channel as not playing
+    ld h, RAM_PSGData>>8
+    ld a, b
+    rrca
+    rrca
+    rrca
+    rrca
+    ld l, a
+    ld a, (hl)
+    and $7F
+    ld (hl), a
+    pop hl
+
+    ret                         ; End of subroutine
+
+;****************************************************************************
+; SetPSGVol*
+; Sets the volume of a PSG channel
+;****************************************************************************
+
+SetPSGVolSFX:
+    and $03                     ; Get channel ID
+
+    ex af, af'
+    PollPCM
+    call GetParam               ; Get volume
+    PollPCM
+    ex af, af'
+
+    push hl
+    ld h, RAM_PSGData>>8        ; Set new volume
+    rrca
+    rrca
+    rrca
+    rrca
+    ld l, a
+    ld a, (hl)
+    and $80
+    or b
+    ld (hl), a
+    pop hl
+
+    jp ProcessSFXRun            ; End of subroutine
+
+SetPSGVolBGM:
+    and $03                     ; Get channel ID
+
+    ex af, af'
+    PollPCM
+    call GetParam               ; Get volume
+    PollPCM
+    ex af, af'
+
+    push de
+    push hl
+
+    push af
+    ld de, RAM_Locked+8         ; Check if channel is locked
+    add e                         ; Keep results for later
+    ld e, a
+    ld a, (de)
+    ld e, a
+
+    PollPCM
+    pop af
+
+    ld h, RAM_PSGData>>8        ; Store new volume
+    rrca
+    rrca
+    rrca
+    rrca
+    add 15
+    ld l, a
+    ld (hl), b
+
+    PollPCM
+
+    ld a, e                     ; Is channel locked?
+    or a
+    jr nz, .nosetvol
+
+    ld a, l                     ; Set new volume
+    sub 15
+    ld l, a
+    ld a, (hl)
+    and $80
+    or b
+    ld (hl), a
+
+    PollPCM
+
+.nosetvol:
+    pop hl
+    pop de
+
+    jp ProcessBGMRun            ; End of subroutine
+
+;****************************************************************************
+; LoadPSG*
+; Loads a PSG instrument
+;****************************************************************************
+
+LoadPSGSFX:
+    and $03                     ; Get channel number
+
+    ex af, af'
+    PollPCM
+    call GetParam               ; Get instrument ID
+    PollPCM
+    ex af, af'
+
+    push de
+    push hl
+
+    ld d, RAM_PointerList>>8    ; Get position in pointer list
+    ld e, b
+
+    ld h, RAM_PSGData>>8        ; Where to store address
+    rrca
+    rrca
+    rrca
+    rrca
+    add 8+2+(RAM_PSGData&$FF)
+    ld l, a
+
+    PollPCM
+
+    ld a, (de)                  ; Store PSG envelope start address
+    ld (hl), a
+    inc d
+    dec l
+    ld a, (de)
+    ld (hl), a
+    inc d
+    dec l
+    ld a, (de)
+    ld (hl), a
+    
+    PollPCM
+    
+    ld a, l                     ; Reset volume
+    sub 8
+    ld l, a
+    ld (hl), $00
+
+    pop hl
+    pop de
+    jp ProcessSFXRun            ; End of subroutine
+
+;----------------------------------------------------------------------------
+
+LoadPSGBGM:
+    and $03                     ; Get channel number
+
+    ex af, af'
+    PollPCM
+    call GetParam               ; Get instrument ID
+    PollPCM
+    ex af, af'
+
+    push de
+    push hl
+
+    ld d, RAM_PointerList>>8    ; Get position in pointer list
+    ld e, b
+
+    ld hl, RAM_Locked+8         ; Get if channel is locked
+    push af
+    add l
+    ld l, a
+    pop af
+    ld b, (hl)
+
+    ld h, RAM_PSGData>>8        ; Where to store BGM instrument data
+    rrca
+    rrca
+    rrca
+    rrca
+    add 15
+    ld l, a
+
+    PollPCM
+    
+    ld (hl), a                  ; Reset volume for BGM
+    dec l
+
+    ld a, (de)                  ; Store PSG envelope address for BGM
+    ld (hl), a
+    inc d
+    dec l
+    ld a, (de)
+    ld (hl), a
+    inc d
+    dec l
+    ld a, (de)
+    ld (hl), a
+
+    PollPCM
+
+    ld a, b                     ; Don't set PSG envelope if locked
+    or a
+    jp z, .noloadlocked
+    pop hl
+    pop de
+    jp ProcessBGMRun
+.noloadlocked:
+    PollPCM
+
+    ld d, h                     ; Set PSG envelope
+    ld a, l
+    sub 12-8
+    ld e, a
+
+    ld a, (hl)
+    ld (de), a
+    inc l
+    inc e
+    ld a, (hl)
+    ld (de), a
+    inc l
+    inc e
+    ld a, (hl)
+    ld (de), a
+
+    PollPCM
+    
+    ld a, l                     ; Reset volume
+    sub 8
+    ld l, a
+    ld (hl), $00
+
+    pop hl
+    pop de
+    jp ProcessBGMRun            ; End of subroutine
+
+;****************************************************************************
+; SetNotePSG*
+; Sets the note of a PSG channel without "note on"
+;****************************************************************************
+
+SetNotePSGSFX:
+    call SetNotePSG             ; We're just a wrapper
+    jp ProcessSFXRun            ; End of subroutine
+
+SetNotePSGBGM:
+    ld b, a
+    PollPCM
+    ld a, b
+
+    push hl
+    and $0F                     ; Check if channel is free
+    ld h, RAM_Locked>>8
+    add RAM_Locked&$FF
+    ld l, a
+    ld a, (hl)
+    pop hl
+    or a
+    jp nz, ProcessBGMSkip2      ; Don't play if locked
+
+    ld a, b
+    call SetNotePSG             ; We're just a wrapper
+    jp ProcessBGMRun            ; End of subroutine
+
+SetNotePSG:
+    and $03                     ; Get channel number
+
+    ex af, af'
+    PollPCM
+    call GetParam               ; Get first byte
+    PollPCM
+    ex af, af'
+
+    push de                     ; PSG port address
+    ld de, $7F11
+
+    rrca                        ; Set first frequency byte
+    rrca
+    rrca
+    or b
+    or $80
+    ld (de), a
+
+    PollPCM
+    call GetParam               ; Get second byte
+    PollPCM
+
+    ex de, hl
+    ld (hl), b                  ; Set second frequency byte
+    ex de, hl
+    pop de
+
+    ret                         ; End of subroutine
+
+;****************************************************************************
+; SetNoteNoise*
+; Sets the note of the noise PSG channel without "note on"
+;****************************************************************************
+
+SetNoteNoiseSFX:
+    call SetNoteNoise           ; We're just a wrapper
+    jp ProcessSFXRun            ; End of subroutine
+
+SetNoteNoiseBGM:
+    ld a, (RAM_Locked+11)       ; Check if channel is free
+    or a
+    jp nz, ProcessBGMSkip1      ; Don't play if locked
+
+    call SetNoteNoise           ; We're just a wrapper
+    jp ProcessBGMRun            ; End of subroutine
+
+;****************************************************************************
+; LockChannelPSG [events $E8-$EB]
+; Locks a PSG channel
+;****************************************************************************
+
+LockChannelPSG:
+    and $03
+    ld b, a
+    PollPCM
+    push hl
+
+    ld h, RAM_Locked>>8         ; Get address of channel to lock
+    ld a, b
+    add (RAM_Locked&$FF)+8
+    ld l, a
+
+    ld (hl), $01                ; Lock channel
+    
+    PollPCM
+    
+    ld a, b                     ; Stop channel
+    rrca
+    rrca
+    rrca
+    rrca
+    ld l, a
+    ld h, RAM_PSGData>>8
+    ld (hl), $00
+
+    pop hl
+    jp ProcessSFXRun            ; End of subroutine

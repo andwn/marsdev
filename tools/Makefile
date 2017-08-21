@@ -14,7 +14,7 @@ LDSCRIPTS = $(MARSDEV)/ldscripts
 
 .PHONY: all mdtools-build clean
 
-all: $(MARSBIN) $(Z80ASM) $(LDSCRIPTS) mdtools-build
+all: $(MARSBIN) $(SJASM) $(Z80ASM) $(LDSCRIPTS) mdtools-build
 
 mdtools-build: $(MDTILER) $(SLZ) $(UFTC) $(MML2ESF) $(PCM2EWF) $(TFI2EIF)
 

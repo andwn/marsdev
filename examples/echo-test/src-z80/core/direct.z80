@@ -1,0 +1,30 @@
+;****************************************************************************
+; ProcessDirect
+; Processes the direct event stream.
+;----------------------------------------------------------------------------
+; breaks: all
+;****************************************************************************
+
+ProcessDirect:
+    ld a, ($1F00)                       ; Are there even events to process?
+    inc a
+    ret z
+    
+    PollPCM
+    
+    ld hl, ProcessDirectEnd             ; Override $FF event
+    ld (ProcessBGMEventFF+1), hl
+    
+    ld hl, $1F00                        ; Where event data is stored
+    ld a, (RAM_LastBank)                ; To avoid wasting time with bank
+    ld c, a                               ; switching
+    
+    jp ProcessBGMRun                    ; Start processing the event
+
+ProcessDirectEnd:
+    ld hl, StopBGMEvent                 ; Restore $FF event
+    ld (ProcessBGMEventFF+1), hl
+    ld a, $FF                           ; Reset the stream
+    ld ($1F00), a
+    
+    ret                                 ; Return to the main loop
