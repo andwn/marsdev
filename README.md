@@ -19,6 +19,7 @@ Possible targets to install are:
  * `sh-toolchain`: GNU toolchain for SH-2 (32X / Saturn)
  * `tools`: A couple Z80 assemblers and various tools I find useful
  * `sgdk`: SGDK and its tools (rescomp, xgmtool, etc)
+
 By default, only the `m68k-toolchain` and `tools` targets are built.
 
 You can change the install path like `make MARSDEV=/where/to/install`. 
