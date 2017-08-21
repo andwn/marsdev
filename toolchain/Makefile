@@ -41,6 +41,8 @@ binutils:
 gcc: BUILD_DIR=$(GCC_DIR)/build
 gcc:
 	@echo "+++ Building $(GCC_DIR) for $(ARCH)..."
+	# Uncomment this line if you can't use ftp for whatever reason
+	#sed -i 's/ftp:/http:/g' $(GCC_DIR)/contrib/download_prerequisites
 	cd $(GCC_DIR) && ./contrib/download_prerequisites \
 		> $(LOGDIR)/gcc-$(ARCH).log 2>&1
 	@mkdir -p $(BUILD_DIR)
@@ -48,7 +50,7 @@ gcc:
 		../configure --target=$(TARGET) --prefix=$(PREFIX) \
 		--without-headers --enable-languages=$(LANGS) $(CPU_ARGS) \
 		--disable-threads --disable-shared --disable-libssp \
-		--disable-tls --disable-nls --disable-werror \
+		--disable-multilib --disable-tls --disable-nls --disable-werror \
 		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
 	make -C $(BUILD_DIR) all install-strip \
 		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
