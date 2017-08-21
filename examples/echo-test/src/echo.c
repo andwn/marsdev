@@ -1,5 +1,5 @@
 // Required headers
-#include "stdint.h"
+#include <stdint.h>
 #include "echoblob.h"
 #include "echo.h"
 
@@ -53,7 +53,7 @@ static const uint8_t psg_volumes[] = {
 // param list: pointer to instrument list
 //***************************************************************************
 
-void echo_init(const void *const *list) {
+void echo_init(const void* const* list) {
    // Take over the Z80
    Z80_RESET();
    Z80_REQUEST();

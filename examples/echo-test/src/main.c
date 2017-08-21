@@ -61,9 +61,14 @@ void _main() {
 	vdp_set_colors(0, pal, 16);
 	
 	uint8_t songindex = 0;
+	uint8_t volume = 255;
 	echo_play_bgm(songs[songindex]);
 	
-	vdp_puts(VDP_PLAN_A, "left / right to change track", 4, 12);
+	vdp_puts(VDP_PLAN_A, "left / right - change track", 4, 8);
+	vdp_puts(VDP_PLAN_A, "up / down (hold) - volume", 4, 10);
+	//vdp_puts(VDP_PLAN_A, "C - Sound effect", 4, 12);
+	vdp_puts(VDP_PLAN_A, "B - pause", 4, 14);
+	vdp_puts(VDP_PLAN_A, "A - resume", 4, 16);
 	
 	uint16_t joystate = ~0, oldstate;
 	while(TRUE) {
@@ -78,6 +83,27 @@ void _main() {
 		if((joystate & BUTTON_RIGHT) && !(oldstate & BUTTON_RIGHT)) {
 			if(++songindex >= SONG_COUNT) songindex = 0;
 			echo_play_bgm(songs[songindex]);
+		}
+		if(joystate & BUTTON_UP) {
+			if(volume < 255) {
+				volume++;
+				if((volume & 3) == 0) echo_set_volume(volume);
+			}
+		}
+		if(joystate & BUTTON_DOWN) {
+			if(volume > 0) {
+				volume--;
+				if((volume & 3) == 0) echo_set_volume(volume);
+			}
+		}
+		//if((joystate & BUTTON_C) && !(oldstate & BUTTON_C)) {
+		//	echo_play_sfx(???);
+		//}
+		if((joystate & BUTTON_B) && !(oldstate & BUTTON_B)) {
+			echo_pause_bgm();
+		}
+		if((joystate & BUTTON_A) && !(oldstate & BUTTON_A)) {
+			echo_resume_bgm();
 		}
 		
 		vdp_vsync();

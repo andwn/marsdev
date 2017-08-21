@@ -18,7 +18,7 @@ enum {
 #define ECHO_STAT_BUSY     0x8000   /* Echo still didn't parse command */
 
 /* Function prototypes */
-void echo_init(const void *const *list);
+void echo_init(const void* const* list);
 void echo_play_bgm(const void *esf);
 void echo_stop_bgm(void);
 void echo_pause_bgm(void);
@@ -36,3 +36,7 @@ void echo_clear_flags(uint8_t flags);
 void echo_send_command(uint8_t cmd);
 void echo_send_command_addr(uint8_t cmd, const void *addr);
 void echo_send_command_byte(uint8_t cmd, uint8_t byte);
+
+/* Deprecated functions */
+static void (* const echo_send_command_ex)(uint8_t, const void *) =
+   echo_send_command_addr;
