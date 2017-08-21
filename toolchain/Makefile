@@ -10,14 +10,15 @@ BINUTILS_PKG = $(BINUTILS_DIR).tar.gz
 TARGET  = $(ARCH)-elf
 PREFIX  = $(MARSDEV)/$(TARGET)
 PATH   := $(PREFIX)/bin:$(PATH)
-LANGS   = c
 LOGDIR := $(shell pwd)
 
 ifeq ($(ARCH),m68k)
 	CPU_ARGS = --with-cpu=m68000
+	LANGS = c
 endif
 ifeq ($(ARCH),sh)
 	CPU_ARGS = --with-endian=big --with-cpu=m2
+	LANGS = c,c++
 endif
 
 

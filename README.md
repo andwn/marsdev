@@ -7,7 +7,7 @@ It's sort-of working now.
 
  * Native GNU toolchain: `build-essential` on Debian/Ubuntu
  * GNU Autotools (for z80asm): `libtool` `autoconf` `automake` `gettext`
- * Everything else: `wget` `texinfo`
+ * Everything else: `wget` `texinfo` `libpng16-dev`
 
 
 ### Compiling
