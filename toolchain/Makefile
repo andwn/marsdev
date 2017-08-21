@@ -18,7 +18,7 @@ ifeq ($(ARCH),m68k)
 endif
 ifeq ($(ARCH),sh)
 	CPU_ARGS = --with-endian=big --with-cpu=m2
-	LANGS = c,c++
+	LANGS = c
 endif
 
 

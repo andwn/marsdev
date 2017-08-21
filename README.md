@@ -1,4 +1,4 @@
-## Marsdev - GNU toolchain for Genesis + 32X 
+## Marsdev - GNU toolchain for MegaDrive + 32X 
 
 It's sort-of working now.
 
@@ -6,20 +6,24 @@ It's sort-of working now.
 ### Install this stuff first
 
  * Native GNU toolchain: `build-essential` on Debian/Ubuntu
- * GNU Autotools (for z80asm): `libtool` `autoconf` `automake` `gettext`
+ * GNU Autotools: `libtool` `autoconf` `automake` `autopoint` `gettext`
  * Everything else: `wget` `texinfo` `libpng16-dev`
 
 
 ### Compiling
 
-Clone the repo and run `make`. 
-Make sure you have >5GB free disk space, or >15GB if you want C++ too.
+Clone the repo and run `make`. Make sure you have 3-5GB free disk space.
+
+Possible targets to install are:
+ * `m68k-toolchain`: GNU toolchain for Motorola 68000 (MegaDrive)
+ * `sh-toolchain`: GNU toolchain for SH-2 (32X / Saturn)
+ * `tools`: A couple Z80 assemblers and various tools I find useful
+ * `sgdk`: SGDK and its tools (rescomp, xgmtool, etc)
 By default, only the `m68k-toolchain` and `tools` targets are built.
 
-Some ways you can customize the install:
- * `make MARSDEV=/where/to/install` - Custom install path
- * `make m68k-toolchain sh-toolchain tools sgdk` - Build everything
- * Modify the variable `LANGS` in toolchain/Makefile to support more languages
+You can change the install path like `make MARSDEV=/where/to/install`. 
+But really you can just copy the "mars" directory anywhere and change 
+your project's Makefile to point to it.
 
 
 ### How is this different from Gendev?
@@ -31,13 +35,14 @@ Added:
  * Installs to `${HOME}/mars` by default. No need for superuser.
 
 Not Included:
- * Aplib/Sixpack - Nobody can even get it to build from source. Really.
- * Newlib - All my projects build and run without it. Faster to just skip it.
- * Massive archive files. Don't do that with git.
+ * Aplib/Sixpack
+ * Newlib
+ * Massive archive files
 
 
 ### TODO
 
- * SGDK build step (and example project)
- * 32X example project to verify the toolchain is working
+ * SGDK Example
+ * 32X Example
  * GDB maybe?
+ * SDCC?
