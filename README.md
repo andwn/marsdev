@@ -8,6 +8,7 @@ It's sort-of working now.
  * Native GNU toolchain: `build-essential` on Debian/Ubuntu
  * GNU Autotools: `libtool` `autoconf` `automake` `autopoint` `gettext`
  * Everything else: `wget` `texinfo` `libpng16-dev`
+ * And if you want SGDK, Java
 
 
 ### Compiling
@@ -39,6 +40,17 @@ Not Included:
  * Aplib/Sixpack
  * Newlib
  * Massive archive files
+
+
+### Examples
+
+The `examples` directory contains various skeleton/example projects to base others on.
+Naming convention:
+ * `md-`: Bare metal MegaDrive project, requires `m68k-toolchain` and `tools`
+ * `sgdk-`: SGDK MegaDrive project, requires `m68k-toolchain`, `tools`, and `sgdk`
+ * `mars-`: 32X project, requires `m68k-toolchain`, `sh-toolchain`, and `tools`
+
+Should be as easy as a `make` for any of them.
 
 
 ### TODO
