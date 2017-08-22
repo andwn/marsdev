@@ -35,6 +35,8 @@ RESOURCES += $(CS:.c=.o)
 RESOURCES += $(SS:.s=.o)
 RESOURCES += $(S80S:.s80=.o)
 
+.PHONY: all clean
+
 all: $(RESOURCES) libmd.a
 
 %.a: $(RESOURCES)
@@ -58,8 +60,3 @@ all: $(RESOURCES) libmd.a
 clean:
 	rm -f $(RESOURCES)
 	rm -rf *.o *.a *.o80 *.log *.lst 
-
-install: all 
-	cp inc/*.h $(GENDEV)/m68k-elf/include 
-	cp res/*.h $(GENDEV)/m68k-elf/include 
-	cp libmd.a $(GENDEV)/m68k-elf/lib 

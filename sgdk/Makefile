@@ -11,6 +11,8 @@ LZ4W    = $(TOOLSBIN)/lz4w.jar
 
 LIBMD   = $(MARSDEV)/m68k-elf/lib/libmd.a
 
+.PHONY: all tools clean
+
 all: SGDK tools $(LIBMD)
 
 tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(PCMTORAW) $(SIZEBND) $(LZ4W)
@@ -21,6 +23,8 @@ $(LIBMD):
 	cp -f Makefile.libmd SGDK/Makefile
 	make -C SGDK
 	cp -f SGDK/libmd.a $@
+	cp -f SGDK/inc/*.h $(MARSDEV)/m68k-elf/include/
+	cp -f SGDK/res/*.h $(MARSDEV)/m68k-elf/include/
 	
 SGDK:
 	git clone https://github.com/Stephane-D/SGDK
@@ -49,4 +53,4 @@ $(LZ4W):
 	cp -f SGDK/bin/lz4w.jar $@
 
 clean:
-	-rm -rf SGDK
+	rm -rf SGDK
