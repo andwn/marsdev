@@ -1,6 +1,6 @@
-GDB_VER      = 8.0
-GDB_DIR      = gdb-$(GDB_VER)
-GDB_PKG      = $(GDB_DIR).tar.gz
+GDB_VER = 8.0
+GDB_DIR = gdb-$(GDB_VER)
+GDB_PKG = $(GDB_DIR).tar.gz
 
 TARGET  = $(ARCH)-elf
 PREFIX  = $(MARSDEV)/$(TARGET)
