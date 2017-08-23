@@ -17,9 +17,11 @@ Clone the repo and run `make`. Make sure you have 3-5GB free disk space.
 
 Possible targets to install are:
  * `m68k-toolchain`: GNU toolchain for Motorola 68000 (MegaDrive)
+ * `m68k-gdb`: GNU debugger for M68000
  * `sh-toolchain`: GNU toolchain for SH-2 (32X / Saturn)
  * `tools`: A couple Z80 assemblers and various tools I find useful
  * `sgdk`: SGDK and its tools (rescomp, xgmtool, etc)
+ * `umdk`: UMDK tools
 
 By default, only the `m68k-toolchain` and `tools` targets are built.
 
@@ -55,7 +57,6 @@ Should be as easy as a `make` for any of them.
 
 ### TODO
 
- * SGDK Example
  * 32X Example
  * GDB maybe?
  * SDCC?
