@@ -33,7 +33,7 @@ like this: `make MARSDEV=/where/to/install`.
 ### Examples
 
 The `examples` directory contains various skeleton/example projects to base others on.
-For more information on each read [examples/README.md].
+For more information on each read [examples/README.md](examples/README.md).
 
 Naming convention:
  * `md-`: Bare metal MegaDrive project, requires `m68k-toolchain` and `tools`
