@@ -7,6 +7,8 @@ BINUTILS_DIR = binutils-$(BINUTILS_VER)
 GCC_PKG      = $(GCC_DIR).tar.gz
 BINUTILS_PKG = $(BINUTILS_DIR).tar.gz
 
+LDSCRIPTS = $(MARSDEV)/ldscripts
+
 TARGET  = $(ARCH)-elf
 PREFIX  = $(MARSDEV)/$(TARGET)
 PATH   := $(PREFIX)/bin:$(PATH)
@@ -24,7 +26,7 @@ endif
 
 .PHONY: all binutils gcc clean
 
-all: $(BINUTILS_DIR) $(GCC_DIR) binutils gcc
+all: $(BINUTILS_DIR) $(GCC_DIR) binutils gcc $(LDSCRIPTS)
 
 binutils: BUILD_DIR=$(BINUTILS_DIR)/build
 binutils:
@@ -67,6 +69,9 @@ $(BINUTILS_PKG):
 
 $(GCC_PKG):
 	@wget https://mirrors.tripadvisor.com/gnu/gcc/gcc-$(GCC_VER)/$(GCC_PKG)
+
+$(LDSCRIPTS):
+	cp -rf ldscripts/ $(LDSCRIPTS)
 
 clean:
 	rm -rf $(GCC_DIR)
