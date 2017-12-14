@@ -10,7 +10,7 @@ all: $(SJASM)
 
 $(SJASM): $(MARSBIN)
 	rm -rf sjasm
-	git clone https://github.com/konamiman/sjasm --branch v0.39 --single-branch
+	git clone https://github.com/konamiman/sjasm --branch v0.39
 	# Are you fucking kidding me
 	mv sjasm/Sjasm/Sjasm.cpp sjasm/Sjasm/sjasm.cpp
 	cd sjasm/Sjasm && make -f ../Makefile
