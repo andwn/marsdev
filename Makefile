@@ -1,13 +1,10 @@
 export MARSDEV ?= ${HOME}/mars
 
 .PHONY: all m68k-toolchain m68k-gdb sh-toolchain 
-.PHONY: tools z80-tools sik-tools flamewing-tools sgdk
+.PHONY: z80-tools sik-tools flamewing-tools sgdk
 
 # Default everything except SH toolchain
-all: m68k-toolchain tools sgdk
-
-# Everyone's tools
-tools: z80-tools sik-tools flamewing-tools
+all: m68k-toolchain z80-tools sgdk
 
 m68k-toolchain:
 	make -C toolchain ARCH=m68k

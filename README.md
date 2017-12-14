@@ -26,7 +26,8 @@ Possible targets to install are:
  * `flamewing-tools`: Flamewing's mdtools, useful for ROM hacking
  * `sgdk`: SGDK and its tools (rescomp, xgmtool, etc)
 
-By default, everything except `m68k-gdb` and `sh-toolchain` are installed.
+By default, only `m68k-toolchain`, `z80-tools`, and `sgdk` are installed.
+Other targets can be built whenever, just type the name after `make`.
 
 The default install path is `${HOME}/mars`, but can be changed by defining `MARSDEV`
 like this: `make MARSDEV=/where/to/install`.
