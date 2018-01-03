@@ -19,6 +19,10 @@ LIBMD   = $(MARSDEV)/m68k-elf/lib/libmd.a
 
 GCC_VER = $(shell $(CC) -dumpversion)
 PLUGIN  = $(MARSDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GCC_VER)
+LTO_SO  = liblto_plugin.so
+ifeq ($(OS),Windows_NT)
+	LTO_SO = liblto_plugin-0.dll
+endif
 
 INCS     = -Iinc -Ires
 FLAGS    = -m68000 -O3 -fomit-frame-pointer -fno-web -fno-gcse -fno-unit-at-a-time \
@@ -40,7 +44,7 @@ RESOURCES += $(S80S:.s80=.o)
 all: $(RESOURCES) libmd.a
 
 %.a: $(RESOURCES)
-	$(AR) rs --plugin=$(PLUGIN)/liblto_plugin.so $@ $(RESOURCES)
+	$(AR) rs --plugin=$(PLUGIN)/$(LTO_SO) $@ $(RESOURCES)
 
 %.o80: %.s80 
 	$(ASMZ80) $(FLAGSZ80) $< $@ out.lst 
