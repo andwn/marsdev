@@ -19,7 +19,7 @@ tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(PCMTORAW) $(SIZEBND) $(LZ4W
 
 $(LIBMD):
 	# Compress resources with lz4w instead of aplib
-	sed -i 's/-1/2/g' SGDK/res/libres.res
+	sed -i  '' 's/-1/2/g' SGDK/res/libres.res
 	cp -f Makefile.libmd SGDK/Makefile
 	make -C SGDK
 	cp -f SGDK/libmd.a $@

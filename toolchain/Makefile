@@ -65,10 +65,10 @@ $(GCC_DIR): $(GCC_PKG)
 	tar xf $(GCC_PKG)
 
 $(BINUTILS_PKG):
-	@wget https://mirrors.tripadvisor.com/gnu/binutils/$(BINUTILS_PKG)
+	@curl -O https://mirrors.tripadvisor.com/gnu/binutils/$(BINUTILS_PKG)
 
 $(GCC_PKG):
-	@wget https://mirrors.tripadvisor.com/gnu/gcc/gcc-$(GCC_VER)/$(GCC_PKG)
+	@curl -O https://mirrors.tripadvisor.com/gnu/gcc/gcc-$(GCC_VER)/$(GCC_PKG)
 
 $(LDSCRIPTS):
 	cp -rf ldscripts/ $(LDSCRIPTS)

@@ -4,18 +4,23 @@ Personal MegaDrive toolchain I put too much effort into.
 You probably shouldn't try using this for 32X dev, 
 I don't have any examples yet and am still learning how that thing works.
 
-### Dependencies: Windows Users
+### Dependencies: Windows
 
  * Install [MSYS2](http://www.msys2.org/) and follow the instructions on the site to make sure it is up to date
- * From MinGW 64-bit terminal: `pacman -S mingw-w64-x86_64-toolchain texinfo wget tar diffutils`
+ * From MinGW 64-bit terminal: `pacman -S mingw-w64-x86_64-toolchain texinfo tar diffutils`
  * (It should work with the 32-bit terminal too, just replace `x86_64` with `i686`)
 
 
-### Dependencies: GNU/Linux Users
+### Dependencies: GNU/Linux
 
- * Arch: `pacman -S base-devel texinfo wget`
- * Debian: `apt install build-essential texinfo wget`
- * RedHat: `yum install gcc gcc-c++ texinfo-tex wget`
+ * Arch: `pacman -S base-devel texinfo`
+ * Debian: `apt install build-essential texinfo`
+ * RedHat: `yum install gcc gcc-c++ texinfo-tex`
+
+
+### Dependencies: OSX
+
+ * Xcode with clang seems to work fine
 
 
 ### Optional Dependencies
