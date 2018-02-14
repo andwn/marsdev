@@ -1,4 +1,4 @@
-GCC_VER      = 7.2.0
+GCC_VER      = 7.3.0
 BINUTILS_VER = 2.29
 
 GCC_DIR      = gcc-$(GCC_VER)
