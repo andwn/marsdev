@@ -1,19 +1,27 @@
+# == MARSDEV ==
+# Multiplatform Mega Drive toolchain builder and installer
+# This is the 'main' Makefile that calls others in their own subdirectories
+
 export MARSDEV ?= ${HOME}/mars
 
-.PHONY: all m68k-toolchain m68k-gdb sh-toolchain 
-.PHONY: z80-tools sik-tools flamewing-tools sgdk
+.PHONY: all $(MAKECMDGOALS)
 
-# Default everything except SH toolchain
 all: m68k-toolchain z80-tools sgdk
 
 m68k-toolchain:
 	make -C toolchain ARCH=m68k
+
+m68k-toolchain-newlib:
+	make -C toolchain all-newlib ARCH=m68k
 
 m68k-gdb:
 	make -C gdb ARCH=m68k
 
 sh-toolchain:
 	make -C toolchain ARCH=sh
+
+sh-toolchain-newlib:
+	make -C toolchain all-newlib ARCH=sh
 
 z80-tools:
 	make -C z80-tools
@@ -27,8 +35,6 @@ flamewing-tools:
 sgdk:
 	make -C sgdk
 
-
-.PHONY: clean toolchain-clean gdb-clean tools-clean sgdk-clean
 
 clean: toolchain-clean tools-clean sgdk-clean
 
