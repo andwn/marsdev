@@ -11,6 +11,8 @@ LZ4W    = $(TOOLSBIN)/lz4w.jar
 
 LIBMD   = $(MARSDEV)/m68k-elf/lib/libmd.a
 
+SGDK_VER ?= master
+
 .PHONY: all tools clean
 
 all: SGDK tools $(LIBMD)
@@ -33,7 +35,7 @@ $(LIBMD):
 	cp -f SGDK/res/*.h $(MARSDEV)/m68k-elf/include/
 	
 SGDK:
-	git clone https://github.com/Stephane-D/SGDK
+	git clone --branch $(SGDK_VER) https://github.com/Stephane-D/SGDK
 
 # Tools
 
