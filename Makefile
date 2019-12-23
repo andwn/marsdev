@@ -33,10 +33,10 @@ flamewing-tools:
 	make -C flamewing-tools
 
 sgdk:
-	make -C sgdk SGDK_VER=v1.33
-
-sgdk-master:
 	make -C sgdk
+	
+sgdk-legacy:
+	make -C sgdk SGDK_VER=v1.33
 
 
 clean: toolchain-clean tools-clean sgdk-clean

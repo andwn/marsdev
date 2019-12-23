@@ -12,9 +12,16 @@ else
 	endif
 endif
 
+# OSX sed fails without the '', and GNU fails with, cool beans
+SED_FIX=
+ifeq ($(shell uname -s),Darwin)
+	SED_FIX=''
+endif
+
 .PHONY: all clean
 
-all: $(SJASM) $(Z80ASM)
+all: $(SJASM) 
+#$(Z80ASM)
 
 $(SJASM): $(MARSBIN)
 	rm -rf sjasm
@@ -30,6 +37,8 @@ $(Z80ASM): $(MARSBIN)
 	cd z80asm && autoreconf -f -i && ./configure
 	# One of the tests fails so we just skip them
 	echo "all:\n\t@echo skipping tests" > z80asm/tests/Makefile
+	# It also doesn't link libintl anymore...why
+	sed -i $(SED_FIX) "s/LDFLAGS =/LDFLAGS = -lintl/g" z80asm/Makefile
 	make -C z80asm
 	cp -f z80asm/src/z80asm $(Z80ASM)
 

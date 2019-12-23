@@ -43,16 +43,24 @@ $(BINTOS):
 	gcc SGDK/tools/bintos/src/bintos.c -o $@
 	
 $(RESCOMP):
-	cd SGDK/tools/rescomp/src && gcc *.c -o $@
+	if [ -f "SGDK/bin/rescomp.jar" ]; then \
+		cp -f SGDK/bin/rescomp.jar $(TOOLSBIN)/rescomp.jar ; \
+	else \
+		cd SGDK/tools/rescomp/src && gcc *.c -o $(TOOLSBIN)/rescomp ; \
+	fi
 	
 $(XGMTOOL):
-	cd SGDK/tools/xgmtool/src && gcc *.c -lm -o $@
+	cd SGDK/tools/xgmtool/src && gcc *.c -I../inc -lm -o $@
 	
 $(WAVTORAW):
-	gcc SGDK/tools/wavtoraw/src/wavtoraw.c -lm -o $@
+	if [ -d "SGDK/tools/wavtoraw"]; then \
+		gcc SGDK/tools/wavtoraw/src/wavtoraw.c -lm -o $@ ; \
+	fi
 	
 $(PCMTORAW):
-	gcc SGDK/tools/pcmtoraw/src/pcmtoraw.c -o $@
+	if [ -d "SGDK/tools/pcmtoraw"]; then \
+		gcc SGDK/tools/pcmtoraw/src/pcmtoraw.c -lm -o $@ ; \
+	fi
 	
 $(SIZEBND):
 	gcc SGDK/tools/sizebnd/src/sizebnd.c -o $@

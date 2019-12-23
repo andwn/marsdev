@@ -14,15 +14,15 @@
 # disable-threads/tls:   MD programs are freestanding, so no thread model
 # disable-multilib:      Only compiles m68000 support (no other m680x0)
 # without-libstdcxx:     (C++) The STL is way too big for MD
-# without-libffi:        (Go) Requires syscall abnd C++ stuff, bleh
-# without-libatomic      (Go) No threads so it's useless
 
 # == Resuming in case of failure ==
 # At the end of each successful step is a "touch" command to creat a marker file
 # These files can be deleted to redo the step again, "clean" also deletes them
 
 # == Newlib ==
-# Newlib provides an implementation of libc suited for embedded systems
+# To include optional Newlib support, use the 'all-newlib' target
+# make all-newlib ARCH=m68k
+# Newlib provides a libc implementation for embedded systems
 # However, we need the cross compiler to build it first
 # Because of this GCC is built in 2 passes:
 # The first pass builds C support only for building newlib
@@ -30,14 +30,13 @@
 
 # == Additional Languages ==
 # If you want to build support for languages other than C define "LANGS" like this:
-# make ARCH=m68k LANGS=c,c++,go
-# C is required and the most well supported
-# C++ hasn't been tested yet but all non-STL features are expected to work
-# Go currently is missing the runtime/libgo so many language features fail when linking
-# (Undefined reference to 'runtime.memhash' for example)
+# make ARCH=m68k LANGS=c,c++
+# C is required, enabled by default and the most well supported
+# C++ is not extensively tested but all non-STL features are expected to work
+# Go support has been dropped as it requires a beefy runtime to do anything useful
 
-GCC_VER      = 8.3.0
-BINUTILS_VER = 2.32
+GCC_VER      = 9.2.0
+BINUTILS_VER = 2.33.1
 NEWLIB_VER   = 1.20.0
 
 GCC_DIR      = gcc-$(GCC_VER)
@@ -125,7 +124,6 @@ mk-gcc2:
 		../configure --target=$(TARGET) --prefix=$(PREFIX) \
 		--enable-languages=$(LANGS) $(CPU_ARGS) \
 		--without-headers --with-newlib --disable-libssp \
-		--without-libffi --without-libatomic \
 		--disable-libstacktrace --disable-libstdcxx \
 		--disable-threads --disable-tls --disable-multilib \
 		--enable-shared=no --disable-nls --disable-werror \
@@ -138,10 +136,10 @@ mk-gcc2:
 $(BINUTILS_DIR): $(BINUTILS_PKG)
 	tar xf $(BINUTILS_PKG)
 
-#$(GCC_DIR): $(GCC_PKG)
-#	tar xf $(GCC_PKG)
-$(GCC_DIR):
-	git clone https://github.com/andwn/gcc-marsdev $(GCC_DIR)
+$(GCC_DIR): $(GCC_PKG)
+	tar xf $(GCC_PKG)
+#$(GCC_DIR):
+#	git clone https://github.com/andwn/gcc-marsdev $(GCC_DIR)
 
 $(NEWLIB_DIR): $(NEWLIB_PKG)
 	tar xf $(NEWLIB_PKG)
@@ -149,8 +147,8 @@ $(NEWLIB_DIR): $(NEWLIB_PKG)
 $(BINUTILS_PKG):
 	@curl -O https://mirrors.tripadvisor.com/gnu/binutils/$(BINUTILS_PKG)
 
-#$(GCC_PKG):
-#	@curl -O https://mirrors.tripadvisor.com/gnu/gcc/gcc-$(GCC_VER)/$(GCC_PKG)
+$(GCC_PKG):
+	@curl -O https://mirrors.tripadvisor.com/gnu/gcc/gcc-$(GCC_VER)/$(GCC_PKG)
 
 $(NEWLIB_PKG):
 	@curl -O ftp://sourceware.org/pub/newlib/$(NEWLIB_PKG)
