@@ -15,7 +15,7 @@ PCMTORAW= $(TOOLSBIN)/pcmtoraw
 SIZEBND = $(TOOLSBIN)/sizebnd
 LZ4W    = $(TOOLSBIN)/lz4w.jar
 
-# Use rescomp jar jar for SGDK > 1.33
+# Use rescomp jar for SGDK > 1.33
 ifneq ("$(wildcard $(TOOLSBIN)/rescomp.jar)","")
 	RESCOMP = java -jar $(TOOLSBIN)/rescomp.jar
 	WAVTORAW = @echo "wavtoraw no longer available!" ## 

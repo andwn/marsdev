@@ -1,4 +1,4 @@
-# Sample Makefile for Marsdev (Non-SGDK version)
+# Sample Makefile for Marsdev (SGDK version)
 
 # Default paths, can be overridden by setting MARSDEV before calling make
 MARSDEV ?= ${HOME}/mars
@@ -12,6 +12,18 @@ AS   = $(MARSBIN)/m68k-elf-as
 LD   = $(MARSBIN)/m68k-elf-ld
 NM   = $(MARSBIN)/m68k-elf-nm
 OBJC = $(MARSBIN)/m68k-elf-objcopy
+# SGDK Tools
+BINTOS   = $(TOOLSBIN)/bintos
+PCMTORAW = $(TOOLSBIN)/pcmtoraw
+RESCOMP  = $(TOOLSBIN)/rescomp
+WAVTORAW = $(TOOLSBIN)/wavtoraw
+XGMTOOL  = $(TOOLSBIN)/xgmtool
+# Use rescomp jar for SGDK > 1.33
+ifneq ("$(wildcard $(TOOLSBIN)/rescomp.jar)","")
+	RESCOMP = java -jar $(TOOLSBIN)/rescomp.jar
+	WAVTORAW = @echo "wavtoraw no longer available!" ## 
+	PCMTORAW = @echo "pcmtoraw no longer available!" ## 
+endif
 
 # Some files needed are in a versioned directory
 GCC_VER := $(shell $(CC) -dumpversion)
@@ -23,14 +35,16 @@ ifeq ($(OS),Windows_NT)
 	LTO_SO = liblto_plugin-0.dll
 endif
 
-# Includes: Local + GCC + Newlib
+# Includes: Local + GCC + SGDK + Newlib
 INCS     = -Isrc -Ires -Iinc
 INCS    += -I$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER)/include
+INCS    += -I$(MARSDEV)/m68k-elf/include
 INCS    += -I$(MARSDEV)/m68k-elf/m68k-elf/include
 
-# Libraries: GCC + Newlib
+# Libraries: GCC + SGDK + Newlib
 # If you plan on using Newlib, uncomment the line with -lnosys
 LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER) -lgcc
+LIBS    += -L$(MARSDEV)/m68k-elf/lib -lmd
 #LIBS    += -L$(MARSDEV)/m68k-elf/m68k-elf/lib -lnosys
 
 # Any C or C++ standard should be fine here as long as GCC support it
@@ -40,17 +54,19 @@ CXXFLAGS = -m68000 -Wall -Wextra -std=c++17 -ffreestanding
 # Extra options set by debug or release target
 OPTIONS  = 
 ASFLAGS  = -m68000 --register-prefix-optional
-LDFLAGS  = -T $(MARSDEV)/ldscripts/md.ld -nostdlib
+LDFLAGS  = -T $(MARSDEV)/ldscripts/sgdk.ld -nostdlib
 
+RESS  = $(wildcard res/*.res)
 CS    = $(wildcard src/*.c)
 CPPS  = $(wildcard src/*.cpp)
 SS    = $(wildcard src/*.s)
-OBJS  = $(CS:.c=.o)
+
+OBJS  = $(RESS:.res=.o)
+OBJS += $(CS:.c=.o)
 OBJS += $(CPPS:.cpp=.o)
 OBJS += $(SS:.s=.o)
 
 ASMO  = $(RESS:.res=.o)
-ASMO += $(Z80S:.s80=.o)
 ASMO += $(CS:%.c=asmout/%.s)
 
 .SECONDARY: out.elf
@@ -77,8 +93,13 @@ debug: out.bin symbol.txt
 symbol.txt: out.bin
 	$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n out.elf > symbol.txt
 
-boot.o:
-	$(AS) $(ASFLAGS) boot.s -o $@
+boot/sega.o: boot/rom_head.bin
+	@echo "AS $<"
+	@$(AS) $(ASFLAGS) boot/sega.s -o $@
+
+boot/rom_head.bin: boot/rom_head.c
+	@echo "CC $<"
+	@$(CC) $(CFLAGS) $(INCS) -nostdlib -Wl,--oformat=binary $< -o $@
 
 %.bin: %.elf
 	@echo "Stripping ELF header..."
@@ -86,8 +107,8 @@ boot.o:
 	@dd if=temp.bin of=$@ bs=8192 conv=sync
 	@rm -f temp.bin
 
-%.elf: boot.o $(OBJS)
-	$(CC) -o $@ $(LDFLAGS) boot.o $(OBJS) $(LIBS)
+%.elf: boot/sega.o $(OBJS)
+	$(CC) -o $@ $(LDFLAGS) boot/sega.o $(OBJS) $(LIBS)
 
 %.o: %.c
 	@echo "CC $<"
@@ -111,5 +132,6 @@ asmout/%.s: %.c
 .PHONY: clean
 
 clean:
-	rm -f $(OBJS) out.bin out.elf symbol.txt boot.o
+	rm -f $(OBJS) out.bin out.elf symbol.txt
+	rm -f boot/sega.o boot/rom_head.o boot/rom_head.bin
 	rm -rf asmout
