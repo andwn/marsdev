@@ -122,6 +122,9 @@ boot/rom_head.bin: boot/rom_head.c
 	@echo "AS $<"
 	@$(AS) $(ASFLAGS) $< -o $@
 
+%.s: %.res
+	$(RESCOMP) $< $@
+
 # For asm target
 asm-dir:
 	mkdir -p asmout/src
