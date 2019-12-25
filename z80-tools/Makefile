@@ -27,7 +27,7 @@ $(SJASM): $(MARSBIN)
 	rm -rf sjasm
 	git clone https://github.com/konamiman/sjasm --branch v0.39
 	# There's mismatching caps in the Makefile for sjasm
-	mv sjasm/Sjasm/Sjasm.cpp sjasm/Sjasm/sjasm.cpp
+	#mv sjasm/Sjasm/Sjasm.cpp sjasm/Sjasm/sjasm.cpp
 	cd sjasm/Sjasm && make
 	cp -f sjasm/Sjasm/sjasm $(SJASM)
 
