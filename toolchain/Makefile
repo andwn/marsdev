@@ -49,17 +49,17 @@ NEWLIB_PKG   = $(NEWLIB_DIR).tar.gz
 
 LDSCRIPTS = $(MARSDEV)/ldscripts
 
-TARGET  = $(ARCH)-elf
-PREFIX  = $(MARSDEV)/$(TARGET)
-PATH   := $(PREFIX)/bin:$(PATH)
-LOGDIR := $(shell pwd)
-
 ifeq ($(ARCH),m68k)
 	CPU_ARGS = --with-cpu=m68000
 endif
 ifeq ($(ARCH),sh)
 	CPU_ARGS = --with-endian=big --with-cpu=m2
 endif
+
+TARGET  = $(ARCH)-elf
+PREFIX  = $(MARSDEV)/$(TARGET)
+PATH   := $(PREFIX)/bin:$(PATH)
+LOGDIR := $(shell pwd)
 
 .PHONY: all all-newlib clean
 

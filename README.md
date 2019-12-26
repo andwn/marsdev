@@ -100,10 +100,3 @@ The `examples` directory contains various skeleton/example projects to base othe
 For more information on each read [examples/README.md](examples/README.md).
 
 Should be as easy as a `make` for any of them.
-
-
-## TODO
- 
- * Create a boilerplate project with a more versatile Makefile
- * Figure out 32X so it can actually be supported
- * COFF for SH instead of ELF? Saturn?
