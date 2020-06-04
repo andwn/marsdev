@@ -41,11 +41,13 @@ INCS    += -I$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER)/include
 INCS    += -I$(MARSDEV)/m68k-elf/include
 INCS    += -I$(MARSDEV)/m68k-elf/m68k-elf/include
 
-# Libraries: GCC + SGDK + Newlib
+# Libraries: GCC + Newlib (SGDK libs are with release/debug targets)
 # If you plan on using Newlib, uncomment the line with -lnosys
 LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER) -lgcc
-LIBS    += -L$(MARSDEV)/m68k-elf/lib -lmd
 #LIBS    += -L$(MARSDEV)/m68k-elf/m68k-elf/lib -lnosys
+
+# Force libgcc math routines to be available at link time
+LIBS    += -u __modsi3 -u __divsi3 -u __mulsi3 -u __umodsi3 -u __udivsi3 -u __umulsi3
 
 # Any C or C++ standard should be fine here as long as GCC support it
 CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding
@@ -77,14 +79,17 @@ all: release
 
 release: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
 release: OPTIONS += -fshort-enums -flto -fuse-linker-plugin
+release: LIBS += -L$(MARSDEV)/m68k-elf/lib -lmd
 release: out.bin symbol.txt
 
 asm: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
 asm: OPTIONS += -fshort-enums
+asm: LIBS += -L$(MARSDEV)/m68k-elf/lib -lmd
 asm: asm-dir $(ASMO)
 
 # Gens-KMod, BlastEm and UMDK support GDB tracing, enabled by this target
-debug: OPTIONS = -g -Og -DDEBUG -DKDEBUG
+debug: OPTIONS = -g -Og -DDEBUG -DKDEBUG -fno-web -fno-gcse -fno-unit-at-a-time -fshort-enums
+debug: LIBS += -L$(MARSDEV)/m68k-elf/lib -lmd-debug
 debug: out.bin symbol.txt
 
 # This generates a symbol table that is very helpful in debugging crashes,

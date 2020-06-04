@@ -32,10 +32,10 @@ ifeq ($(OS),Windows_NT)
 endif
 
 INCS     = -Iinc -Ires
-FLAGS    = -m68000 -fomit-frame-pointer -fno-web -fno-gcse -fno-unit-at-a-time \
-		   -fshort-enums  -fno-builtin
+FLAGS    = -m68000 -fno-web -fno-gcse -fno-unit-at-a-time -fshort-enums -fno-builtin
+LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER) -lgcc
 FLAGSZ80 = -isrc -iinc
-OPTIONS  = -O3 -flto -fuse-linker-plugin
+OPTIONS  = 
 
 CS   = $(wildcard src/*.c)
 SS   = $(wildcard src/*.s)
@@ -47,9 +47,12 @@ RESOURCES += $(CS:.c=.o)
 RESOURCES += $(SS:.s=.o)
 RESOURCES += $(S80S:.s80=.o)
 
-.PHONY: all clean
+.PHONY: all release debug clean
 
-all: $(RESOURCES) libmd.a
+all: release 
+
+release: OPTIONS = -O3 -flto -fuse-linker-plugin -fomit-frame-pointer
+release: $(RESOURCES) libmd.a
 
 debug: OPTIONS = -DDEBUG -Og -g
 debug: $(RESOURCES) libmd-debug.a
@@ -64,10 +67,10 @@ debug: $(RESOURCES) libmd-debug.a
 	$(BINTOS) $< 
 
 %.o: %.c 
-	$(CC) $(OPTIONS) $(FLAGS) $(INCS) -c $< -o $@ 
+	$(CC) $(OPTIONS) $(FLAGS) $(INCS) -c $< -o $@ $(LIBS)
 
 %.o: %.s 
-	$(CC) $(OPTIONS) $(FLAGS) $(INCS) -c $< -o $@ 
+	$(CC) $(OPTIONS) $(FLAGS) $(INCS) -c $< -o $@ $(LIBS)
 
 %.s: %.res
 	$(RESCOMP) $< $@
