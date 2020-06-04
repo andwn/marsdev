@@ -33,7 +33,6 @@ endif
 
 INCS     = -Iinc -Ires
 FLAGS    = -m68000 -fno-web -fno-gcse -fno-unit-at-a-time -fshort-enums -fno-builtin
-LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER) -lgcc
 FLAGSZ80 = -isrc -iinc
 OPTIONS  = 
 
@@ -67,10 +66,10 @@ debug: $(RESOURCES) libmd-debug.a
 	$(BINTOS) $< 
 
 %.o: %.c 
-	$(CC) $(OPTIONS) $(FLAGS) $(INCS) -c $< -o $@ $(LIBS)
+	$(CC) $(OPTIONS) $(FLAGS) $(INCS) -c $< -o $@
 
 %.o: %.s 
-	$(CC) $(OPTIONS) $(FLAGS) $(INCS) -c $< -o $@ $(LIBS)
+	$(CC) $(OPTIONS) $(FLAGS) $(INCS) -c $< -o $@
 
 %.s: %.res
 	$(RESCOMP) $< $@
