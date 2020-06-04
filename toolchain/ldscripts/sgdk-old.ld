@@ -19,7 +19,7 @@ __DYNAMIC  =  0;
  * .                    .
  * +--------------------+ <- 0x00FF0000
  * | .data              | initialized data goes here
- * |        _data       |
+ * |        _data       | 
  * |        _edata      |
  * +--------------------+
  * | .bss               |
@@ -34,7 +34,7 @@ __DYNAMIC  =  0;
  */
 MEMORY
 {
-	rom : ORIGIN = 0x00000000, LENGTH = 0x00A00000
+	rom : ORIGIN = 0x00000000, LENGTH = 0x00400000
 	ram : ORIGIN = 0x00FF0000, LENGTH = 0x00010000
 }
 
@@ -50,7 +50,7 @@ SECTIONS
 {
   .text 0x00000000:
   {
-    KEEP(*(.text.keepboot)) *(.text.*) *(.text)
+    *(.text .text.*)
     . = ALIGN(0x4);
      __CTOR_LIST__ = .;
     LONG((__CTOR_END__ - __CTOR_LIST__) / 4 - 2)
@@ -62,7 +62,6 @@ SECTIONS
     *(.dtors)
      LONG(0)
     __DTOR_END__ = .;
-
     *(.rodata .rodata.*)
     *(.gcc_except_table .gcc_except_table.*)
 
@@ -77,21 +76,18 @@ SECTIONS
 
     _etext = .;
     *(.lit)
-
-    *(.rodata_bin)
-    *(.rodata_binf)
   } > rom
-  _stext = SIZEOF (.text);
+  _stext = SIZEOF (.text); 
 
   .data 0xFF0000 :
   AT ( ADDR (.text) + SIZEOF (.text) )
   {
-    *(.got.plt) *(.got)
+    *(.got.plt) *(.got) 
     *(.shdata)
     *(.data .data.*)
     _edata = .;
   } > ram
-  _sdata = SIZEOF (.data);
+  _sdata = SIZEOF (.data); 
 
   .bss 0xFF0000 + SIZEOF (.data) :
   {
@@ -100,6 +96,7 @@ SECTIONS
     *(.bss .bss.*)
     *(COMMON)
     _bend = . ;
+    end = . ;
   } > ram
 
   .stab 0 (NOLOAD) :
@@ -115,5 +112,5 @@ SECTIONS
   .eh_frame 0 (NOLOAD) :
   {
     *(.eh_frame)
-  }
+  } 
 }
