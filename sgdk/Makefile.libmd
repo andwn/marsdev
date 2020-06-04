@@ -32,9 +32,10 @@ ifeq ($(OS),Windows_NT)
 endif
 
 INCS     = -Iinc -Ires
-FLAGS    = -m68000 -O3 -fomit-frame-pointer -fno-web -fno-gcse -fno-unit-at-a-time \
-		   -fshort-enums -flto -fuse-linker-plugin -fno-builtin
+FLAGS    = -m68000 -fomit-frame-pointer -fno-web -fno-gcse -fno-unit-at-a-time \
+		   -fshort-enums  -fno-builtin
 FLAGSZ80 = -isrc -iinc
+OPTIONS  = -O3 -flto -fuse-linker-plugin
 
 CS   = $(wildcard src/*.c)
 SS   = $(wildcard src/*.s)
@@ -50,6 +51,9 @@ RESOURCES += $(S80S:.s80=.o)
 
 all: $(RESOURCES) libmd.a
 
+debug: OPTIONS = -DDEBUG -Og -g
+debug: $(RESOURCES) libmd-debug.a
+
 %.a: $(RESOURCES)
 	$(AR) rs --plugin=$(PLUGIN)/$(LTO_SO) $@ $(RESOURCES)
 
@@ -60,14 +64,14 @@ all: $(RESOURCES) libmd.a
 	$(BINTOS) $< 
 
 %.o: %.c 
-	$(CC) $(FLAGS) $(INCS) -c $< -o $@ 
+	$(CC) $(OPTIONS) $(FLAGS) $(INCS) -c $< -o $@ 
 
 %.o: %.s 
-	$(CC) $(FLAGS) $(INCS) -c $< -o $@ 
+	$(CC) $(OPTIONS) $(FLAGS) $(INCS) -c $< -o $@ 
 
 %.s: %.res
 	$(RESCOMP) $< $@
 
 clean:
-	rm -f $(RESOURCES)
+	rm -f $(RESOURCES) libmd.a libmd-debug.a
 	rm -rf *.o *.a *.o80 *.log *.lst 

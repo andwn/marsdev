@@ -9,13 +9,13 @@ PCMTORAW= $(TOOLSBIN)/pcmtoraw
 SIZEBND = $(TOOLSBIN)/sizebnd
 LZ4W    = $(TOOLSBIN)/lz4w.jar
 
-LIBMD   = $(MARSDEV)/m68k-elf/lib/libmd.a
+#LIBMD   = $(MARSDEV)/m68k-elf/lib/libmd.a
 
 SGDK_VER ?= master
 
-.PHONY: all tools clean
+.PHONY: all tools libmd clean
 
-all: SGDK tools $(LIBMD)
+all: SGDK tools libmd
 
 tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(PCMTORAW) $(SIZEBND) $(LZ4W)
 
@@ -25,12 +25,27 @@ ifeq ($(shell uname -s),Darwin)
 	SED_FIX=''
 endif
 
-$(LIBMD):
+libmd:
 	# Compress resources with lz4w instead of aplib
 	sed -i  $(SED_FIX) 's/-1/2/g' SGDK/res/libres.res
 	cp -f Makefile.libmd SGDK/Makefile
+	cp -f config-default.h SGDK/inc/config.h
+	make -C SGDK clean
 	make -C SGDK
-	cp -f SGDK/libmd.a $@
+	cp -f SGDK/libmd.a $(MARSDEV)/m68k-elf/lib/libmd.a
+	# Debug version
+	make -C SGDK clean
+	make -C SGDK debug
+	cp -f SGDK/libmd-debug.a $(MARSDEV)/m68k-elf/lib/libmd-debug.a
+	# Banks switching enabled version for release + debug
+	cp -f config-bankswitch.h SGDK/inc/config.h
+	make -C SGDK clean
+	make -C SGDK
+	cp -f SGDK/libmd.a $(MARSDEV)/m68k-elf/lib/libmd-far.a
+	make -C SGDK clean
+	make -C SGDK debug
+	cp -f SGDK/libmd-debug.a $(MARSDEV)/m68k-elf/lib/libmd-far-debug.a
+	# Copy headers
 	cp -f SGDK/inc/*.h $(MARSDEV)/m68k-elf/include/
 	cp -f SGDK/res/*.h $(MARSDEV)/m68k-elf/include/
 	

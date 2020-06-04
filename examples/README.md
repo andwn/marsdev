@@ -4,6 +4,11 @@
 An SGDK sample program based on the moon tutorial.
 It can be used as a starting point for SGDK projects.
 
+### SGDK SSF Mapper
+An example of using SGDK 1.50+ "Far" data feature, 
+a bank switching enhancement that allows the use of ROMs greater than 4MB in size.
+Make sure you have "libmd-far.a" in $(MARSDEV)/elf-m68k/lib.
+
 ### MD Skeleton
 A barebones program that prints Hello World.
 Can be used as a starting point for people who want to do it all themself,
