@@ -69,7 +69,7 @@ debug: $(RESOURCES) libmd-debug.a
 	$(CC) $(OPTIONS) $(FLAGS) $(INCS) -c $< -o $@
 
 %.o: %.s 
-	$(CC) $(OPTIONS) $(FLAGS) $(INCS) -c $< -o $@
+	$(CC) -x assembler-with-cpp -MMD $(OPTIONS) $(FLAGS) $(INCS) -c $< -o $@
 
 %.s: %.res
 	$(RESCOMP) $< $@

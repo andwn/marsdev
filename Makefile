@@ -23,6 +23,12 @@ sh-toolchain:
 sh-toolchain-newlib:
 	make -C toolchain all-newlib ARCH=sh
 
+sh-gdb:
+	make -C gdb ARCH=sh
+
+z80-toolchain:
+	make -C toolchain all-nogcc ARCH=z80
+
 z80-tools:
 	make -C z80-tools
 	
@@ -33,7 +39,7 @@ flamewing-tools:
 	make -C flamewing-tools
 
 sgdk:
-	make -C sgdk
+	make -C sgdk SGDK_VER=v1.60
 	
 sgdk-legacy:
 	make -C sgdk SGDK_VER=v1.33

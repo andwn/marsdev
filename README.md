@@ -10,13 +10,14 @@ Cross platform Mega Drive toolchain and Makefile abuse.
    * It should work with the 32-bit terminal too, just replace `x86_64` with `i686`
  * (SGDK Only) Install and configure Java: https://www.java.com/en/download/
    * Take note of where it was installed, then run the following commands making changes as necessary
-   * `echo 'export JAVA_HOME="/C/Program Files/Java/jre1.8.0_231"' >> ~/.bash_profile`
+   * `echo 'export JAVA_HOME="/C/Program Files/Java/jre1.8.0_241"' >> ~/.bash_profile`
    * `echo 'export PATH="${PATH}:${JAVA_HOME}/bin/"' >> ~/.bash_profile`
+   * Note that the version in "jre1.8.0_241" will be different for you, and will change each time Java updates
 
 
 ### Dependencies: GNU/Linux
 
- * Debian: `apt install build-essential texinfo`
+ * Debian: `apt install build-essential texinfo curl`
  * RedHat: `yum install gcc gcc-c++ texinfo-tex`
  * Arch: `pacman -S base-devel texinfo`
  * Gentoo: `emerge sys-apps/texinfo`

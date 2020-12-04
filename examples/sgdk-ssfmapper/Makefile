@@ -103,7 +103,7 @@ boot/rom_head.bin: boot/rom_head.c
 %.bin: %.elf
 	@echo "Stripping ELF header..."
 	@$(OBJC) -O binary $< temp.bin
-	@dd if=temp.bin of=$@ bs=8192 conv=sync
+	@dd if=temp.bin of=$@ bs=524288 conv=sync
 	@rm -f temp.bin
 
 %.elf: boot/sega.o $(OBJS)

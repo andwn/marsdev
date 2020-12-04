@@ -16,8 +16,8 @@ all: $(HEADGEN) $(MDTILER) $(SLZ) $(UFTC)
 all: $(MML2ESF) $(TFI2EIF) $(VGI2EIF) $(PCM2EWF)
 
 mdtools:
-	#git clone https://github.com/sikthehedgehog/mdtools
-	git clone https://github.com/andwn/mdtools
+	git clone https://github.com/sikthehedgehog/mdtools
+	#git clone https://github.com/andwn/mdtools
 
 $(HEADGEN): mdtools $(MARSBIN)
 	make -C mdtools/headgen/tool

@@ -35,8 +35,8 @@
 # C++ is not extensively tested but all non-STL features are expected to work
 # Go support has been dropped as it requires a beefy runtime to do anything useful
 
-GCC_VER      = 9.2.0
-BINUTILS_VER = 2.33.1
+GCC_VER      = 9.3.0
+BINUTILS_VER = 2.35
 NEWLIB_VER   = 1.20.0
 
 GCC_DIR      = gcc-$(GCC_VER)
@@ -64,6 +64,8 @@ LOGDIR := $(shell pwd)
 .PHONY: all all-newlib clean
 
 all: mk-binutils mk-gcc $(LDSCRIPTS)
+
+all-nogcc: mk-binutils $(LDSCRIPTS)
 
 all-newlib: LANGS ?= c
 all-newlib: mk-binutils mk-gcc mk-newlib mk-gcc2 $(LDSCRIPTS)
