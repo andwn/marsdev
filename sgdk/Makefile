@@ -1,13 +1,15 @@
 MARSBIN  = $(MARSDEV)/m68k-elf/bin
 TOOLSBIN = $(MARSDEV)/bin
 
-BINTOS  = $(TOOLSBIN)/bintos
-RESCOMP = $(TOOLSBIN)/rescomp
-XGMTOOL = $(TOOLSBIN)/xgmtool
-WAVTORAW= $(TOOLSBIN)/wavtoraw
-PCMTORAW= $(TOOLSBIN)/pcmtoraw
-SIZEBND = $(TOOLSBIN)/sizebnd
-LZ4W    = $(TOOLSBIN)/lz4w.jar
+BINTOS         = $(TOOLSBIN)/bintos
+RESCOMP        = $(TOOLSBIN)/rescomp
+XGMTOOL        = $(TOOLSBIN)/xgmtool
+XGMROOMBUILDER = $(TOOLSBIN)/xgmRomBuilder.jar
+WAVTORAW       = $(TOOLSBIN)/wavtoraw
+PCMTORAW       = $(TOOLSBIN)/pcmtoraw
+SIZEBND        = $(TOOLSBIN)/sizebnd
+LZ4W           = $(TOOLSBIN)/lz4w.jar
+APJ            = $(TOOLSBIN)/apj.jar
 
 #LIBMD   = $(MARSDEV)/m68k-elf/lib/libmd.a
 
@@ -17,7 +19,7 @@ SGDK_VER ?= master
 
 all: SGDK tools libmd
 
-tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(WAVTORAW) $(PCMTORAW) $(SIZEBND) $(LZ4W)
+tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(XGMROOMBUILDER) $(WAVTORAW) $(PCMTORAW) $(SIZEBND) $(LZ4W) $(APJ)
 
 # OSX sed fails without the '', and GNU fails with, cool beans
 SED_FIX=
@@ -66,6 +68,11 @@ $(RESCOMP):
 	
 $(XGMTOOL):
 	cd SGDK/tools/xgmtool/src && gcc *.c -I../inc -lm -o $@
+
+$(XGMROOMBUILDER):
+	if [ -f "SGDK/bin/xgmRomBuilder.jar" ]; then \
+		cp -f SGDK/bin/xgmRomBuilder.jar $@ ; \
+	fi
 	
 $(WAVTORAW):
 	if [ -d "SGDK/tools/wavtoraw"]; then \
@@ -82,6 +89,11 @@ $(SIZEBND):
 
 $(LZ4W):
 	cp -f SGDK/bin/lz4w.jar $@
+
+$(APJ):
+	if [ -f "SGDK/bin/apj.jar" ]; then \
+		cp -f SGDK/bin/apj.jar $@ ; \
+	fi
 
 clean:
 	rm -rf SGDK

@@ -45,7 +45,7 @@ sgdk-legacy:
 	make -C sgdk SGDK_VER=v1.33
 
 
-clean: toolchain-clean tools-clean sgdk-clean
+clean: toolchain-clean gdb-clean tools-clean sgdk-clean
 
 toolchain-clean:
 	make -C toolchain clean
