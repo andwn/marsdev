@@ -6,7 +6,7 @@ export MARSDEV ?= ${HOME}/mars
 
 .PHONY: all $(MAKECMDGOALS)
 
-all: m68k-toolchain z80-tools sgdk
+all: m68k-toolchain z80-tools sgdk blastem
 
 m68k-toolchain:
 	make -C toolchain ARCH=m68k
@@ -44,8 +44,10 @@ sgdk:
 sgdk-legacy:
 	make -C sgdk SGDK_VER=v1.33
 
+blastem:
+	make -C blastem
 
-clean: toolchain-clean gdb-clean tools-clean sgdk-clean
+clean: toolchain-clean gdb-clean tools-clean sgdk-clean blastem-clean
 
 toolchain-clean:
 	make -C toolchain clean
@@ -60,3 +62,6 @@ tools-clean:
 
 sgdk-clean:
 	make -C sgdk clean
+
+blastem-clean:
+	make -C blastem clean
