@@ -9,15 +9,26 @@ RUN apt update && \
     autoconf automake libtool libboost-dev && \
     apt clean
 
-# Grab repo and make everything
-RUN git clone https://github.com/andwn/marsdev && \
-    cd marsdev && \
-    make m68k-toolchain-newlib LANGS=c,c++ && \
-    make m68k-gdb && \
-    make sh-toolchain-newlib LANGS=c,c++ && \
-    make -C gdb ARCH=sh && \
-    make z80-tools && \
-    make sgdk && \
-    make sik-tools && \
-    make flamewing-tools && \
-    cd && rm -rf marsdev
+ENV MARSDEV=/marsdev
+ENV PATH=$PATH:$JAVA_HOME/bin
+
+WORKDIR /work
+
+RUN git clone https://github.com/andwn/marsdev
+
+WORKDIR /work/marsdev
+
+RUN make m68k-toolchain-newlib LANGS=c,c++ MARSDEV=$MARSDEV
+RUN make m68k-gdb MARSDEV=$MARSDEV
+RUN make sh-toolchain-newlib LANGS=c,c++ MARSDEV=$MARSDEV
+RUN make -C gdb ARCH=sh MARSDEV=$MARSDEV
+RUN make z80-tools MARSDEV=$MARSDEV
+RUN make sgdk MARSDEV=$MARSDEV
+RUN make sik-tools MARSDEV=$MARSDEV
+RUN make flamewing-tools MARSDEV=$MARSDEV
+
+RUN rm -rf /work
+RUN chmod ugo+r -R $MARSDEV
+RUN chmod ugo+x -R $MARSDEV/bin
+
+CMD make
