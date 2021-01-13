@@ -9,8 +9,9 @@ RUN apt update && \
     autoconf automake libtool libboost-dev && \
     apt clean
 
-ENV MARSDEV=/marsdev
+ENV MARSDEV=/marsdev/mars
 ENV PATH=$PATH:$JAVA_HOME/bin
+ENV HOME=/marsdev
 
 WORKDIR /work
 

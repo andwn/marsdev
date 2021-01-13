@@ -20,8 +20,7 @@ endif
 
 .PHONY: all clean
 
-all: $(SJASM) 
-#$(Z80ASM)
+all: $(SJASM) $(Z80ASM)
 
 $(SJASM): $(MARSBIN)
 	rm -rf sjasm
@@ -36,7 +35,7 @@ $(Z80ASM): $(MARSBIN)
 	git clone https://git.savannah.nongnu.org/git/z80asm.git
 	cd z80asm && autoreconf -f -i && ./configure
 	# One of the tests fails so we just skip them
-	echo "all:\n\t@echo skipping tests" > z80asm/tests/Makefile
+	# echo "all:\n\t@echo skipping tests" > z80asm/tests/Makefile
 	# It also doesn't link libintl anymore...why
 	sed -i $(SED_FIX) "s/LDFLAGS =/LDFLAGS = -lintl/g" z80asm/Makefile
 	make -C z80asm
