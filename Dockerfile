@@ -29,6 +29,8 @@ RUN make sik-tools MARSDEV=$MARSDEV
 RUN make flamewing-tools MARSDEV=$MARSDEV
 
 RUN rm -rf /work
+RUN rm -rf /root/mars
+
 RUN chmod ugo+r -R $MARSDEV
 RUN chmod ugo+x -R $MARSDEV/bin
 

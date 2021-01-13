@@ -3,6 +3,9 @@ MARSBIN = $(MARSDEV)/bin
 SJASM   = $(MARSBIN)/sjasm
 Z80ASM  = $(MARSBIN)/z80asm
 
+Z80REV = 99b216126b0879c78c157f547475c6ba28583d4a
+SJBRANCH = v0.39
+
 # Use homebrew's gettext on macOS, for autopoint
 ifeq ($(OS),Windows_NT)
 else
@@ -24,7 +27,7 @@ all: $(SJASM) $(Z80ASM)
 
 $(SJASM): $(MARSBIN)
 	rm -rf sjasm
-	git clone https://github.com/konamiman/sjasm --branch v0.39
+	git clone https://github.com/konamiman/sjasm --branch $(SJBRANCH)
 	# There's mismatching caps in the Makefile for sjasm
 	#mv sjasm/Sjasm/Sjasm.cpp sjasm/Sjasm/sjasm.cpp
 	cd sjasm/Sjasm && make
@@ -33,7 +36,7 @@ $(SJASM): $(MARSBIN)
 $(Z80ASM): $(MARSBIN)
 	rm -rf z80asm
 	git clone https://git.savannah.nongnu.org/git/z80asm.git
-	cd z80asm && autoreconf -f -i && ./configure
+	cd z80asm && git checkout $(Z80REV) && autoreconf -f -i && ./configure
 	# One of the tests fails so we just skip them
 	# echo "all:\n\t@echo skipping tests" > z80asm/tests/Makefile
 	# It also doesn't link libintl anymore...why
