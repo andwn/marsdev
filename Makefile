@@ -31,7 +31,7 @@ z80-toolchain:
 
 z80-tools:
 	make -C z80-tools
-	
+
 sik-tools:
 	make -C sik-tools
 
@@ -40,7 +40,7 @@ flamewing-tools:
 
 sgdk:
 	make -C sgdk SGDK_VER=v1.60
-	
+
 sgdk-legacy:
 	make -C sgdk SGDK_VER=v1.33
 

@@ -40,8 +40,8 @@ $(Z80ASM): $(MARSBIN)
 	# One of the tests fails so we just skip them
 	# echo "all:\n\t@echo skipping tests" > z80asm/tests/Makefile
 	# It also doesn't link libintl anymore...why
-	sed -i $(SED_FIX) "s/LDFLAGS =/LDFLAGS = -lintl/g" z80asm/Makefile
-	make -C z80asm
+	sed -i $(SED_FIX) "s/LDFLAGS =/LDFLAGS = -lintl/g" Makefile
+	make
 	cp -f z80asm/src/z80asm $(Z80ASM)
 
 $(MARSBIN):
