@@ -13,7 +13,8 @@ ENV MARSDEV=/marsdev/mars
 ENV PATH=$PATH:$JAVA_HOME/bin
 ENV HOME=/marsdev
 ENV LOG=$HOME/build.log
-ENV MARSDEV_GIT=https://github.com/dleslie/marsdev
+#ENV MARSDEV_GIT=https://github.com/dleslie/marsdev
+ENV MARSDEV_GIT=https://github.com/andwn/marsdev
 
 RUN rm -rf $HOME $MARSDEV $LOG
 
@@ -23,8 +24,8 @@ RUN mkdir -p $MARSDEV
 
 WORKDIR /work
 
-# RUN git clone $MARSDEV_GIT
-COPY ./ marsdev/
+RUN git clone $MARSDEV_GIT
+#COPY ./ marsdev/
 
 WORKDIR /work/marsdev
 RUN make m68k-toolchain-newlib LANGS=c,c++ MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
