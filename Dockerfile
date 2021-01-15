@@ -10,6 +10,7 @@ RUN apt update && \
     apt clean
 
 ENV MARSDEV=/marsdev/mars
+ENV GENDEV=$MARSDEV
 ENV PATH=$PATH:$JAVA_HOME/bin
 ENV HOME=/marsdev
 ENV LOG=$HOME/build.log
