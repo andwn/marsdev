@@ -43,6 +43,8 @@ WORKDIR /
 RUN rm -rf /work
 RUN rm -rf /root/mars
 
+RUN echo '#!/bin/bash\njava -jar $MARSDEV/bin/rescomp.jar ${@:2}' > $MARSDEV/bin/rescomp && chmod +x $MARSDEV/bin/rescomp 
+
 RUN chmod ugo+r -R $HOME
 RUN chmod ugo+r -R $MARSDEV
 RUN chmod ugo+x -R $MARSDEV/bin
