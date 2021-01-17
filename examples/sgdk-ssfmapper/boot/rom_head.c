@@ -23,7 +23,7 @@ const struct
     char region[16];                /* Country Support (16) */
 } rom_header = {
     "SEGA SSF        ",
-    "(C)SGDK 2019    ",
+    "(C)SGDK 2020    ",
     "SAMPLE PROGRAM                                  ",
     "SAMPLE PROGRAM                                  ",
     "GM 00000000-00",
