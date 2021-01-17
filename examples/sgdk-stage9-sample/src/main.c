@@ -1,5 +1,5 @@
 #include <genesis.h>
-#include "map.h"
+#include "s9_map.h"
 #include "resources.h"
 
 #define SCREEN_W		320
@@ -31,33 +31,33 @@ Camera camera = { 0, 0, 0, 0 };
 // Mophs the stage, meaning load rows/columns of tiles as the camera scrolls over them
 void vblank() {
 	if(camera.x_morph < 0) { // Draw left column
-		MAP_drawArea(
+		SMAP_drawArea(
 			camera.x / BLOCK_SIZE + (camera.x_morph + 1), 
 			camera.y / BLOCK_SIZE + camera.y_morph, 
 			abs(camera.x_morph), 15);
 	} else if(camera.x_morph > 0) { // Draw right column
-		MAP_drawArea(
+		SMAP_drawArea(
 			camera.x / BLOCK_SIZE + 20 + (camera.x_morph - 1), 
 			camera.y / BLOCK_SIZE + camera.y_morph, 
 			abs(camera.x_morph), 15);
 	}
 	if(camera.y_morph < 0) { // Draw top row
-		MAP_drawArea(
+		SMAP_drawArea(
 			camera.x / BLOCK_SIZE + camera.x_morph, 
 			camera.y / BLOCK_SIZE + (camera.y_morph + 1), 
 			21, abs(camera.y_morph));
 	} else if(camera.y_morph > 0) { // Draw bottom row
-		MAP_drawArea(
+		SMAP_drawArea(
 			camera.x / BLOCK_SIZE + camera.x_morph, 
 			camera.y / BLOCK_SIZE + 14 + (camera.y_morph - 1), 
 			21, abs(camera.y_morph));
 	}
 	camera.x_morph = camera.y_morph = 0;
 	// Actually scroll the tile planes
-	VDP_setHorizontalScroll(PLAN_B, -camera.x);
-	VDP_setVerticalScroll(PLAN_B, camera.y);
-	VDP_setHorizontalScroll(PLAN_A, -camera.x);
-	VDP_setVerticalScroll(PLAN_A, camera.y);
+	VDP_setHorizontalScroll(BG_B, -camera.x);
+	VDP_setVerticalScroll(BG_B, camera.y);
+	VDP_setHorizontalScroll(BG_A, -camera.x);
+	VDP_setVerticalScroll(BG_A, camera.y);
 }
 
 int main() {
@@ -74,8 +74,8 @@ int main() {
 	VDP_setPalette(PAL2, PAL_Tiny16.data);
 	VDP_loadTileSet(&TS_Tiny16, TILE_USERINDEX, 1);
 	player.sprite = SPR_addSprite(&SPR_Character, player.x, player.y, TILE_ATTR(PAL0,0,0,0));
-	MAP_loadData(MAP_World);
-	MAP_drawArea(camera.x / BLOCK_SIZE, camera.y / BLOCK_SIZE, 21, 15);
+	SMAP_loadData(MAP_World);
+	SMAP_drawArea(camera.x / BLOCK_SIZE, camera.y / BLOCK_SIZE, 21, 15);
 	// VInt function used for scrolling
 	SYS_setVIntCallback(vblank);
 	VDP_setEnable(1);
@@ -93,10 +93,10 @@ int main() {
 			} else if((joy & BUTTON_UP) && player.y > 0) {
 				player.state = STATE_WALK;
 				player.direction = DIR_UP;
-			} else if((joy & BUTTON_RIGHT) && player.x / BLOCK_SIZE < MAP_getWidth() - 1) {
+			} else if((joy & BUTTON_RIGHT) && player.x / BLOCK_SIZE < SMAP_getWidth() - 1) {
 				player.state = STATE_WALK;
 				player.direction = DIR_RIGHT;
-			} else if((joy & BUTTON_DOWN) && player.y / BLOCK_SIZE < MAP_getHeight() - 1) {
+			} else if((joy & BUTTON_DOWN) && player.y / BLOCK_SIZE < SMAP_getHeight() - 1) {
 				player.state = STATE_WALK;
 				player.direction = DIR_DOWN;
 			} else if(player.sprite->animInd != player.direction) {
@@ -144,11 +144,11 @@ int main() {
 			camera.y = player.y - SCREEN_HALF_H + 8;
 			// Keep camera in bounds
 			if(camera.x < 0) camera.x = 0;
-			else if(camera.x > MAP_getWidth() * BLOCK_SIZE - SCREEN_W) 
-				camera.x = MAP_getWidth() * BLOCK_SIZE - SCREEN_W;
+			else if(camera.x > SMAP_getWidth() * BLOCK_SIZE - SCREEN_W) 
+				camera.x = SMAP_getWidth() * BLOCK_SIZE - SCREEN_W;
 			if(camera.y < 0) camera.y = 0;
-			else if(camera.y > MAP_getHeight() * BLOCK_SIZE - SCREEN_H)
-				camera.y = MAP_getHeight() * BLOCK_SIZE - SCREEN_H;
+			else if(camera.y > SMAP_getHeight() * BLOCK_SIZE - SCREEN_H)
+				camera.y = SMAP_getHeight() * BLOCK_SIZE - SCREEN_H;
 			// These will be nonzero when new tiles come onto the screen
 			camera.x_morph = camera.x / BLOCK_SIZE - old_x / BLOCK_SIZE;
 			camera.y_morph = camera.y / BLOCK_SIZE - old_y / BLOCK_SIZE;
