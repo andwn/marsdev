@@ -42,15 +42,15 @@ _Vecteurs_68K:
         dc.l    _INT,_INT,_INT,_INT,_INT,_INT,_INT,_INT
         dc.l    _INT,_INT,_INT,_INT,_INT,_INT,_INT,_INT
 
-_Rom_Header:
-		/* .incbin "boot/rom_head.bin", 0x10, 0x100 */
-        .incbin "boot/rom_head.bin"
+        .incbin "boot/rom_head.bin" /*, 0x10, 0x100 */
 
 _Entry_Point:
         move    #0x2700,%sr
         tst.l   0xa10008
         bne.s   SkipJoyDetect
+
         tst.w   0xa1000c
+
 SkipJoyDetect:
         bne.s   SkipSetup
 
@@ -61,6 +61,7 @@ SkipJoyDetect:
         move.b  -0x10ff(%a1),%d0
         andi.b  #0x0f,%d0
         beq.s   WrongVersion
+
 * Sega Security Code (SEGA)
         move.l  #0x53454741,0x2f00(%a1)
 WrongVersion:
@@ -70,45 +71,18 @@ WrongVersion:
         move    %a6,%usp
         move.w  %d7,(%a1)
         move.w  %d7,(%a2)
-        jmp     _hard_reset
 
-Table:
-        dc.w    0x8000,0x3fff,0x0100
-        dc.l    0xA00000,0xA11100,0xA11200,0xC00000,0xC00004
+* Jump to initialisation process now...
+
+        jmp     _start_entry
 
 SkipSetup:
         jmp     _reset_entry
 
-_hard_reset:
-* clear Genesis RAM
-        lea     0xff0000,%a0
-        moveq   #0,%d0
-        move.w  #0x3FFF,%d1
 
-ClearRam:
-        move.l  %d0,(%a0)+
-        dbra    %d1,ClearRam
-
-* copy initialized variables from ROM to Work RAM
-        lea     _stext,%a0
-        lea     0xFF0000,%a1
-        move.l  #_sdata,%d0
-
-* fix for last byte to initialize
-        addq.l  #1,%d0
-        lsr.l   #1,%d0
-        beq     NoCopy
-
-        subq.w  #1,%d0
-CopyVar:
-        move.w  (%a0)+,(%a1)+
-        dbra    %d0,CopyVar
-
-NoCopy:
-
-* Jump to initialisation process...
-
-        jmp     _start_entry
+Table:
+        dc.w    0x8000,0x3fff,0x0100
+        dc.l    0xA00000,0xA11100,0xA11200,0xC00000,0xC00004
 
 
 *------------------------------------------------
@@ -246,24 +220,40 @@ _INT:
 
 _EXTINT:
         movem.l %d0-%d1/%a0-%a1,-(%sp)
-        move.l  internalExtIntCB, %a0
+        move.l  eintCB, %a0
         jsr    (%a0)
         movem.l (%sp)+,%d0-%d1/%a0-%a1
         rte
 
 _HINT:
         movem.l %d0-%d1/%a0-%a1,-(%sp)
-        move.l  internalHIntCB, %a0
+        move.l  hintCB, %a0
         jsr    (%a0)
         movem.l (%sp)+,%d0-%d1/%a0-%a1
         rte
 
 _VINT:
         movem.l %d0-%d1/%a0-%a1,-(%sp)
-        move.l  internalVIntCB, %a0
-        jsr    (%a0)
+        ori.w   #0x0001, intTrace           /* in V-Int */
+        addq.l  #1, vtimer                  /* increment frame counter (more a vint counter) */
+        btst    #3, VBlankProcess+1         /* PROCESS_XGM_TASK ? (use VBlankProcess+1 as btst is a byte operation) */
+        beq.s   _no_xgm_task
+
+        jsr     XGM_doVBlankProcess         /* do XGM vblank task */
+
+_no_xgm_task:
+        btst    #1, VBlankProcess+1         /* PROCESS_BITMAP_TASK ? (use VBlankProcess+1 as btst is a byte operation) */
+        beq.s   _no_bmp_task
+
+        jsr     BMP_doVBlankProcess         /* do BMP vblank task */
+
+_no_bmp_task:
+        move.l  vintCB, %a0                 /* load user callback */
+        jsr    (%a0)                        /* call user callback */
+        andi.w  #0xFFFE, intTrace           /* out V-Int */
         movem.l (%sp)+,%d0-%d1/%a0-%a1
         rte
+
 
 *------------------------------------------------
 *
