@@ -50,13 +50,13 @@ LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER) -lgcc
 LIBS    += -u __modsi3 -u __divsi3 -u __mulsi3 -u __umodsi3 -u __udivsi3 -u __umulsi3
 
 # Any C or C++ standard should be fine here as long as GCC support it
-CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding
+CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding -fcommon
 CXXFLAGS = -m68000 -Wall -Wextra -std=c++17 -ffreestanding
 
 # Extra options set by debug or release target
 OPTIONS  = 
 ASFLAGS  = -m68000 --register-prefix-optional
-LDFLAGS  = -T $(MARSDEV)/ldscripts/sgdk.ld -nostdlib
+LDFLAGS  = -T $(MARSDEV)/ldscripts/sgdk.ld -nostdlib -fcommon
 
 RESS  = $(wildcard res/*.res)
 CS    = $(wildcard src/*.c)

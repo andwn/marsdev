@@ -2,7 +2,8 @@
 # Multiplatform Mega Drive toolchain builder and installer
 # This is the 'main' Makefile that calls others in their own subdirectories
 
-export MARSDEV ?= ${HOME}/mars
+MARSDEV ?= ${HOME}/mars
+export MARSDEV
 
 .PHONY: all $(MAKECMDGOALS)
 
@@ -39,7 +40,7 @@ flamewing-tools:
 	make -C flamewing-tools
 
 sgdk:
-	make -C sgdk SGDK_VER=v1.60
+	make -C sgdk SGDK_VER=v1.62
 
 sgdk-legacy:
 	make -C sgdk SGDK_VER=v1.33

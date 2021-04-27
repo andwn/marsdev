@@ -32,7 +32,7 @@ ifeq ($(OS),Windows_NT)
 endif
 
 INCS     = -Iinc -Ires
-FLAGS    = -m68000 -fno-web -fno-gcse -fno-unit-at-a-time -fshort-enums -fno-builtin
+FLAGS    = -m68000 -fno-web -fno-gcse -fno-unit-at-a-time -fshort-enums -fno-builtin -fcommon
 FLAGSZ80 = -isrc -iinc
 OPTIONS  = 
 

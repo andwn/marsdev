@@ -35,8 +35,8 @@
 # C++ is not extensively tested but all non-STL features are expected to work
 # Go support has been dropped as it requires a beefy runtime to do anything useful
 
-GCC_VER      = 9.3.0
-BINUTILS_VER = 2.35
+GCC_VER      = 10.3.0
+BINUTILS_VER = 2.36.1
 NEWLIB_VER   = 1.20.0
 
 GCC_DIR      = gcc-$(GCC_VER)
