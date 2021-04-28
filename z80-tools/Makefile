@@ -1,7 +1,7 @@
-MARSBIN = $(MARSDEV)/bin
+TOOLSBIN = $(MARSDEV)/bin
 
-SJASM   = $(MARSBIN)/sjasm
-Z80ASM  = $(MARSBIN)/z80asm
+SJASM   = $(TOOLSBIN)/sjasm
+Z80ASM  = $(TOOLSBIN)/z80asm
 
 Z80REV = 99b216126b0879c78c157f547475c6ba28583d4a
 SJBRANCH = v0.39
@@ -15,7 +15,7 @@ else
 	endif
 endif
 
-# OSX sed fails without the '', and GNU fails with, cool beans
+# OSX sed fails without the '', and GNU fails with, coolbeans
 SED_FIX=
 ifeq ($(shell uname -s),Darwin)
 	SED_FIX=''
@@ -25,15 +25,13 @@ endif
 
 all: $(SJASM) $(Z80ASM)
 
-$(SJASM): $(MARSBIN)
+$(SJASM): $(TOOLSBIN)
 	rm -rf sjasm
 	git clone https://github.com/konamiman/sjasm --branch $(SJBRANCH)
-	# There's mismatching caps in the Makefile for sjasm
-	#mv sjasm/Sjasm/Sjasm.cpp sjasm/Sjasm/sjasm.cpp
 	cd sjasm/Sjasm && make
 	cp -f sjasm/Sjasm/sjasm $(SJASM)
 
-$(Z80ASM): $(MARSBIN)
+$(Z80ASM): $(TOOLSBIN)
 	rm -rf z80asm
 	git clone https://git.savannah.nongnu.org/git/z80asm.git
 	cd z80asm && git checkout $(Z80REV) && autoreconf -f -i && ./configure
@@ -44,8 +42,8 @@ $(Z80ASM): $(MARSBIN)
 	make -C z80asm
 	cp -f z80asm/src/z80asm $(Z80ASM)
 
-$(MARSBIN):
-	mkdir -p $(MARSBIN)
+$(TOOLSBIN):
+	mkdir -p $(TOOLSBIN)
 
 clean:
 	rm -rf sjasm z80asm

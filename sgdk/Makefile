@@ -21,7 +21,7 @@ all: SGDK tools libmd
 
 tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(XGMROOMBUILDER) $(WAVTORAW) $(PCMTORAW) $(SIZEBND) $(LZ4W) $(APJ)
 
-# OSX sed fails without the '', and GNU fails with, cool beans
+# OSX sed fails without the '', and GNU fails with, coolbeans
 SED_FIX=
 ifeq ($(shell uname -s),Darwin)
 	SED_FIX=''
@@ -39,14 +39,16 @@ libmd:
 	make -C SGDK clean
 	make -C SGDK debug
 	cp -f SGDK/libmd-debug.a $(MARSDEV)/m68k-elf/lib/libmd-debug.a
-	# Banks switching enabled version for release + debug
-	cp -f config-bankswitch.h SGDK/inc/config.h
-	make -C SGDK clean
-	make -C SGDK
-	cp -f SGDK/libmd.a $(MARSDEV)/m68k-elf/lib/libmd-far.a
-	make -C SGDK clean
-	make -C SGDK debug
-	cp -f SGDK/libmd-debug.a $(MARSDEV)/m68k-elf/lib/libmd-far-debug.a
+	# Bank switching enabled version for release + debug (1.60+)
+	if [ -f "SGDK/bin/apj.jar" ]; then                                        \
+		cp -f config-bankswitch.h SGDK/inc/config.h                          ;\
+		make -C SGDK clean                                                   ;\
+		make -C SGDK                                                         ;\
+		cp -f SGDK/libmd.a $(MARSDEV)/m68k-elf/lib/libmd-far.a               ;\
+		make -C SGDK clean                                                   ;\
+		make -C SGDK debug                                                   ;\
+		cp -f SGDK/libmd-debug.a $(MARSDEV)/m68k-elf/lib/libmd-far-debug.a   ;\
+	fi
 	# Copy headers
 	cp -f SGDK/inc/*.h $(MARSDEV)/m68k-elf/include/
 	cp -f SGDK/res/*.h $(MARSDEV)/m68k-elf/include/
@@ -94,6 +96,9 @@ $(APJ):
 	if [ -f "SGDK/bin/apj.jar" ]; then \
 		cp -f SGDK/bin/apj.jar $@ ; \
 	fi
+
+$(TOOLSBIN):
+	mkdir -p $(TOOLSBIN)
 
 clean:
 	rm -rf SGDK

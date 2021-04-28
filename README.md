@@ -1,7 +1,21 @@
 ## Marsdev
 
-Cross platform Mega Drive toolchain and Makefile abuse.
+Cross platform Mega Drive / 32X toolchain and Makefile abuse.
 
+
+## Installation & Usage
+
+ 1. Download the latest release and extract it to your home directory (%USERPROFILE% in Windows)
+   * Make sure there is only one `mars` directory, not `mars/mars`
+
+ 2. If you're just getting started, grab the `examples/sgdk-skeleton` sample and read the [SGDK Tutorials](https://github.com/Stephane-D/SGDK/wiki/Tuto-Introduction)
+   * For migrating existing projects, I am working on a guide but it is not ready yet, sorry
+
+ 3. At this point, you should be able to run `make` your project folder to build a ROM (out.bin)
+   * Windows does not come with `make` and you will need to [install something like mingw](https://stackoverflow.com/questions/32127524/how-to-install-and-use-make-in-windows)
+
+
+## How to Build
 
 ### Dependencies: Windows
  
@@ -35,7 +49,7 @@ Cross platform Mega Drive toolchain and Makefile abuse.
  * `flamewing-tools` requires GNU Autotools, Boost and C++14 support
 
 
-## Compiling
+### Compiling
 
 Clone the repo and run `make`. Make sure you have 3-5GB free disk space.
 
@@ -49,9 +63,9 @@ Possible targets to install are:
  * `m68k-gdb`: GNU debugger for M68000
  * `sh-toolchain`: GNU toolchain for SH-2 (32X / Saturn)
  * `sh-toolchain-newlib`: Same as `m68k-toolchain-newlib`, but for SH-2
- * `z80-tools`: Z80 Assemblers (just sjasm right now, z80asm is having issues building)
- * `sik-tools`: Sik's mdtools
- * `flamewing-tools`: Flamewing's mdtools, useful for ROM hacking
+ * `z80-tools`: Z80 Assemblers (sjasm and z80asm)
+ * `sik-tools`: Sik's mdtools (mdtiler, converters for echo formats)
+ * `flamewing-tools`: Flamewing's mdcomp and mdtools, useful for ROM hacking
  * `sgdk`: SGDK and its tools (rescomp, xgmtool, etc)
    * Note: A specific version of SGDK can be specified like `SGDK_VER=<git tag>`
  * `sgdk-legacy`: Shortcut for `sgdk SGDK_VER=v1.33`
@@ -72,7 +86,7 @@ that hassle -- one Makefile in your project that'll build your ROM on any host O
 
 ### Can I build a Gendev project with Marsdev or vice-versa?
 
-If you're lucky, all you have to do is point GENDEV and MARSDEV to the same place.
+In theory you would only have to set GENDEV and MARSDEV to the same place, but every project is different.
 
 
 ### How do I use this with my favorite IDE?
@@ -86,13 +100,13 @@ In general the only thing you should NEED to do, is point it to the headers.
  
 If your IDE lets you configure what the build/run buttons do, just have it run something like this.
 
- * Build: `MARSDEV=/path/to/mars make`
+ * Build: `make MARSDEV=/path/to/mars`
  * Run: `/path/to/an/emulator out.bin`
 
 
 ### This takes so long to compile!
 
-GCC is a very large lad. We just have to deal with it.
+If I could make it shorter I would, but GCC is a very large lad. We just have to deal with it.
 
 
 ## Examples
