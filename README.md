@@ -3,20 +3,6 @@
 Cross platform Mega Drive / 32X toolchain and Makefile abuse.
 
 
-## Installation & Usage
-
- 1. Download the latest release and extract it to your home directory (%USERPROFILE% in Windows)
-   * Make sure there is only one `mars` directory, not `mars/mars`
-
- 2. If you're just getting started, grab the `examples/sgdk-skeleton` sample and read the [SGDK Tutorials](https://github.com/Stephane-D/SGDK/wiki/Tuto-Introduction)
-   * For migrating existing projects, I am working on a guide but it is not ready yet, sorry
-
- 3. At this point, you should be able to run `make` your project folder to build a ROM (out.bin)
-   * Windows does not come with `make` and you will need to [install something like mingw](https://stackoverflow.com/questions/32127524/how-to-install-and-use-make-in-windows)
-
-
-## How to Build
-
 ### Dependencies: Windows
  
  * Install [MSYS2](http://www.msys2.org/) and follow the instructions on the site to update it
@@ -49,7 +35,19 @@ Cross platform Mega Drive / 32X toolchain and Makefile abuse.
  * `flamewing-tools` requires GNU Autotools, Boost and C++14 support
 
 
-### Compiling
+## Installation & Usage
+
+ 1. Download the latest release and extract it to your home directory
+   * Make sure there is only one `mars` directory, not `mars/mars`
+
+ 2. If you're just getting started, grab the `examples/sgdk-skeleton` sample and read the [SGDK Tutorials](https://github.com/Stephane-D/SGDK/wiki/Tuto-Introduction)
+   * For migrating existing projects, I am working on a guide but it is not ready yet, sorry
+
+ 3. At this point, you should be able to run `make` your project folder to build a ROM (out.bin)
+   * On Windows you need to use something like MSYS2 or WSL. Follow the dependency steps for Windows.
+
+
+## Compiling
 
 Clone the repo and run `make`. Make sure you have 3-5GB free disk space.
 
