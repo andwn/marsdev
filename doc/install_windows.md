@@ -42,4 +42,4 @@ That's it. You should be able to build any of the example projects.
 
 ### Option 2: Compile the toolchain yourself
 
-Follow the [compilation instructions](doc/compiling.md)
+Follow the [compilation instructions](compiling.md)

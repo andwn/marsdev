@@ -1,7 +1,7 @@
 ## Compiling Marsdev
 
 Before you begin make sure you followed the installation steps for your OS:
-[Windows](doc/install_windows.md) / [MacOS](doc/install_macos.md) / [Linux](doc/install_linux.md)
+[Windows](install_windows.md) / [MacOS](install_macos.md) / [Linux](install_linux.md)
 
 Clone the repo:
  - `git clone https://github.com/andwn/marsdev`
