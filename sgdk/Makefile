@@ -2,36 +2,25 @@ MARSBIN  = $(MARSDEV)/m68k-elf/bin
 TOOLSBIN = $(MARSDEV)/bin
 
 BINTOS         = $(TOOLSBIN)/bintos
-RESCOMP        = $(TOOLSBIN)/rescomp
+RESCOMP        = $(TOOLSBIN)/rescomp.jar
 XGMTOOL        = $(TOOLSBIN)/xgmtool
-XGMROOMBUILDER = $(TOOLSBIN)/xgmRomBuilder.jar
-WAVTORAW       = $(TOOLSBIN)/wavtoraw
-PCMTORAW       = $(TOOLSBIN)/pcmtoraw
+XGMROMBUILDER  = $(TOOLSBIN)/xgmRomBuilder.jar
 SIZEBND        = $(TOOLSBIN)/sizebnd
 LZ4W           = $(TOOLSBIN)/lz4w.jar
 APJ            = $(TOOLSBIN)/apj.jar
 
-#LIBMD   = $(MARSDEV)/m68k-elf/lib/libmd.a
-
-SGDK_VER ?= master
+SGDK_VER ?= v1.62
 
 .PHONY: all tools libmd clean
 
 all: SGDK tools libmd
 
-tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(XGMROOMBUILDER) $(WAVTORAW) $(PCMTORAW) $(SIZEBND) $(LZ4W) $(APJ)
-
-# OSX sed fails without the '', and GNU fails with, coolbeans
-SED_FIX=
-ifeq ($(shell uname -s),Darwin)
-	SED_FIX=''
-endif
+tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(XGMROOMBUILDER) $(SIZEBND) $(LZ4W) $(APJ)
 
 libmd:
-	# Compress resources with lz4w instead of aplib
-	sed -i  $(SED_FIX) 's/-1/2/g' SGDK/res/libres.res
 	cp -f Makefile.libmd SGDK/Makefile
-	cp -f config-default.h SGDK/inc/config.h
+	if [ -f "config.h" ]; then cp -f config.h SGDK/inc/config.h; fi
+	# Release version
 	make -C SGDK clean
 	make -C SGDK
 	cp -f SGDK/libmd.a $(MARSDEV)/m68k-elf/lib/libmd.a
@@ -39,16 +28,6 @@ libmd:
 	make -C SGDK clean
 	make -C SGDK debug
 	cp -f SGDK/libmd-debug.a $(MARSDEV)/m68k-elf/lib/libmd-debug.a
-	# Bank switching enabled version for release + debug (1.60+)
-	if [ -f "SGDK/bin/apj.jar" ]; then                                        \
-		cp -f config-bankswitch.h SGDK/inc/config.h                          ;\
-		make -C SGDK clean                                                   ;\
-		make -C SGDK                                                         ;\
-		cp -f SGDK/libmd.a $(MARSDEV)/m68k-elf/lib/libmd-far.a               ;\
-		make -C SGDK clean                                                   ;\
-		make -C SGDK debug                                                   ;\
-		cp -f SGDK/libmd-debug.a $(MARSDEV)/m68k-elf/lib/libmd-far-debug.a   ;\
-	fi
 	# Copy headers
 	cp -f SGDK/inc/*.h $(MARSDEV)/m68k-elf/include/
 	cp -f SGDK/res/*.h $(MARSDEV)/m68k-elf/include/
@@ -62,29 +41,13 @@ $(BINTOS):
 	gcc SGDK/tools/bintos/src/bintos.c -o $@
 	
 $(RESCOMP):
-	if [ -f "SGDK/bin/rescomp.jar" ]; then \
-		cp -f SGDK/bin/rescomp.jar $(TOOLSBIN)/rescomp.jar ; \
-	else \
-		cd SGDK/tools/rescomp/src && gcc *.c -o $(TOOLSBIN)/rescomp ; \
-	fi
+	cp -f SGDK/bin/rescomp.jar $@
 	
 $(XGMTOOL):
 	cd SGDK/tools/xgmtool/src && gcc *.c -I../inc -lm -o $@
 
-$(XGMROOMBUILDER):
-	if [ -f "SGDK/bin/xgmRomBuilder.jar" ]; then \
-		cp -f SGDK/bin/xgmRomBuilder.jar $@ ; \
-	fi
-	
-$(WAVTORAW):
-	if [ -d "SGDK/tools/wavtoraw"]; then \
-		gcc SGDK/tools/wavtoraw/src/wavtoraw.c -lm -o $@ ; \
-	fi
-	
-$(PCMTORAW):
-	if [ -d "SGDK/tools/pcmtoraw"]; then \
-		gcc SGDK/tools/pcmtoraw/src/pcmtoraw.c -lm -o $@ ; \
-	fi
+$(XGMROMBUILDER):
+	cp -f SGDK/bin/xgmRomBuilder.jar $@
 	
 $(SIZEBND):
 	gcc SGDK/tools/sizebnd/src/sizebnd.c -o $@
@@ -93,9 +56,7 @@ $(LZ4W):
 	cp -f SGDK/bin/lz4w.jar $@
 
 $(APJ):
-	if [ -f "SGDK/bin/apj.jar" ]; then \
-		cp -f SGDK/bin/apj.jar $@ ; \
-	fi
+	cp -f SGDK/bin/apj.jar $@
 
 $(TOOLSBIN):
 	mkdir -p $(TOOLSBIN)

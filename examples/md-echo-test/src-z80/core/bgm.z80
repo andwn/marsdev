@@ -91,7 +91,7 @@ PauseBGM:
     jr nz, .nopsgmute
     ld a, (hl)
     and $80
-    or c,
+    or c
     ld (hl), a
 .nopsgmute:
     PollPCM

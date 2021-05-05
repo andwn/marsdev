@@ -1,16 +1,16 @@
-GENDEV  ?= ${HOME}/mars
-GENBIN   = $(GENDEV)/m68k-elf/bin
-TOOLSBIN = $(GENDEV)/bin
+MARSDEV  ?= ${HOME}/mars
+MARSBIN   = $(MARSDEV)/m68k-elf/bin
+TOOLSBIN  = $(MARSDEV)/bin
 
 # m68k toolchain
-CC = $(GENBIN)/m68k-elf-gcc
-AS = $(GENBIN)/m68k-elf-as
-LD = $(GENBIN)/m68k-elf-ld
-NM = $(GENBIN)/m68k-elf-nm
-OC = $(GENBIN)/m68k-elf-objcopy
+CC = $(MARSBIN)/m68k-elf-gcc
+AS = $(MARSBIN)/m68k-elf-as
+LD = $(MARSBIN)/m68k-elf-ld
+NM = $(MARSBIN)/m68k-elf-nm
+OC = $(MARSBIN)/m68k-elf-objcopy
 
 # z80 assembler
-AS80 = $(TOOLSBIN)/z80asm
+AS80 = $(TOOLSBIN)/sjasm
 
 # mdtools
 MDTILER = $(TOOLSBIN)/mdtiler
@@ -23,19 +23,22 @@ TFI2EIF = $(TOOLSBIN)/tfi2eif
 # internal tools
 RESGEN = bin/resgen
 
-# versions of all compilers used
-GCC_VER     := $(shell gcc -dumpversion)
-GENGCC_VER  := $(shell $(CC) -dumpversion)
+# Some files needed are in a versioned directory
+GCC_VER := $(shell $(CC) -dumpversion)
 
-# Linker plugin path (for nm when LTO is used)
-PLUGIN = $(GENDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GENGCC_VER)
+# Need the LTO plugin so NM can dump our symbol table
+PLUGIN   = $(MARSDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GCC_VER)
+LTO_SO   = liblto_plugin.so
+ifeq ($(OS),Windows_NT)
+	LTO_SO = liblto_plugin-0.dll
+endif
 
 # m68k flags
 INCS = -Isrc -Ires
-LIBS = -L$(GENDEV)/m68k-elf/lib/gcc/m68k-elf/$(GENGCC_VER) -lgcc
+LIBS = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GENGCC_VER) -lgcc
 CCFLAGS = -m68000 -Wall -Wextra -std=c99 -c -fno-builtin -fshort-enums
 ASFLAGS = -m68000 --register-prefix-optional
-LDFLAGS = -T $(GENDEV)/ldscripts/sgdk.ld -nostdlib
+LDFLAGS = -T $(MARSDEV)/ldscripts/sgdk.ld -nostdlib
 
 # resources
 RES_AUDIO=$(wildcard res/bgm/*)
@@ -68,7 +71,7 @@ debug: CCFLAGS += -g -O2 -DDEBUG -DKDEBUG
 debug: symbol.txt
 
 symbol.txt: rom.bin
-	@$(NM) --plugin=$(PLUGIN)/liblto_plugin.so -n rom.elf > symbol.txt
+	@$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n rom.elf > symbol.txt
 
 # Source build
 
@@ -106,9 +109,9 @@ res/res_tset.s: $(RES_TSET) $(RESGEN)
 # Convert to resource
 
 res/echoblob.bin: src-z80/build.z80
-	$(AS80) -i $< -o $@
+	$(AS80) $< $@ res/echoblob.lst
 
-%.tset: %.png $(MDTILER)
+%.tset: %.png
 	$(MDTILER) -t $< $@
 
 # Internal tools

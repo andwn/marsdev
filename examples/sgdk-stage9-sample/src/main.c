@@ -62,23 +62,21 @@ void vblank() {
 
 int main() {
 	u16 joy;
-	
-	VDP_init();
-	SPR_init(80, 0, 0);
+	SPR_init();
 	// Interrupts should be disabled while doing VDP stuff
 	SYS_disableInts();
-	VDP_setEnable(0);
-	VDP_setPlanSize(64, 32);
+	//VDP_setEnable(0);
+	//VDP_setPlanSize(64, 32);
 	// Load sample tiles & palettes
 	VDP_setPalette(PAL0, PAL_Character.data);
 	VDP_setPalette(PAL2, PAL_Tiny16.data);
-	VDP_loadTileSet(&TS_Tiny16, TILE_USERINDEX, 1);
+	VDP_loadTileSet(&TS_Tiny16, TILE_USERINDEX, DMA);
 	player.sprite = SPR_addSprite(&SPR_Character, player.x, player.y, TILE_ATTR(PAL0,0,0,0));
 	SMAP_loadData(MAP_World);
 	SMAP_drawArea(camera.x / BLOCK_SIZE, camera.y / BLOCK_SIZE, 21, 15);
 	// VInt function used for scrolling
-	SYS_setVIntCallback(vblank);
-	VDP_setEnable(1);
+	//SYS_setVIntCallback(vblank);
+	//VDP_setEnable(1);
 	SYS_enableInts();
 	//SND_startPlay_XGM(BGM_Song);
 	while(1) {
@@ -154,8 +152,11 @@ int main() {
 			camera.y_morph = camera.y / BLOCK_SIZE - old_y / BLOCK_SIZE;
 			
 		}
+		
 		SPR_update();
-		VDP_waitVSync();
+		//VDP_waitVSync();
+		SYS_doVBlankProcess();
+		vblank();
 	}
 	return 0; // This is just to make GCC shut up
 }

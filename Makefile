@@ -5,7 +5,8 @@
 MARSDEV ?= ${HOME}/mars
 export MARSDEV
 
-.PHONY: all $(MAKECMDGOALS)
+.PHONY: all m68k-toolchain m68k-toolchain-newlib  sh-toolchain sh-toolchain-newlib
+.PHONY: m68k-gdb sh-gdb z80-tools sik-tools flamewing-tools sgdk
 
 all: m68k-toolchain z80-tools sgdk
 
@@ -27,9 +28,6 @@ sh-toolchain-newlib:
 sh-gdb:
 	make -C gdb ARCH=sh
 
-z80-toolchain:
-	make -C toolchain all-nogcc ARCH=z80
-
 z80-tools:
 	make -C z80-tools
 
@@ -40,11 +38,10 @@ flamewing-tools:
 	make -C flamewing-tools
 
 sgdk:
-	make -C sgdk SGDK_VER=v1.62
+	make -C sgdk
 
-sgdk-legacy:
-	make -C sgdk SGDK_VER=v1.33
 
+.PHONY: clean toolchain-clean gdb-clean tools-clean sgdk-clean
 
 clean: toolchain-clean gdb-clean tools-clean sgdk-clean
 

@@ -34,7 +34,7 @@ LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER) -lgcc
 #LIBS    += -L$(MARSDEV)/m68k-elf/m68k-elf/lib -lnosys
 
 # Any C or C++ standard should be fine here as long as GCC support it
-CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding
+CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding -fcommon
 CXXFLAGS = -m68000 -Wall -Wextra -std=c++17 -ffreestanding
 
 # Extra options set by debug or release target

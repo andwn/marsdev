@@ -17,4 +17,4 @@ $(TOOLSBIN):
 	mkdir -p $(TOOLSBIN)
 
 clean:
-	rm -f sjasm
+	rm -rf sjasm

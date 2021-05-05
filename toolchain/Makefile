@@ -35,17 +35,19 @@
 # C++ is not extensively tested but all non-STL features are expected to work
 # Go support has been dropped as it requires a beefy runtime to do anything useful
 
-GCC_VER      = 10.3.0
-BINUTILS_VER = 2.36.1
-NEWLIB_VER   = 1.20.0
+GCC_VER      ?= 10.3.0
+BINUTILS_VER ?= 2.36.1
+NEWLIB_VER   ?= 1.20.0
 
-GCC_DIR      = gcc-$(GCC_VER)
-BINUTILS_DIR = binutils-$(BINUTILS_VER)
-NEWLIB_DIR   = newlib-$(NEWLIB_VER)
+GNU_MIRROR   ?= https://mirrors.tripadvisor.com/gnu
 
-GCC_PKG      = $(GCC_DIR).tar.gz
-BINUTILS_PKG = $(BINUTILS_DIR).tar.gz
-NEWLIB_PKG   = $(NEWLIB_DIR).tar.gz
+GCC_DIR       = gcc-$(GCC_VER)
+BINUTILS_DIR  = binutils-$(BINUTILS_VER)
+NEWLIB_DIR    = newlib-$(NEWLIB_VER)
+
+GCC_PKG       = $(GCC_DIR).tar.gz
+BINUTILS_PKG  = $(BINUTILS_DIR).tar.gz
+NEWLIB_PKG    = $(NEWLIB_DIR).tar.gz
 
 LDSCRIPTS = $(MARSDEV)/ldscripts
 
@@ -64,8 +66,6 @@ LOGDIR := $(shell pwd)
 .PHONY: all all-newlib clean
 
 all: mk-binutils mk-gcc $(LDSCRIPTS)
-
-all-nogcc: mk-binutils $(LDSCRIPTS)
 
 all-newlib: LANGS ?= c
 all-newlib: mk-binutils mk-gcc mk-newlib mk-gcc2 $(LDSCRIPTS)
@@ -140,17 +140,15 @@ $(BINUTILS_DIR): $(BINUTILS_PKG)
 
 $(GCC_DIR): $(GCC_PKG)
 	tar xf $(GCC_PKG)
-#$(GCC_DIR):
-#	git clone https://github.com/andwn/gcc-marsdev $(GCC_DIR)
 
 $(NEWLIB_DIR): $(NEWLIB_PKG)
 	tar xf $(NEWLIB_PKG)
 
 $(BINUTILS_PKG):
-	@curl -O https://mirrors.tripadvisor.com/gnu/binutils/$(BINUTILS_PKG)
+	@curl -O $(GNU_MIRROR)/binutils/$(BINUTILS_PKG)
 
 $(GCC_PKG):
-	@curl -O https://mirrors.tripadvisor.com/gnu/gcc/gcc-$(GCC_VER)/$(GCC_PKG)
+	@curl -O $(GNU_MIRROR)/gcc/gcc-$(GCC_VER)/$(GCC_PKG)
 
 $(NEWLIB_PKG):
 	@curl -O ftp://sourceware.org/pub/newlib/$(NEWLIB_PKG)
