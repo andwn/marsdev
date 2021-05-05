@@ -58,20 +58,11 @@ but I'm unable to get it to build on every OS and removed it.
 #### sgdk
 
 SGDK and its tools (rescomp, xgmtool, etc).
-Builds 4 versions of libmd:
- - `libmd.a` - Release builds, no bank switching
- - `libmd-debug.a` - Debug builds, no bank switching
- - `libmd-far.a` - Release builds, bank switching (far data) support
- - `libmd-far-debug.a` - Debug builds, bank switching (far data) support
+Builds 2 versions of libmd: `libmd.a` and `libmd-debug.a`
 
 A specific version of SGDK can be specified like `SGDK_VER=<git tag>`,
 but I cannot guarantee versions other than the default to work.
 Adventurous people who want to test the latest changes can specify `SGDK_VER=master` too.
-
-#### sgdk-legacy
-
-Shortcut for `SGDK_VER=v1.33`. This is the last version with C-based rescomp.
-I don't use this target and may remove it later.
 
 #### sik-tools
 
