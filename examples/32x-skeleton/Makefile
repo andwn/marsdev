@@ -56,7 +56,8 @@ MDLIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(MDCC_VER) -lgcc
 # Libraries: GCC + Newlib
 # The example calls some standard library stuff
 SHLIBS     = -L$(MARSDEV)/sh-elf/lib/gcc/sh-elf/$(SHCC_VER) -lgcc
-SHLIBS    += -L$(MARSDEV)/sh-elf/sh-elf/lib -lc -lnosys
+SHLIBS    += -L$(MARSDEV)/sh-elf/sh-elf/lib
+#-lc -lnosys
 
 # Any C or C++ standard should be fine here as long as GCC support it
 MDCCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding

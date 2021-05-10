@@ -1,9 +1,9 @@
 #ifndef HW_32X_H
 #define HW_32X_H
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
+//#include <stdarg.h>
+//#include <stdio.h>
+//#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {

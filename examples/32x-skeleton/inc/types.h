@@ -1,6 +1,10 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
+#define NULL 0
+
+typedef unsigned long int size_t;
+
 typedef unsigned char uint8;
 typedef unsigned short int uint16;
 typedef unsigned long int uint32;
@@ -23,5 +27,7 @@ typedef volatile unsigned long int vu32;
 typedef volatile signed char vint8;
 typedef volatile signed short int vint16;
 typedef volatile signed long int vint32;
+
+#define abs(n) ((n)&0x7FFFFFFF)
 
 #endif /* _TYPES_H_ */

@@ -1,0 +1,47 @@
+{
+    "configurations": [
+        {
+            "name": "MegaDrive",
+            "includePath": [
+                "${workspaceRoot}/inc_md",
+                "${workspaceRoot}/res_md",
+                "C:/msys64/home/andy/mars/include",
+                "C:/msys64/home/andy/mars/m68k-elf/include"
+            ],
+            "defines": [],
+            "intelliSenseMode": "clang-x64",
+            "browse": {
+                "path": [
+                    "${workspaceRoot}/inc_md",
+                    "${workspaceRoot}/res_md",
+                    "${workspaceRoot}/src_md/*"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
+            "cStandard": "c99",
+            "cppStandard": "c++11"
+        },{
+            "name": "Mega32X",
+            "includePath": [
+                "${workspaceRoot}/inc",
+                "${workspaceRoot}/res",
+                "C:/msys64/home/andy/mars/sh-elf/include"
+            ],
+            "defines": [],
+            "intelliSenseMode": "clang-x64",
+            "browse": {
+                "path": [
+                    "${workspaceRoot}/inc",
+                    "${workspaceRoot}/res",
+                    "${workspaceRoot}/src/*"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
+            "cStandard": "c99",
+            "cppStandard": "c++11"
+        }
+    ],
+    "version": 4
+}

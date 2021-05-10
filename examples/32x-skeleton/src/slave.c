@@ -1,5 +1,5 @@
 // Slave SH2 support code ----------------------------------------------
-#include <stdlib.h>
+//#include <stdlib.h>
 #include "types.h"
 #include "32x.h"
 #include "hw_32x.h"

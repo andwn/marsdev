@@ -1,9 +1,10 @@
 /*
 * Copyright 2014 ammianus
 */
-#include <stdlib.h>
-#include <math.h>
+//#include <stdlib.h>
+//#include <math.h>
 #include "types.h"
+#include "string.h"
 #include "32x.h"
 #include "hw_32x.h"
 #include "32x_images.h"
