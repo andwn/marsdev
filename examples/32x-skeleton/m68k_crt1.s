@@ -170,7 +170,7 @@ cpyloop:
         jmp     0xFF1000.l
 
 * this block of code must be pc relative as it's copied into Work RAM
-
+        .globl __m68k_start
 __m68k_start:
         move.b  #1,0xA15107         /* set RV */
         move.b  #2,0xA130F1         /* SRAM disabled, write protected */
@@ -185,18 +185,41 @@ __m68k_start:
         move.l  a0,0xFF0FFC         /* set vertical blank interrupt handler */
         move.w  #0x2000,sr          /* enable interrupts */
 
-main_loop:
-        move.w  0xA15120,d0         /* get COMM0 */
-        bne.b   handle_req
+        jmp     main                /* C code */
+
+*main_loop:
+*        move.w  0xA15120,d0         /* get COMM0 */
+*        bne.b   handle_req
 
 * any other 68000 tasks here
 
-        move.w  #0x2700,sr          /* disable interrupts */
+*        move.w  #0x2700,sr          /* disable interrupts */
 *        jsr     (md_update+0x3F0).l           /* C code */
-        jsr     md_update
-        move.w  #0x2000,sr          /* enable interrupts */
+*        jsr     md_update
+*        move.w  #0x2000,sr          /* enable interrupts */
 
-        bra.b   main_loop
+*        bra.b   main_loop
+
+* waits for vblank period, and in the meantime handles commands from 32X
+        .globl __wait_vblank
+__wait_vblank:
+        movem.l d0-d7/a0-a6,-(sp)
+wait_vblank_1:
+        move.w  (0xC00004),d0
+        andi.w  #0x8,d0
+        beq.s   wait_vblank_1
+
+wait_vblank_2:
+        move.w  0xA15120,d0         /* get COMM0 */
+        bne.b   handle_req
+
+wait_vblank_3:
+        move.w  (0xC00004),d0
+        andi.w  #0x8,d0
+        bne.s   wait_vblank_2
+
+        movem.l (sp)+,d0-d7/a0-a6
+        rts
 
 * process request from Master SH2
 handle_req:
@@ -217,7 +240,7 @@ handle_req:
 
 * unknown command
         move.w  #0,0xA15120         /* done */
-        bra.b   main_loop
+        bra.b   wait_vblank_3 /* main_loop */
 
 read_sram:
         move.w  #0x2700,sr          /* disable ints */
@@ -234,7 +257,7 @@ read_sram:
         move.w  d1,0xA15122         /* COMM2 holds return byte */
         move.w  #0,0xA15120         /* done */
         move.w  #0x2000,sr          /* enable ints */
-        bra     main_loop
+        bra     wait_vblank_3
 
 write_sram:
         move.w  #0x2700,sr          /* disable ints */
@@ -249,7 +272,7 @@ write_sram:
         move.b  #0,0xA15107         /* clear RV */
         move.w  #0,0xA15120         /* done */
         move.w  #0x2000,sr          /* enable ints */
-        bra     main_loop
+        bra     wait_vblank_3
 
 read_mouse:
         tst.b   d0
@@ -268,7 +291,7 @@ read_mouse:
 0:
         move.w  0xA15120,d0
         bne.b   0b                  /* wait for SH2 to read mouse value */
-        bra     main_loop
+        bra     wait_vblank_3
 1:
         move.w  0xA1512A,d0
         andi.w  #0xF001,d0
@@ -283,7 +306,7 @@ read_mouse:
 2:
         move.w  0xA15120,d0
         bne.b   2b                  /* wait for SH2 to read mouse value */
-        bra     main_loop
+        bra     wait_vblank_3
 3:
         move.l  #-1,d0              /* no mouse */
         move.w  d0,0xA15122
@@ -292,7 +315,7 @@ read_mouse:
 4:
         move.w  0xA15120,d0
         bne.b   4b                  /* wait for SH2 to read mouse value */
-        bra     main_loop
+        bra     wait_vblank_3
 
 clear_screen:
         moveq   #0,d0
@@ -305,13 +328,13 @@ clear_screen:
         move.w  d0,(a0)             /* clear name pattern */
         dbra    d1,1b
         move.w  #0,0xA15120         /* done */
-        bra     main_loop
+        bra     wait_vblank_3
 
 set_offset:
         moveq   #0,d7
         move.w  0xA15122,d7         /* offset */
         move.w  #0,0xA15120         /* done */
-        bra     main_loop
+        bra     wait_vblank_3
 
 set_ntable:
         lea     0xC00000,a1
@@ -324,7 +347,7 @@ set_ntable:
         move.w  d0,(a1)             /* set pattern name for character */
         addq.l  #2,d7               /* increment offset */
         move.w  #0,0xA15120         /* done */
-        bra     main_loop
+        bra     wait_vblank_3
 
 set_vram:
         lea     0xC00000,a1
@@ -340,7 +363,7 @@ set_vram:
         move.w  d0,(a1)             /* set vram word */
         addq.l  #2,d7               /* increment offset */
         move.w  #0,0xA15120         /* done */
-        bra     main_loop
+        bra     wait_vblank_3
 
 
 vert_blank:
