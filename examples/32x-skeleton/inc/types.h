@@ -28,6 +28,6 @@ typedef volatile signed char vint8;
 typedef volatile signed short int vint16;
 typedef volatile signed long int vint32;
 
-#define abs(n) ((n)&0x7FFFFFFF)
+#define abs(n) ((n)<0?-(n):(n))
 
 #endif /* _TYPES_H_ */

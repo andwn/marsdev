@@ -83,19 +83,19 @@
 * carry is set, otherwise it is cleared. The 68000 main code is now
 * entered.
 
-        jmp     __start+0x00880000+0x3F0
+        jmp     __start+0x00880000 /*+0x3F0*/
 
 * 68000 General exception handler at 0x806
 
-        jmp     __except+0x00880000+0x3F0
+        jmp     __except+0x00880000 /*+0x3F0*/
 
 * 68000 Level 4 interrupt handler at 0x80C - HBlank IRQ
 
-        jmp     __hblank+0x00880000+0x3F0
+        jmp     __hblank+0x00880000 /*+0x3F0*/
 
 * 68000 Level 6 interrupt handler at 0x812 - VBlank IRQ
 
-        jmp     __vblank+0x00880000+0x3F0
+        jmp     __vblank+0x00880000 /*+0x3F0*/
 
 __except:
         move.l  d0,-(sp)
@@ -190,6 +190,11 @@ main_loop:
         bne.b   handle_req
 
 * any other 68000 tasks here
+
+        move.w  #0x2700,sr          /* disable interrupts */
+*        jsr     (md_update+0x3F0).l           /* C code */
+        jsr     md_update
+        move.w  #0x2000,sr          /* enable interrupts */
 
         bra.b   main_loop
 
