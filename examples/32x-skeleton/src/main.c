@@ -150,7 +150,7 @@ int main(void)
 	//game loop
 	while ( more ) {
 		handle_input();
-		HwMdClearScreen();
+		//HwMdClearScreen(); // causes flicker when enabled. 
 
 		
 		// wait on flip to finish 
