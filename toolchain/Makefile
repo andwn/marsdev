@@ -76,7 +76,9 @@ mk-binutils:
 	@echo "+++ Building $(BINUTILS_DIR) for $(ARCH)..."
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
-		../configure --target=$(TARGET) --prefix=$(PREFIX) $(CPU_ARGS) \
+		../configure --target=$(TARGET) --prefix=$(PREFIX) \
+		--libdir=$(MARSDEV)/$(TARGET)/lib --libexecdir=$(MARSDEV)/$(TARGET)/libexec \
+		$(CPU_ARGS) \
 		--enable-install-libbfd --enable-shared=no --disable-nls --disable-werror \
 		> $(LOGDIR)/binutils-$(ARCH).log 2>&1
 	make -C $(BUILD_DIR) all install-strip \
@@ -90,9 +92,11 @@ mk-gcc:
 	@echo "+++ Building $(GCC_DIR) for $(ARCH)..."
 	cd $(GCC_DIR) && ./contrib/download_prerequisites \
 		> $(LOGDIR)/gcc-$(ARCH).log 2>&1
+	patch -p0 < libcc1_suse_fix.patch
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
 		../configure --target=$(TARGET) --prefix=$(PREFIX) \
+		--libdir=$(MARSDEV)/$(TARGET)/lib --libexecdir=$(MARSDEV)/$(TARGET)/libexec \
 		--enable-languages=c $(CPU_ARGS) \
 		--without-headers --disable-libssp \
 		--disable-threads --disable-tls --disable-multilib \
@@ -109,7 +113,9 @@ mk-newlib:
 	@echo "+++ Building $(NEWLIB_DIR) for $(ARCH)..."
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
-		../configure --target=$(TARGET) --prefix=$(PREFIX) $(CPU_ARGS) \
+		../configure --target=$(TARGET) --prefix=$(PREFIX) \
+		--libdir=$(MARSDEV)/$(TARGET)/lib --libexecdir=$(MARSDEV)/$(TARGET)/libexec \
+		$(CPU_ARGS) \
 		--disable-multilib --disable-nls --disable-werror \
 		> $(LOGDIR)/newlib-$(ARCH).log 2>&1
 	make -C $(BUILD_DIR) all install \
@@ -124,6 +130,7 @@ mk-gcc2:
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
 		../configure --target=$(TARGET) --prefix=$(PREFIX) \
+	   	--libdir=$(MARSDEV)/$(TARGET)/lib --libexecdir=$(MARSDEV)/$(TARGET)/libexec \
 		--enable-languages=$(LANGS) $(CPU_ARGS) \
 		--without-headers --with-newlib --disable-libssp \
 		--disable-libstacktrace --disable-libstdcxx \
