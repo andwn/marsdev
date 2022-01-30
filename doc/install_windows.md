@@ -13,7 +13,7 @@ Follow the instructions carefully to make sure the packages are up to date.
 ### Install required packages
 
 Open up a "MSYS2 MinGW 64-bit" terminal and enter the following:
- - `pacman -S make git mingw-w64-x86_64-toolchain texinfo tar diffutils`
+ - `pacman -S make git mingw-w64-x86_64-toolchain texinfo tar diffutils patch`
 
 Note: All of these instructions should also work in the 32-bit terminal if you replace `x86_64` with `i686`.
 
@@ -29,7 +29,7 @@ If you plan on using `sik-tools`:
  - `pacman -S mingw-w64-x86_64-libpng`
 
 If you plan on using `flamewing-tools`:
- - `pacman -S autoconf automake mingw-w64-x86_64-boost`
+ - `pacman -S cmake mingw-w64-x86_64-boost`
 
 
 ### Option 1: Just extract the latest release

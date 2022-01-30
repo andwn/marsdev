@@ -23,7 +23,7 @@ If you plan on using `sik-tools`:
  - `brew install libpng`
 
 If you plan on using `flamewing-tools`:
- - `brew install autoconf automake boost`
+ - `brew install cmake boost`
 
 
 ### Option 1: Just extract the latest release

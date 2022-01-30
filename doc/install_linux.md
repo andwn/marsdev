@@ -25,9 +25,9 @@ If you plan on using `sik-tools`:
  * Gentoo: `emerge dev-libs/libpng`
 
 If you plan on using `flamewing-tools`:
- * Debian: `apt install autoconf automake libboost-dev`
- * RedHat: `yum install autoconf automake boost-devel`
- * Arch: `pacman -S autoconf automake boost`
+ * Debian: `apt install cmake libboost-dev`
+ * RedHat: `yum install cmake boost-devel`
+ * Arch: `pacman -S cmake boost`
  * Gentoo: `emerge dev-libs/boost`
  
 ### Option 1: Just extract the latest release
