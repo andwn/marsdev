@@ -2,15 +2,30 @@ MARSBIN = $(MARSDEV)/bin
 MARSINC = $(MARSDEV)/include
 MARSLIB = $(MARSDEV)/lib
 
+GENERATOR = "Unix Makefiles"
+MACFIX = true
+
+ifeq ($(OS),Windows_NT)
+	GENERATOR = "MSYS Makefiles"
+else
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Darwin)
+		MACFIX = ln -s /usr/local/include/boost include/boost
+	endif
+endif
+
 all: clean $(MARSINC) $(MARSLIB)
-	# mdtools depends on mdcomp, install that first
-	git clone https://github.com/flamewing/mdcomp
-	cd mdcomp && ./autogen.sh "--prefix=$(MARSDEV)" \
-			  && make install
-	git clone https://github.com/flamewing/mdtools
-	cd mdtools && ./autogen.sh "--prefix=$(MARSDEV)" \
-				  "CPPFLAGS=-I$(MARSINC) -L$(MARSLIB)" "LDFLAGS=-L$(MARSLIB)" \
-			   && make install
+	git clone --recurse-submodules https://github.com/flamewing/mdtools
+	cd mdtools/mdcomp && $(MACFIX) \
+		&& cmake -S . -B build -G $(GENERATOR) \
+			-DCMAKE_INSTALL_PREFIX="$(MARSDEV)" \
+		&& cmake --build build -j2 \
+		&& cmake --install build
+	cd mdtools && $(MACFIX) \
+		&& cmake -S . -B build -G $(GENERATOR) \
+			-DCMAKE_INSTALL_PREFIX="$(MARSDEV)" \
+		&& cmake --build build -j2 \
+		&& cmake --install build
 
 $(MARSBIN):
 	mkdir -p $(MARSBIN)
@@ -23,4 +38,4 @@ $(MARSLIB):
 	
 clean:
 	rm -rf mdtools
-	rm -rf mdcomp
+
