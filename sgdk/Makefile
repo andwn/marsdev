@@ -5,11 +5,11 @@ BINTOS         = $(TOOLSBIN)/bintos
 RESCOMP        = $(TOOLSBIN)/rescomp.jar
 XGMTOOL        = $(TOOLSBIN)/xgmtool
 XGMROMBUILDER  = $(TOOLSBIN)/xgmRomBuilder.jar
-SIZEBND        = $(TOOLSBIN)/sizebnd
+SIZEBND        = $(TOOLSBIN)/sizebnd.jar
 LZ4W           = $(TOOLSBIN)/lz4w.jar
 APJ            = $(TOOLSBIN)/apj.jar
 
-SGDK_VER ?= v1.62
+SGDK_VER ?= v1.70
 
 .PHONY: all tools libmd clean
 
@@ -50,7 +50,7 @@ $(XGMROMBUILDER):
 	cp -f SGDK/bin/xgmRomBuilder.jar $@
 	
 $(SIZEBND):
-	gcc SGDK/tools/sizebnd/src/sizebnd.c -o $@
+	cp -f SGDK/bin/sizebnd.jar $@
 
 $(LZ4W):
 	cp -f SGDK/bin/lz4w.jar $@
