@@ -29,7 +29,7 @@ If you plan on using `sik-tools`:
  - `pacman -S mingw-w64-x86_64-libpng`
 
 If you plan on using `flamewing-tools`:
- - `pacman -S cmake mingw-w64-x86_64-boost`
+ - `pacman -S mingw-w64-x86_64-cmake mingw-w64-x86_64-boost`
 
 
 ### Option 1: Just extract the latest release

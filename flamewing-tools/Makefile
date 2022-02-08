@@ -6,7 +6,7 @@ GENERATOR = "Unix Makefiles"
 MACFIX = true
 
 ifeq ($(OS),Windows_NT)
-	GENERATOR = "MSYS Makefiles"
+	#GENERATOR = "MSYS Makefiles"
 else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Darwin)
