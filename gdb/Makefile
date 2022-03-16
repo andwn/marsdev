@@ -30,7 +30,7 @@ gdb: $(GDB_DIR)
 		--enable-languages=$(LANGS) $(CPU_ARGS) \
 		--disable-multilib --disable-tls --disable-nls --disable-werror \
 		> $(LOGDIR)/gdb-$(ARCH).log 2>&1
-	make -C $(BUILD_DIR) all install \
+	$(MAKE) -C $(BUILD_DIR) all install \
 		>> $(LOGDIR)/gdb-$(ARCH).log 2>&1
 	rm -rf $(GDB_DIR)
 

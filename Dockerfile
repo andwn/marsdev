@@ -26,19 +26,21 @@ RUN git clone $MARSDEV_GIT
 #COPY ./ marsdev/
 
 WORKDIR /work/marsdev
-RUN make m68k-toolchain-newlib LANGS=c,c++ MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make m68k-gdb MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make sh-toolchain-newlib LANGS=c,c++ MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make -C gdb ARCH=sh MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make z80-tools MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make sgdk MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make sik-tools MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make flamewing-tools MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
+RUN make -j`nproc` m68k-toolchain LANGS=c,c++ MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
+RUN make -j`nproc` m68k-gdb MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
+RUN make -j`nproc` sh-toolchain LANGS=c,c++ MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
+RUN make -j`nproc` sh-gdb MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
+RUN make -j`nproc` z80-tools MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
+RUN make -j`nproc` sgdk MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
+RUN make -j`nproc` sik-tools MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
+RUN make -j`nproc` flamewing-tools MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
+RUN make -j`nproc` m68k-toolchain-newlib LANGS=c,c++ MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
+RUN make -j`nproc` sh-toolchain-newlib LANGS=c,c++ MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
 
 WORKDIR /
 
-#RUN rm -rf /work
-#RUN rm -rf /root/mars
+RUN rm -rf /work
+RUN rm -rf /root/mars
 
 RUN echo '#!/bin/bash\njava -Duser.dir="`pwd`" -jar $MARSDEV/bin/rescomp.jar ${@:-1}' > $MARSDEV/bin/rescomp && chmod +x $MARSDEV/bin/rescomp 
 

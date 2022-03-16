@@ -21,7 +21,7 @@
 
 # == Newlib ==
 # To include optional Newlib support, use the 'all-newlib' target
-# make all-newlib ARCH=m68k
+# $(MAKE) all-newlib ARCH=m68k
 # Newlib provides a libc implementation for embedded systems
 # However, we need the cross compiler to build it first
 # Because of this GCC is built in 2 passes:
@@ -30,7 +30,7 @@
 
 # == Additional Languages ==
 # If you want to build support for languages other than C define "LANGS" like this:
-# make ARCH=m68k LANGS=c,c++
+# $(MAKE) ARCH=m68k LANGS=c,c++
 # C is required, enabled by default and the most well supported
 # C++ is not extensively tested but all non-STL features are expected to work
 # Go support has been dropped as it requires a beefy runtime to do anything useful
@@ -81,7 +81,7 @@ mk-binutils:
 		$(CPU_ARGS) \
 		--enable-install-libbfd --enable-shared=no --disable-nls --disable-werror \
 		> $(LOGDIR)/binutils-$(ARCH).log 2>&1
-	make -C $(BUILD_DIR) all install-strip \
+	$(MAKE) -C $(BUILD_DIR) all install-strip \
 		>> $(LOGDIR)/binutils-$(ARCH).log 2>&1
 	@touch mk-binutils
 	@rm -rf $(BUILD_DIR)
@@ -92,7 +92,7 @@ mk-gcc:
 	@echo "+++ Building $(GCC_DIR) for $(ARCH)..."
 	cd $(GCC_DIR) && ./contrib/download_prerequisites \
 		> $(LOGDIR)/gcc-$(ARCH).log 2>&1
-	patch -p0 < libcc1_suse_fix.patch
+#	patch -p0 < libcc1_suse_fix.patch
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
 		../configure --target=$(TARGET) --prefix=$(PREFIX) \
@@ -102,7 +102,7 @@ mk-gcc:
 		--disable-threads --disable-tls --disable-multilib \
 		--enable-shared=no --disable-nls --disable-werror \
 		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
-	make -C $(BUILD_DIR) all install-strip \
+	$(MAKE) -C $(BUILD_DIR) all install-strip \
 		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
 	@touch mk-gcc
 	@rm -rf $(BUILD_DIR)
@@ -118,7 +118,7 @@ mk-newlib:
 		$(CPU_ARGS) \
 		--disable-multilib --disable-nls --disable-werror \
 		> $(LOGDIR)/newlib-$(ARCH).log 2>&1
-	make -C $(BUILD_DIR) all install \
+	$(MAKE) -C $(BUILD_DIR) all install \
 		>> $(LOGDIR)/newlib-$(ARCH).log 2>&1
 	@touch mk-newlib
 	@rm -rf $(BUILD_DIR)
@@ -137,7 +137,7 @@ mk-gcc2:
 		--disable-threads --disable-tls --disable-multilib \
 		--enable-shared=no --disable-nls --disable-werror \
 		> $(LOGDIR)/gcc2-$(ARCH).log 2>&1
-	make -C $(BUILD_DIR) all install-strip \
+	$(MAKE) -C $(BUILD_DIR) all install-strip \
 		>> $(LOGDIR)/gcc2-$(ARCH).log 2>&1
 	@touch mk-gcc2
 	@rm -rf $(BUILD_DIR)

@@ -17,15 +17,15 @@ endif
 all: clean $(MARSINC) $(MARSLIB)
 	git clone --recurse-submodules https://github.com/flamewing/mdtools
 	cd mdtools/mdcomp && $(MACFIX) \
-		&& cmake -S . -B build -G $(GENERATOR) \
+		&& c$(MAKE) -S . -B build -G $(GENERATOR) \
 			-DCMAKE_INSTALL_PREFIX="$(MARSDEV)" \
-		&& cmake --build build -j2 \
-		&& cmake --install build
+		&& c$(MAKE) --build build -j2 \
+		&& c$(MAKE) --install build
 	cd mdtools && $(MACFIX) \
-		&& cmake -S . -B build -G $(GENERATOR) \
+		&& c$(MAKE) -S . -B build -G $(GENERATOR) \
 			-DCMAKE_INSTALL_PREFIX="$(MARSDEV)" \
-		&& cmake --build build -j2 \
-		&& cmake --install build
+		&& c$(MAKE) --build build -j2 \
+		&& c$(MAKE) --install build
 
 $(MARSBIN):
 	mkdir -p $(MARSBIN)
