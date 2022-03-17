@@ -1,6 +1,6 @@
 # Sample Makefile for Marsdev (SGDK version)
 
-# Default paths, can be overridden by setting MARSDEV before calling $(MAKE)
+# Default paths, can be overridden by setting MARSDEV before calling make
 MARSDEV ?= ${HOME}/mars
 MARSBIN  = $(MARSDEV)/m68k-elf/bin
 TOOLSBIN = $(MARSDEV)/bin
