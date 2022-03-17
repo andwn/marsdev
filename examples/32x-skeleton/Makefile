@@ -2,7 +2,7 @@
 # For 32X both m68k and SH-2 code has to be built
 # The usual variables are split into "MD" and "SH" versions
 
-# Default paths, can be overridden by setting MARSDEV before calling $(MAKE)
+# Default paths, can be overridden by setting MARSDEV before calling make
 MARSDEV ?= ${HOME}/mars
 TOOLSBIN = $(MARSDEV)/bin
 MDBIN    = $(MARSDEV)/m68k-elf/bin
@@ -38,7 +38,7 @@ ifeq ($(OS),Windows_NT)
 endif
 
 # m68k Includes: Local + GCC + Newlib
-# If you write C code for m68k, $(MAKE) sure that:
+# If you write C code for m68k, make sure that:
 #  1. It can be executed from RAM (-fPIC) to avoid blocking SH ROM access
 #  2. Don't mix 68k and sh headers/source files, put them in *_md folders
 MDINCS   = -Isrc_md -Iinc_md
