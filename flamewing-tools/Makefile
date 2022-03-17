@@ -6,7 +6,7 @@ GENERATOR = "Unix Makefiles"
 MACFIX = true
 
 ifeq ($(OS),Windows_NT)
-	#GENERATOR = "MSYS Makefiles"
+#	GENERATOR = "MSYS Makefiles"
 else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Darwin)
@@ -16,26 +16,27 @@ endif
 
 all: clean $(MARSINC) $(MARSLIB)
 	git clone --recurse-submodules https://github.com/flamewing/mdtools
+	mkdir -p mdtools/mdcomp/build
 	cd mdtools/mdcomp && $(MACFIX) \
-		&& c$(MAKE) -S . -B build -G $(GENERATOR) \
+		&& cmake -S . -B build -G $(GENERATOR) \
 			-DCMAKE_INSTALL_PREFIX="$(MARSDEV)" \
-		&& c$(MAKE) --build build -j2 \
-		&& c$(MAKE) --install build
+		&& cmake --build build -j2 \
+		&& cmake --install build
 	cd mdtools && $(MACFIX) \
-		&& c$(MAKE) -S . -B build -G $(GENERATOR) \
+		&& cmake -S . -B build -G $(GENERATOR) \
 			-DCMAKE_INSTALL_PREFIX="$(MARSDEV)" \
-		&& c$(MAKE) --build build -j2 \
-		&& c$(MAKE) --install build
+		&& cmake --build build -j2 \
+		&& cmake --install build
 
 $(MARSBIN):
 	mkdir -p $(MARSBIN)
 
 $(MARSINC):
 	mkdir -p $(MARSINC)
-	
+
 $(MARSLIB):
 	mkdir -p $(MARSLIB)
-	
+
 clean:
 	rm -rf mdtools
 

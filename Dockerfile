@@ -1,11 +1,11 @@
-FROM ubuntu:bionic as build
+FROM ubuntu:jammy as build
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install prerequisites
 RUN apt update && \
     apt install -y git build-essential texinfo curl wget \
-    openjdk-8-jdk-headless libpng-dev \
+    openjdk-8-jdk-headless libpng-dev cmake libboost-all-dev \
     autoconf automake libtool libboost-dev && \
     apt clean
 
@@ -22,20 +22,20 @@ RUN mkdir -p $MARSDEV
 
 WORKDIR /work
 
-RUN git clone $MARSDEV_GIT
-#COPY ./ marsdev/
+#RUN git clone $MARSDEV_GIT marsdev
+COPY ./ marsdev/
 
 WORKDIR /work/marsdev
-RUN make -j`nproc` m68k-toolchain LANGS=c,c++ MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make -j`nproc` m68k-gdb MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make -j`nproc` sh-toolchain LANGS=c,c++ MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make -j`nproc` sh-gdb MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make -j`nproc` z80-tools MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make -j`nproc` sgdk MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make -j`nproc` sik-tools MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make -j`nproc` flamewing-tools MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make -j`nproc` m68k-toolchain-newlib LANGS=c,c++ MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
-RUN make -j`nproc` sh-toolchain-newlib LANGS=c,c++ MARSDEV=$MARSDEV 2>&1 | (tee -a $LOG)
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV flamewing-tools
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV z80-tools
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV sik-tools
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV m68k-toolchain
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV sh-toolchain
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV m68k-toolchain-newlib
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV sh-toolchain-newlib
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV m68k-gdb
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV sh-gdb
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV sgdk
 
 WORKDIR /
 

@@ -21,7 +21,7 @@
 
 # == Newlib ==
 # To include optional Newlib support, use the 'all-newlib' target
-# $(MAKE) all-newlib ARCH=m68k
+# make all-newlib ARCH=m68k
 # Newlib provides a libc implementation for embedded systems
 # However, we need the cross compiler to build it first
 # Because of this GCC is built in 2 passes:
@@ -30,7 +30,7 @@
 
 # == Additional Languages ==
 # If you want to build support for languages other than C define "LANGS" like this:
-# $(MAKE) ARCH=m68k LANGS=c,c++
+# make ARCH=m68k LANGS=c,c++
 # C is required, enabled by default and the most well supported
 # C++ is not extensively tested but all non-STL features are expected to work
 # Go support has been dropped as it requires a beefy runtime to do anything useful
