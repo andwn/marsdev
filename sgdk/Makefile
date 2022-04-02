@@ -21,12 +21,12 @@ libmd:
 	cp -f Makefile.libmd SGDK/Makefile
 	if [ -f "config.h" ]; then cp -f config.h SGDK/inc/config.h; fi
 	# Release version
-	make -C SGDK clean
-	make -C SGDK
+	$(MAKE) -C SGDK clean
+	$(MAKE) -C SGDK
 	cp -f SGDK/libmd.a $(MARSDEV)/m68k-elf/lib/libmd.a
 	# Debug version
-	make -C SGDK clean
-	make -C SGDK debug
+	$(MAKE) -C SGDK clean
+	$(MAKE) -C SGDK debug
 	cp -f SGDK/libmd-debug.a $(MARSDEV)/m68k-elf/lib/libmd-debug.a
 	# Copy headers
 	cp -f SGDK/inc/*.h $(MARSDEV)/m68k-elf/include/

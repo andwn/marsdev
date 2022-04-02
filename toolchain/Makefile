@@ -81,7 +81,7 @@ mk-binutils:
 		$(CPU_ARGS) \
 		--enable-install-libbfd --enable-shared=no --disable-nls --disable-werror \
 		> $(LOGDIR)/binutils-$(ARCH).log 2>&1
-	make -C $(BUILD_DIR) all install-strip \
+	$(MAKE) -C $(BUILD_DIR) all install-strip \
 		>> $(LOGDIR)/binutils-$(ARCH).log 2>&1
 	@touch mk-binutils
 	@rm -rf $(BUILD_DIR)
@@ -92,7 +92,7 @@ mk-gcc:
 	@echo "+++ Building $(GCC_DIR) for $(ARCH)..."
 	cd $(GCC_DIR) && ./contrib/download_prerequisites \
 		> $(LOGDIR)/gcc-$(ARCH).log 2>&1
-	patch -p0 < libcc1_suse_fix.patch
+#	patch -p0 < libcc1_suse_fix.patch
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
 		../configure --target=$(TARGET) --prefix=$(PREFIX) \
@@ -102,7 +102,7 @@ mk-gcc:
 		--disable-threads --disable-tls --disable-multilib \
 		--enable-shared=no --disable-nls --disable-werror \
 		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
-	make -C $(BUILD_DIR) all install-strip \
+	$(MAKE) -C $(BUILD_DIR) all install-strip \
 		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
 	@touch mk-gcc
 	@rm -rf $(BUILD_DIR)
@@ -118,7 +118,7 @@ mk-newlib:
 		$(CPU_ARGS) \
 		--disable-multilib --disable-nls --disable-werror \
 		> $(LOGDIR)/newlib-$(ARCH).log 2>&1
-	make -C $(BUILD_DIR) all install \
+	$(MAKE) -C $(BUILD_DIR) all install \
 		>> $(LOGDIR)/newlib-$(ARCH).log 2>&1
 	@touch mk-newlib
 	@rm -rf $(BUILD_DIR)
@@ -137,7 +137,7 @@ mk-gcc2:
 		--disable-threads --disable-tls --disable-multilib \
 		--enable-shared=no --disable-nls --disable-werror \
 		> $(LOGDIR)/gcc2-$(ARCH).log 2>&1
-	make -C $(BUILD_DIR) all install-strip \
+	$(MAKE) -C $(BUILD_DIR) all install-strip \
 		>> $(LOGDIR)/gcc2-$(ARCH).log 2>&1
 	@touch mk-gcc2
 	@rm -rf $(BUILD_DIR)

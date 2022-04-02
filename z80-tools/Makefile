@@ -10,7 +10,7 @@ all: $(SJASM)
 $(SJASM): $(TOOLSBIN)
 	rm -rf sjasm
 	git clone https://github.com/konamiman/sjasm --branch $(SJBRANCH)
-	cd sjasm/Sjasm && make
+	cd sjasm/Sjasm && $(MAKE)
 	cp -f sjasm/Sjasm/sjasm $(SJASM)
 
 $(TOOLSBIN):

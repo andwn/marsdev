@@ -11,34 +11,34 @@ export MARSDEV
 all: m68k-toolchain z80-tools sgdk
 
 m68k-toolchain:
-	make -C toolchain ARCH=m68k
+	$(MAKE) -C toolchain ARCH=m68k
 
 m68k-toolchain-newlib:
-	make -C toolchain all-newlib ARCH=m68k
+	$(MAKE) -C toolchain all-newlib ARCH=m68k
 
 m68k-gdb:
-	make -C gdb ARCH=m68k
+	$(MAKE) -C gdb ARCH=m68k
 
 sh-toolchain:
-	make -C toolchain ARCH=sh
+	$(MAKE) -C toolchain ARCH=sh
 
 sh-toolchain-newlib:
-	make -C toolchain all-newlib ARCH=sh
+	$(MAKE) -C toolchain all-newlib ARCH=sh
 
 sh-gdb:
-	make -C gdb ARCH=sh
+	$(MAKE) -C gdb ARCH=sh
 
 z80-tools:
-	make -C z80-tools
+	$(MAKE) -C z80-tools
 
 sik-tools:
-	make -C sik-tools
+	$(MAKE) -C sik-tools
 
 flamewing-tools:
-	make -C flamewing-tools
+	$(MAKE) -C flamewing-tools
 
 sgdk:
-	make -C sgdk
+	$(MAKE) -C sgdk
 
 
 .PHONY: clean toolchain-clean gdb-clean tools-clean sgdk-clean
@@ -46,15 +46,15 @@ sgdk:
 clean: toolchain-clean gdb-clean tools-clean sgdk-clean
 
 toolchain-clean:
-	make -C toolchain clean
+	$(MAKE) -C toolchain clean
 
 gdb-clean:
-	make -C gdb clean
+	$(MAKE) -C gdb clean
 
 tools-clean:
-	make -C z80-tools clean
-	make -C sik-tools clean
-	make -C flamewing-tools clean
+	$(MAKE) -C z80-tools clean
+	$(MAKE) -C sik-tools clean
+	$(MAKE) -C flamewing-tools clean
 
 sgdk-clean:
-	make -C sgdk clean
+	$(MAKE) -C sgdk clean
