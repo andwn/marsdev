@@ -1,11 +1,11 @@
-FROM ubuntu:jammy as build
+FROM debian:bookworm-slim as build
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install prerequisites
 RUN apt update && \
     apt install -y git build-essential texinfo curl wget \
-    openjdk-8-jdk-headless libpng-dev cmake libboost-all-dev \
+    openjdk-17-jdk-headless libpng-dev cmake libboost-all-dev \
     autoconf automake libtool libboost-dev && \
     apt clean
 
