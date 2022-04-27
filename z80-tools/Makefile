@@ -23,7 +23,11 @@ endif
 
 .PHONY: all clean
 
+ifeq ($(UNAME_S),Darwin)
+all: $(SJASM)
+else
 all: $(SJASM) $(Z80ASM)
+endif
 
 $(SJASM): $(TOOLSBIN)
 	rm -rf sjasm
