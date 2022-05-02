@@ -14,7 +14,6 @@ ENV GENDEV=$MARSDEV
 ENV PATH=$PATH:$JAVA_HOME/bin
 ENV HOME=/marsdev
 ENV LOG=$HOME/build.log
-ENV MARSDEV_GIT=https://github.com/andwn/marsdev
 
 RUN mkdir -p $HOME
 RUN mkdir -p `dirname $LOG`
@@ -22,7 +21,6 @@ RUN mkdir -p $MARSDEV
 
 WORKDIR /work
 
-#RUN git clone $MARSDEV_GIT marsdev
 COPY ./ marsdev/
 
 WORKDIR /work/marsdev
