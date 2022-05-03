@@ -27,18 +27,20 @@ WORKDIR /work/marsdev
 RUN make LANGS=c,c++ MARSDEV=$MARSDEV flamewing-tools
 RUN make LANGS=c,c++ MARSDEV=$MARSDEV z80-tools
 RUN make LANGS=c,c++ MARSDEV=$MARSDEV sik-tools
-RUN make LANGS=c,c++ MARSDEV=$MARSDEV m68k-toolchain
-RUN make LANGS=c,c++ MARSDEV=$MARSDEV sh-toolchain
-RUN make LANGS=c,c++ MARSDEV=$MARSDEV m68k-toolchain-newlib
-RUN make LANGS=c,c++ MARSDEV=$MARSDEV sh-toolchain-newlib
+
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV m68k-toolchain clean
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV m68k-toolchain-newlib clean
 RUN make LANGS=c,c++ MARSDEV=$MARSDEV m68k-gdb
-RUN make LANGS=c,c++ MARSDEV=$MARSDEV sh-gdb
+
 RUN make LANGS=c,c++ MARSDEV=$MARSDEV sgdk
+
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV sh-toolchain clean
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV sh-toolchain-newlib clean
+RUN make LANGS=c,c++ MARSDEV=$MARSDEV sh-gdb
 
 WORKDIR /
 
-RUN rm -rf /work
-RUN rm -rf /root/mars
+RUN rm -rf /work /root/mars
 
 RUN echo '#!/bin/bash\njava -Duser.dir="`pwd`" -jar $MARSDEV/bin/rescomp.jar ${@:-1}' > $MARSDEV/bin/rescomp && chmod +x $MARSDEV/bin/rescomp 
 
