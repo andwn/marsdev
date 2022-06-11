@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim as build
+FROM ubuntu:jammy as build
 
 ARG DEBIAN_FRONTEND=noninteractive
 
