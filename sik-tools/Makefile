@@ -23,6 +23,7 @@ all: $(HEADGEN) $(ROMFIX)
 mdtools:
 	git clone https://github.com/sikthehedgehog/mdtools
 	#git clone https://github.com/andwn/mdtools
+	find mdtools -name "*.o" -type f -delete
 
 $(MDTILER): mdtools $(MARSBIN)
 	$(MAKE) -C mdtools/mdtiler/tool

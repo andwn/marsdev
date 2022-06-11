@@ -37,9 +37,10 @@
 
 GCC_VER      ?= 10.3.0
 BINUTILS_VER ?= 2.36.1
-NEWLIB_VER   ?= 1.20.0
+#NEWLIB_VER   ?= 1.20.0
+NEWLIB_VER   ?= 4.2.0.20211231
 
-GNU_MIRROR   ?= https://mirrors.tripadvisor.com/gnu
+GNU_MIRROR   ?= https://ftp.gwdg.de/pub/gnu/ftp/gnu/
 
 GCC_DIR       = gcc-$(GCC_VER)
 BINUTILS_DIR  = binutils-$(BINUTILS_VER)
@@ -71,7 +72,7 @@ all-newlib: LANGS ?= c
 all-newlib: mk-binutils mk-gcc mk-newlib mk-gcc2 $(LDSCRIPTS)
 
 mk-binutils: $(BINUTILS_DIR)
-mk-binutils: BUILD_DIR=$(BINUTILS_DIR)/build
+mk-binutils: BUILD_DIR=$(BINUTILS_DIR)/build-$(ARCH)
 mk-binutils:
 	@echo "+++ Building $(BINUTILS_DIR) for $(ARCH)..."
 	@mkdir -p $(BUILD_DIR)
@@ -87,7 +88,7 @@ mk-binutils:
 	@rm -rf $(BUILD_DIR)
 
 mk-gcc: $(GCC_DIR)
-mk-gcc: BUILD_DIR=$(GCC_DIR)/build
+mk-gcc: BUILD_DIR=$(GCC_DIR)/build-gcc1-$(ARCH)
 mk-gcc:
 	@echo "+++ Building $(GCC_DIR) for $(ARCH)..."
 	cd $(GCC_DIR) && ./contrib/download_prerequisites \
@@ -108,8 +109,8 @@ mk-gcc:
 	@rm -rf $(BUILD_DIR)
 
 mk-newlib: $(NEWLIB_DIR)
-mk-newlib: BUILD_DIR=$(NEWLIB_DIR)/build
-mk-newlib:
+mk-newlib: BUILD_DIR=$(NEWLIB_DIR)/build-$(ARCH)
+mk-newlib: mk-gcc
 	@echo "+++ Building $(NEWLIB_DIR) for $(ARCH)..."
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
@@ -124,8 +125,8 @@ mk-newlib:
 	@rm -rf $(BUILD_DIR)
 
 mk-gcc2: $(GCC_DIR)
-mk-gcc2: BUILD_DIR=$(GCC_DIR)/build
-mk-gcc2:
+mk-gcc2: BUILD_DIR=$(GCC_DIR)/build-gcc2-$(ARCH)
+mk-gcc2: mk-newlib
 	@echo "+++ Building $(GCC_DIR) for $(ARCH) (Pass 2)..."
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \

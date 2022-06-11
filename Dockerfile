@@ -28,13 +28,13 @@ RUN make LANGS=c,c++ MARSDEV=$MARSDEV flamewing-tools
 RUN make LANGS=c,c++ MARSDEV=$MARSDEV z80-tools
 RUN make LANGS=c,c++ MARSDEV=$MARSDEV sik-tools
 
-RUN make LANGS=c,c++ MARSDEV=$MARSDEV m68k-toolchain clean
+#RUN make LANGS=c,c++ MARSDEV=$MARSDEV m68k-toolchain clean
 RUN make LANGS=c,c++ MARSDEV=$MARSDEV m68k-toolchain-newlib clean
 RUN make LANGS=c,c++ MARSDEV=$MARSDEV m68k-gdb
 
 RUN make LANGS=c,c++ MARSDEV=$MARSDEV sgdk
 
-RUN make LANGS=c,c++ MARSDEV=$MARSDEV sh-toolchain clean
+#RUN make LANGS=c,c++ MARSDEV=$MARSDEV sh-toolchain clean
 RUN make LANGS=c,c++ MARSDEV=$MARSDEV sh-toolchain-newlib clean
 RUN make LANGS=c,c++ MARSDEV=$MARSDEV sh-gdb
 
