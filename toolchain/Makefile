@@ -67,14 +67,14 @@ LANGS  ?= c
 .PHONY: all all-newlib clean
 
 all: LANGS1P = LANGS
-all: mk-binutils mk-gcc $(LDSCRIPTS)
+all: mk-gcc-$(ARCH) $(LDSCRIPTS)
 
 all-newlib: LANGS1P = c
-all-newlib: mk-binutils mk-gcc mk-newlib mk-gcc2 $(LDSCRIPTS)
+all-newlib: mk-gcc2-$(ARCH) $(LDSCRIPTS)
 
-mk-binutils: $(BINUTILS_DIR)
-mk-binutils: BUILD_DIR=$(BINUTILS_DIR)/build-$(ARCH)
-mk-binutils:
+mk-binutils-$(ARCH): $(BINUTILS_DIR)
+mk-binutils-$(ARCH): BUILD_DIR=$(BINUTILS_DIR)/build-$(ARCH)
+mk-binutils-$(ARCH):
 	@echo "+++ Building $(BINUTILS_DIR) for $(ARCH)..."
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
@@ -85,12 +85,12 @@ mk-binutils:
 		> $(LOGDIR)/binutils-$(ARCH).log 2>&1
 	$(MAKE) -C $(BUILD_DIR) all install-strip \
 		>> $(LOGDIR)/binutils-$(ARCH).log 2>&1
-	@touch mk-binutils
+	@touch mk-binutils-$(ARCH)
 	@rm -rf $(BUILD_DIR)
 
-mk-gcc: $(GCC_DIR)
-mk-gcc: BUILD_DIR=$(GCC_DIR)/build-gcc1-$(ARCH)
-mk-gcc:
+mk-gcc-$(ARCH): $(GCC_DIR) mk-binutils-$(ARCH)
+mk-gcc-$(ARCH): BUILD_DIR=$(GCC_DIR)/build-gcc1-$(ARCH)
+mk-gcc-$(ARCH): 
 	@echo "+++ Building $(GCC_DIR) for $(ARCH)..."
 	cd $(GCC_DIR) && ./contrib/download_prerequisites \
 		> $(LOGDIR)/gcc-$(ARCH).log 2>&1
@@ -106,12 +106,12 @@ mk-gcc:
 		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
 	$(MAKE) -C $(BUILD_DIR) all install-strip \
 		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
-	@touch mk-gcc
+	@touch mk-gcc-$(ARCH)
 	@rm -rf $(BUILD_DIR)
 
-mk-newlib: $(NEWLIB_DIR)
-mk-newlib: BUILD_DIR=$(NEWLIB_DIR)/build-$(ARCH)
-mk-newlib: mk-gcc
+mk-newlib-$(ARCH): $(NEWLIB_DIR) mk-gcc-$(ARCH)
+mk-newlib-$(ARCH): BUILD_DIR=$(NEWLIB_DIR)/build-$(ARCH)
+mk-newlib-$(ARCH): 
 	@echo "+++ Building $(NEWLIB_DIR) for $(ARCH)..."
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
@@ -122,12 +122,12 @@ mk-newlib: mk-gcc
 		> $(LOGDIR)/newlib-$(ARCH).log 2>&1
 	$(MAKE) -C $(BUILD_DIR) all install \
 		>> $(LOGDIR)/newlib-$(ARCH).log 2>&1
-	@touch mk-newlib
+	@touch mk-newlib-$(ARCH)
 	@rm -rf $(BUILD_DIR)
 
-mk-gcc2: $(GCC_DIR)
-mk-gcc2: BUILD_DIR=$(GCC_DIR)/build-gcc2-$(ARCH)
-mk-gcc2: mk-newlib
+mk-gcc2-$(ARCH): $(GCC_DIR) mk-newlib-$(ARCH)
+mk-gcc2-$(ARCH): BUILD_DIR=$(GCC_DIR)/build-gcc2-$(ARCH)
+mk-gcc2-$(ARCH): 
 	@echo "+++ Building $(GCC_DIR) for $(ARCH) (Pass 2)..."
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
@@ -141,7 +141,7 @@ mk-gcc2: mk-newlib
 		> $(LOGDIR)/gcc2-$(ARCH).log 2>&1
 	$(MAKE) -C $(BUILD_DIR) all install-strip \
 		>> $(LOGDIR)/gcc2-$(ARCH).log 2>&1
-	@touch mk-gcc2
+	@touch mk-gcc2-$(ARCH)
 	@rm -rf $(BUILD_DIR)
 
 $(BINUTILS_DIR): $(BINUTILS_PKG)
@@ -169,4 +169,4 @@ clean:
 	rm -rf $(GCC_DIR)
 	rm -rf $(BINUTILS_DIR)
 	rm -rf $(NEWLIB_DIR)
-	rm -f mk-binutils mk-gcc mk-newlib mk-gcc2
+	rm -f mk-binutils-* mk-gcc-* mk-newlib-* mk-gcc2-*
