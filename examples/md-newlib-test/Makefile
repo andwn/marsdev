@@ -1,4 +1,4 @@
-# Sample Makefile for Marsdev (No SGDK, No Newlib)
+# Sample Makefile for Marsdev (No SGDK, With Newlib)
 
 # Default paths, can be overridden by setting MARSDEV before calling make
 MARSDEV ?= ${HOME}/mars
@@ -23,12 +23,14 @@ ifeq ($(OS),Windows_NT)
 	LTO_SO = liblto_plugin-0.dll
 endif
 
-# Includes: Local + GCC
+# Includes: Local + GCC + Newlib
 INCS     = -Isrc -Ires -Iinc
 INCS    += -I$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER)/include
+INCS    += -I$(MARSDEV)/m68k-elf/m68k-elf/include
 
-# Libraries: GCC Only
+# Libraries: GCC + Newlib
 LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER) -lgcc
+LIBS    += -L$(MARSDEV)/m68k-elf/m68k-elf/lib -lnosys
 
 # Any C or C++ standard should be fine here as long as GCC supports it
 # GCC 10+ by default fails to link if you don't declare header variables extern,
@@ -41,7 +43,7 @@ ASFLAGS  = -m68000 --register-prefix-optional
 
 # -nostartfiles disables the c runtime startup code
 # -nostdlib unsets -lc, so when using Newlib don't set that option
-LDFLAGS  = -T $(MARSDEV)/ldscripts/md.ld -nostdlib
+LDFLAGS  = -T $(MARSDEV)/ldscripts/md.ld -nostartfiles
 
 # Collect source files in the src directory
 CS    = $(wildcard src/*.c)

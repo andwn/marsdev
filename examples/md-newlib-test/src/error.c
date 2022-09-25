@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "md.h"
 
 extern uint32_t v_err_reg[8+8];
@@ -35,6 +38,10 @@ void _error() {
 		case 3:
 		sprintf(buf, "%s", "Divide by Zero");
 		vdp_color(0, 0x046);
+		break;
+		case 4:
+		sprintf(buf, "%s", "Out of Memory");
+		vdp_color(0, 0x080);
 		break;
 		default:
 		sprintf(buf, "%s", "Fatal Error");
@@ -125,6 +132,14 @@ void _error() {
 	
 	// R.I.P
 	while(1);
+}
+
+void _error_oom(const char* file, const uint16_t line) {
+	dieFile = file;
+	dieLine = line;
+	dieMsg = NULL;
+	v_err_type = 4;
+	_error();
 }
 
 void _error_fatal(const char *err, const char *file, const uint16_t line) {

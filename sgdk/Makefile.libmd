@@ -7,20 +7,13 @@ RANLIB  = $(MARSBIN)/m68k-elf-ranlib
 OBJC    = $(MARSBIN)/m68k-elf-objcopy 
 ASMZ80  = $(TOOLSBIN)/sjasm
 
+RESCOMP = java -jar $(TOOLSBIN)/rescomp.jar
+SIZEBND = java -jar $(TOOLSBIN)/sizebnd.jar
+LZ4W    = java -jar $(TOOLSBIN)/lz4w.jar
 BINTOS  = $(TOOLSBIN)/bintos
-RESCOMP = $(TOOLSBIN)/rescomp
 XGMTOOL = $(TOOLSBIN)/xgmtool
 WAVTORAW= $(TOOLSBIN)/wavtoraw
 PCMTORAW= $(TOOLSBIN)/pcmtoraw
-SIZEBND = $(TOOLSBIN)/sizebnd
-LZ4W    = $(TOOLSBIN)/lz4w.jar
-
-# Use rescomp jar for SGDK > 1.33
-ifneq ("$(wildcard $(TOOLSBIN)/rescomp.jar)","")
-	RESCOMP = java -jar $(TOOLSBIN)/rescomp.jar
-	WAVTORAW = @echo "wavtoraw no longer available!" ## 
-	PCMTORAW = @echo "pcmtoraw no longer available!" ## 
-endif
 
 LIBMD   = $(MARSDEV)/m68k-elf/lib/libmd.a
 
@@ -50,10 +43,10 @@ RESOURCES += $(S80S:.s80=.o)
 
 all: release 
 
-release: OPTIONS = -O3 -flto -fuse-linker-plugin -fomit-frame-pointer
+release: OPTIONS = -DDEBUG=0 -O3 -flto -fuse-linker-plugin -fomit-frame-pointer
 release: $(RESOURCES) libmd.a
 
-debug: OPTIONS = -DDEBUG -Og -g
+debug: OPTIONS = -DDEBUG=1 -Og -g
 debug: $(RESOURCES) libmd-debug.a
 
 %.a: $(RESOURCES)

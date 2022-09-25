@@ -9,7 +9,7 @@ SIZEBND        = $(TOOLSBIN)/sizebnd.jar
 LZ4W           = $(TOOLSBIN)/lz4w.jar
 APJ            = $(TOOLSBIN)/apj.jar
 
-SGDK_VER ?= v1.70
+SGDK_VER ?= v1.80
 
 .PHONY: all tools libmd clean
 
@@ -34,6 +34,10 @@ libmd:
 	
 SGDK:
 	git clone --branch $(SGDK_VER) https://github.com/Stephane-D/SGDK
+	# Stef forgot to include stdint so xgmtool fails to compile
+	echo "#include <stdint.h>" > incfix.txt
+	cat incfix.txt SGDK/tools/xgmtool/src/xgmtool.c > incfix.c
+	mv -f incfix.c SGDK/tools/xgmtool/src/xgmtool.c
 
 # Tools
 
