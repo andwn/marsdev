@@ -73,7 +73,7 @@ all-newlib: LANGS1P = c
 all-newlib: mk-binutils mk-gcc mk-newlib mk-gcc2 $(LDSCRIPTS)
 
 mk-binutils: $(BINUTILS_DIR)
-mk-binutils: BUILD_DIR=$(BINUTILS_DIR)/build
+mk-binutils: BUILD_DIR=$(BINUTILS_DIR)/build-$(ARCH)
 mk-binutils:
 	@echo "+++ Building $(BINUTILS_DIR) for $(ARCH)..."
 	@mkdir -p $(BUILD_DIR)
@@ -89,7 +89,7 @@ mk-binutils:
 	@rm -rf $(BUILD_DIR)
 
 mk-gcc: $(GCC_DIR)
-mk-gcc: BUILD_DIR=$(GCC_DIR)/build
+mk-gcc: BUILD_DIR=$(GCC_DIR)/build-gcc1-$(ARCH)
 mk-gcc:
 	@echo "+++ Building $(GCC_DIR) for $(ARCH)..."
 	cd $(GCC_DIR) && ./contrib/download_prerequisites \
@@ -110,8 +110,8 @@ mk-gcc:
 	@rm -rf $(BUILD_DIR)
 
 mk-newlib: $(NEWLIB_DIR)
-mk-newlib: BUILD_DIR=$(NEWLIB_DIR)/build
-mk-newlib:
+mk-newlib: BUILD_DIR=$(NEWLIB_DIR)/build-$(ARCH)
+mk-newlib: mk-gcc
 	@echo "+++ Building $(NEWLIB_DIR) for $(ARCH)..."
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
@@ -126,8 +126,8 @@ mk-newlib:
 	@rm -rf $(BUILD_DIR)
 
 mk-gcc2: $(GCC_DIR)
-mk-gcc2: BUILD_DIR=$(GCC_DIR)/build
-mk-gcc2:
+mk-gcc2: BUILD_DIR=$(GCC_DIR)/build-gcc2-$(ARCH)
+mk-gcc2: mk-newlib
 	@echo "+++ Building $(GCC_DIR) for $(ARCH) (Pass 2)..."
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
