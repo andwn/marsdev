@@ -1,7 +1,8 @@
 ## Installation on MacOS
 
-These steps work on my Macbook with Catalina. It should work on Mojave and Big Sur too.
-Marsdev does not work on Apple Silicon yet. There are some AArch64 problems to sort out.
+These steps work on my Macbook with Monterey. It should work on Catalina and Big Sur too.
+Marsdev may compile on Apple Silicon now that some Aarch64 problems have been fixed,
+but I don't have one to test with.
 
 
 ### Dependencies

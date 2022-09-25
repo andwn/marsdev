@@ -7,18 +7,22 @@ It can be used as a starting point for SGDK projects.
 ### SGDK SSF Mapper
 An example of using SGDK 1.50+ "Far" data feature, 
 a bank switching enhancement that allows the use of ROMs greater than 4MB in size.
-Make sure you have "libmd-far.a" in $(MARSDEV)/elf-m68k/lib.
 
 ### MD Skeleton
 A barebones program that prints Hello World.
 Can be used as a starting point for people who want to do it all themself,
 rather than use SGDK.
 
+### MD Newlib Test
+An extension of the MD Skeleton that uses Newlib, and runs a few functions to
+make sure they're working right.
+
 ### 32X Skeleton
 Barebones 32X program, based on [ammianus's example](https://github.com/ammianus/32xHomebrew).
 
 ### Echo Test
 Test ROM for Echo's C API.
+Z80 ASM macros have been converted to sjasm syntax to remove the need for z80asm.
 
 ### Sonic
 Builds the Sonic disassembly (converted to GNU syntax). Don't tell Sega.

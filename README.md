@@ -6,8 +6,8 @@ Cross platform Mega Drive / 32X toolchain and Makefile abuse.
 ## Installation
 
 Follow the guide for your OS:
- - [Windows 7/8.1/10](doc/install_windows.md)
- - [MacOS Mojave/Catalina/Big Sur](doc/install_macos.md)
+ - [Windows 7/8.1/10/11](doc/install_windows.md) (Deprecated, please use WSL instead)
+ - [MacOS 10.14+](doc/install_macos.md)
  - [Linux or WSL](doc/install_linux.md)
 
 

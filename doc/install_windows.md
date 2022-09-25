@@ -1,4 +1,4 @@
-## Installation on Windows 7/8.1/10
+## Installation on Windows 7/8.1/10/11
 
 These are installation steps for users who do not have access to WSL (Windows Subsystem for Linux),
 or people who just prefer not to use it. For WSL, follow the Linux instructions instead.
