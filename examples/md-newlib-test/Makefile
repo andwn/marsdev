@@ -1,4 +1,4 @@
-# Sample Makefile for Marsdev (Non-SGDK + Newlib)
+# Sample Makefile for Marsdev (No SGDK, With Newlib)
 
 # Default paths, can be overridden by setting MARSDEV before calling make
 MARSDEV ?= ${HOME}/mars
@@ -76,8 +76,7 @@ asm: asm-dir $(ASMO)
 debug: OPTIONS = -g -Og -DDEBUG -DKDEBUG
 debug: out.bin symbol.txt
 
-# This generates a symbol table that is very helpful in debugging crashes,
-# even with an optimized release build!
+# Generates a symbol table that is very helpful in debugging crashes
 # Cross reference symbol.txt with the addresses displayed in the crash handler
 symbol.txt: out.bin
 	$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n out.elf > symbol.txt

@@ -1,7 +1,4 @@
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include "vdp.h"
+#include "md.h"
 
 const uint32_t TILE_BLANK[8] = {};
 const uint16_t BLANK_DATA[0x80] = {};
@@ -228,7 +225,7 @@ uint16_t vdp_fade_step() {
 			if(cB != nB) { pal_current[i] += cB < nB ? 0x200 : -0x200; colors_changed++; }
 		}
 		if(!colors_changed) {
-			pal_fading = false;
+			pal_fading = 0;
 			return 0;
 		}
 		vdp_dma_cram((uint32_t) pal_current, 0, 64);
@@ -239,7 +236,7 @@ uint16_t vdp_fade_step() {
 void vdp_fade(const uint16_t *src, const uint16_t *dst, uint16_t speed, uint8_t async) {
     if(src) vdp_colors(0, src, 64);
     if(dst) vdp_colors_next(0, dst, 64);
-	pal_fading = true;
+	pal_fading = 1;
 	pal_fadespeed = speed;
 	pal_fadecnt = 0;
     if(!async) {

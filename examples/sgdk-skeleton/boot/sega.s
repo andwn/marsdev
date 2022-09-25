@@ -1,3 +1,5 @@
+#include "task_cst.h"
+
 .section .text.keepboot
 
 *-------------------------------------------------------
@@ -11,13 +13,13 @@
 *
 *-------------------------------------------------------
 
-    .globl 	_hard_reset
+    .globl  rom_header
 
     .org    0x00000000
 
 _Start_Of_Rom:
 _Vecteurs_68K:
-        dc.l    0x00000000              /* Stack address */
+        dc.l    __stack                 /* Stack address */
         dc.l    _Entry_Point            /* Program start address */
         dc.l    _Bus_Error
         dc.l    _Address_Error
@@ -32,18 +34,24 @@ _Vecteurs_68K:
         dc.l     _Error_Exception, _Error_Exception, _Error_Exception, _Error_Exception
         dc.l     _Error_Exception, _Error_Exception, _Error_Exception, _Error_Exception
         dc.l     _Error_Exception, _Error_Exception, _Error_Exception, _Error_Exception
-        dc.l    _Error_Exception, _INT, _EXTINT, _INT
-        dc.l    _HINT
+        dc.l    _Error_Exception
+        dc.l    _INT
+        dc.l    _EXTINT
+        dc.l    _INT
+        dc.l    hintCaller
         dc.l    _INT
         dc.l    _VINT
         dc.l    _INT
-        dc.l    _INT,_INT,_INT,_INT,_INT,_INT,_INT,_INT
+        dc.l    _trap_0                 /* Resume supervisor task */
+        dc.l    _INT,_INT,_INT,_INT,_INT,_INT,_INT
         dc.l    _INT,_INT,_INT,_INT,_INT,_INT,_INT,_INT
         dc.l    _INT,_INT,_INT,_INT,_INT,_INT,_INT,_INT
         dc.l    _INT,_INT,_INT,_INT,_INT,_INT,_INT,_INT
 
-        .incbin "boot/rom_head.bin"
+rom_header:
+        .incbin "boot/rom_head.bin", 0, 0x100
 
+_start:
 _Entry_Point:
         move    #0x2700,%sr
         tst.l   0xa10008
@@ -65,10 +73,13 @@ SkipJoyDetect:
 * Sega Security Code (SEGA)
         move.l  #0x53454741,0x2f00(%a1)
 WrongVersion:
+* Read from the control port to cancel any pending read/write command
         move.w  (%a4),%d0
-        moveq   #0x00,%d0
-        movea.l %d0,%a6
-        move    %a6,%usp
+
+* Configure a USER_STACK_LENGTH bytes user stack at bottom, and system stack on top of it
+        move    %sp, %usp
+        sub     #USER_STACK_LENGTH, %sp
+
         move.w  %d7,(%a1)
         move.w  %d7,(%a2)
 
@@ -225,35 +236,59 @@ _EXTINT:
         movem.l (%sp)+,%d0-%d1/%a0-%a1
         rte
 
-_HINT:
-        movem.l %d0-%d1/%a0-%a1,-(%sp)
-        move.l  hintCB, %a0
-        jsr    (%a0)
-        movem.l (%sp)+,%d0-%d1/%a0-%a1
-        rte
-
 _VINT:
+        btst    #5, (%sp)       /* Skip context switch if not in user task */
+        bne.s   no_user_task
+
+        tst.w   task_lock
+        bne.s   1f
+        move.w  #0, -(%sp)      /* TSK_superPend() will return 0 */
+        bra.s   unlock          /* If lock == 0, supervisor task is not locked */
+
+1:
+        bcs.s   no_user_task    /* If lock < 0, super is locked with infinite wait */
+        subq.w  #1, task_lock   /* Locked with wait, subtract 1 to the frame count */
+        bne.s   no_user_task    /* And do not unlock if we did not reach 0 */
+        move.w  #1, -(%sp)      /* TSK_superPend() will return 1 */
+
+unlock:
+        /* Save bg task registers (excepting a7, that is stored in usp) */
+        move.l  %a0, task_regs
+        lea     (task_regs + UTSK_REGS_LEN), %a0
+        movem.l %d0-%d7/%a1-%a6, -(%a0)
+
+        move.w  (%sp)+, %d0     /* Load return value previously pushed to stack */
+
+        move.w  (%sp)+, task_sr /* Pop user task sr and pc, and save them, */
+        move.l  (%sp)+, task_pc /* so they can be restored later.          */
+        movem.l (%sp)+, %d2-%d7/%a2-%a6 /* Restore non clobberable registers */
+
+no_user_task:
+        /* At this point, we always have in the stack the SR and PC of the task */
+        /* we want to jump after processing the interrupt, that might be the    */
+        /* point where we came from (if there is no context switch) or the      */
+        /* supervisor task (if we unlocked it).                                 */
+
         movem.l %d0-%d1/%a0-%a1,-(%sp)
         ori.w   #0x0001, intTrace           /* in V-Int */
         addq.l  #1, vtimer                  /* increment frame counter (more a vint counter) */
         btst    #3, VBlankProcess+1         /* PROCESS_XGM_TASK ? (use VBlankProcess+1 as btst is a byte operation) */
-        beq.s   _no_xgm_task
+        beq.s   no_xgm_task
 
         jsr     XGM_doVBlankProcess         /* do XGM vblank task */
 
-_no_xgm_task:
+no_xgm_task:
         btst    #1, VBlankProcess+1         /* PROCESS_BITMAP_TASK ? (use VBlankProcess+1 as btst is a byte operation) */
-        beq.s   _no_bmp_task
+        beq.s   no_bmp_task
 
         jsr     BMP_doVBlankProcess         /* do BMP vblank task */
 
-_no_bmp_task:
+no_bmp_task:
         move.l  vintCB, %a0                 /* load user callback */
         jsr    (%a0)                        /* call user callback */
         andi.w  #0xFFFE, intTrace           /* out V-Int */
         movem.l (%sp)+,%d0-%d1/%a0-%a1
         rte
-
 
 *------------------------------------------------
 *
@@ -460,3 +495,4 @@ ltuns:
         move.l  %d3,%d0
         move.l  %a2,%d3           /* restore d3 */
         rts
+		

@@ -13,29 +13,59 @@
 
 /**
  *  \brief
+ *      Log disable
+ */
+#define LOG_LEVEL_DISABLE   0
+/**
+ *  \brief
+ *      Log for error only
+ */
+#define LOG_LEVEL_ERROR     1
+/**
+ *  \brief
+ *      Log for error and warning
+ */
+#define LOG_LEVEL_WARNING   2
+/**
+ *  \brief
+ *      Log for error, warning and info (as memory allocation)
+ */
+#define LOG_LEVEL_INFO      3
+
+/**
+ *  \brief
+ *      Define library log level (for debug build)
+ */
+#define LIB_LOG_LEVEL       LOG_LEVEL_INFO
+
+/**
+ *  \brief
  *      Set it to 1 to enable KDebug logging (Gens KMod) to log some errors (as memory allocation).
  */
 #if (DEBUG != 0)
-  #define LIB_DEBUG         1
+    #define LIB_DEBUG       1
 #else
-  #define LIB_DEBUG         0
+    #define LIB_DEBUG       0
+    #undef LIB_LOG_LEVEL
+    #define LIB_LOG_LEVEL   LOG_LEVEL_DISABLE
 #endif
 
 /**
  *  \brief
- *      Set it to 1 if you want to force Z80 halt during DMA operation.<br>
- *      Some Megadrive models (as 2016 Tectoy Megadrive) need it to prevent some possible 68000 memory or Z80 corruption bugs
- *      (may happen when Z80 access the main BUS during a DMA operation).
+ *      Set it to 1 if you want to force Z80 halt during DMA operation (default).<br>
+ *      Some Megadrive models need it to prevent some possible DMA transfer corruption or even 68000 memory or Z80 invalid data fetch in very rare case.<br>
+ *      This actually happen when Z80 access the main BUS exactly at same time you trigger a DMA operation.<br>
+ *      If you are 100% sure that you are actually avoiding that case you may try to disable the flag (at your own risk though).
  */
-#define HALT_Z80_ON_DMA     0
+#define HALT_Z80_ON_DMA     1
 
 /**
  *  \brief
  *      Set it to 1 if you want to force Z80 halt during IO port (controller) accesses.<br>
- *      Some Megadrive models (as some MD2) need it to prevent some possible Z80 corruption bugs
+ *      Some Megadrive models (as some MD2) need it to prevent some possible (but very rare) Z80 corruption bugs
  *      (may happen when Z80 access the main BUS during IO port access from 68K).
  */
-#define HALT_Z80_ON_IO      0
+#define HALT_Z80_ON_IO      1
 
 /**
  *  \brief
@@ -62,20 +92,6 @@
 
 /**
  *  \brief
- *      Set it to 1 to enable the big Math lookup tables.<br>
- *      This table permits Log2, Log10 and Sqrt operation for fix16 type (128*3 KB of rom).
- */
-#define MATH_BIG_TABLES     0
-
-/**
- *  \brief
- *      Set it to 1 if you want to use FAT16 methods provided by Krik.<br>
- *      This cost a bit more than 1 KB of RAM.
- */
-#define FAT16_SUPPORT       0
-
-/**
- *  \brief
  *      Set it to 1 if you want to have the kit intro logo
  */
 #define ENABLE_LOGO         0
@@ -89,6 +105,43 @@
 #define ZOOMING_LOGO        0
 
 #endif // ENABLE_LOGO
+
+/**
+ *  \brief
+ *      Set it to 1 if you want to use EVERDRIVE programming methods (provided by Krikzz).<br>
+ */
+#define MODULE_EVERDRIVE    0
+
+/**
+ *  \brief
+ *      Set it to 1 if you want to use FAT16 methods for Everdrive cart (provided by Krikzz).<br>
+ *      This cost a bit more than 1 KB of RAM.
+ */
+#define MODULE_FAT16        0
+
+// FAT16 need EVERDRIVE
+#if ((MODULE_EVERDRIVE == 0) && (MODULE_FAT16 != 0))
+#error "Cannot enable FAT16 module without EVERDRIVE module"
+#endif
+
+/**
+ *  \brief
+ *      Set it to 1 if you want to enable MegaWiFi functions and support code (provided by Jesus Alonso - doragasu) */
+#define MODULE_MEGAWIFI     0
+
+/**
+ *  \brief
+ *      Set it to 1 if you want to use the Fractal sound driver from Aurora Fields.<br>
+ *      Note that you need to install the module first before enable it (https://gitlab.com/Natsumi/Fractal-Sound)
+ */
+#define MODULE_FRACTAL      0
+
+
+/**
+ *  \brief
+ *      To force method inlining (not sure that GCC does actually care of it)
+ */
+#define FORCE_INLINE        inline __attribute__((always_inline))
 
 
 #endif // _CONFIG_

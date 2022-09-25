@@ -1,10 +1,4 @@
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include "string.h"
-#include "vdp.h"
-
-#include "error.h"
+#include "md.h"
 
 extern uint32_t v_err_reg[8+8];
 extern uint32_t v_err_pc;
@@ -41,10 +35,6 @@ void _error() {
 		case 3:
 		sprintf(buf, "%s", "Divide by Zero");
 		vdp_color(0, 0x046);
-		break;
-		case 4:
-		sprintf(buf, "%s", "Out of Memory");
-		vdp_color(0, 0x080);
 		break;
 		default:
 		sprintf(buf, "%s", "Fatal Error");
@@ -129,20 +119,12 @@ void _error() {
 	
 	// Message
 	x = 2; y = 23;
-	//vdp_puts(VDP_PLAN_A, "This shouldn't happen. Report it!", x, y++);
-	//vdp_puts(VDP_PLAN_A, "andy@skychase.zone", x + 8, y++);
-	//vdp_puts(VDP_PLAN_A, "twitter.com/donutgrind", x + 8, y++);
+	vdp_puts(VDP_PLAN_A, "To change this message,", x, y++);
+	vdp_puts(VDP_PLAN_A, "edit src/error.c", x + 8, y++);
+	vdp_puts(VDP_PLAN_A, "", x + 8, y++);
 	
 	// R.I.P
-	while(true);
-}
-
-void _error_oom(const char* file, const uint16_t line) {
-	dieFile = file;
-	dieLine = line;
-	dieMsg = NULL;
-	v_err_type = 4;
-	_error();
+	while(1);
 }
 
 void _error_fatal(const char *err, const char *file, const uint16_t line) {

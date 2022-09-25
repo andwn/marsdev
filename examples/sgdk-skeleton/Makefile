@@ -1,4 +1,4 @@
-# Sample Makefile for Marsdev (SGDK version)
+# Sample Makefile for Marsdev (With SGDK, Optional Newlib)
 
 # Default paths, can be overridden by setting MARSDEV before calling make
 MARSDEV ?= ${HOME}/mars
@@ -13,17 +13,11 @@ LD   = $(MARSBIN)/m68k-elf-ld
 NM   = $(MARSBIN)/m68k-elf-nm
 OBJC = $(MARSBIN)/m68k-elf-objcopy
 # SGDK Tools
+RESCOMP = java -jar $(TOOLSBIN)/rescomp.jar
 BINTOS   = $(TOOLSBIN)/bintos
 PCMTORAW = $(TOOLSBIN)/pcmtoraw
-RESCOMP  = $(TOOLSBIN)/rescomp
 WAVTORAW = $(TOOLSBIN)/wavtoraw
 XGMTOOL  = $(TOOLSBIN)/xgmtool
-# Use rescomp jar for SGDK > 1.33
-ifneq ("$(wildcard $(TOOLSBIN)/rescomp.jar)","")
-	RESCOMP = java -jar $(TOOLSBIN)/rescomp.jar
-	WAVTORAW = @echo "wavtoraw no longer available!" ## 
-	PCMTORAW = @echo "pcmtoraw no longer available!" ## 
-endif
 
 # Some files needed are in a versioned directory
 GCC_VER := $(shell $(CC) -dumpversion)
@@ -39,7 +33,7 @@ endif
 INCS     = -Isrc -Ires -Iinc
 INCS    += -I$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER)/include
 INCS    += -I$(MARSDEV)/m68k-elf/include
-INCS    += -I$(MARSDEV)/m68k-elf/m68k-elf/include
+#INCS    += -I$(MARSDEV)/m68k-elf/m68k-elf/include
 
 # Libraries: GCC + Newlib (SGDK libs are with release/debug targets)
 # If you plan on using Newlib, uncomment the line with -lnosys
@@ -54,9 +48,11 @@ CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding -fcommon
 CXXFLAGS = -m68000 -Wall -Wextra -std=c++17 -ffreestanding
 
 # Extra options set by debug or release target
-OPTIONS  = 
 ASFLAGS  = -m68000 --register-prefix-optional
-LDFLAGS  = -T $(MARSDEV)/ldscripts/sgdk.ld -nostdlib -fcommon
+
+# If you use Newlib, use the link with -nostartfiles instead
+LDFLAGS  = -T $(MARSDEV)/ldscripts/sgdk.ld -nostdlib
+#LDFLAGS  = -T $(MARSDEV)/ldscripts/sgdk.ld -nostartfiles
 
 RESS  = $(wildcard res/*.res)
 CS    = $(wildcard src/*.c)
@@ -92,19 +88,18 @@ debug: OPTIONS = -g -Og -DDEBUG -DKDEBUG -fno-web -fno-gcse -fno-unit-at-a-time 
 debug: LIBS += -L$(MARSDEV)/m68k-elf/lib -lmd-debug
 debug: out.bin symbol.txt
 
-# This generates a symbol table that is very helpful in debugging crashes,
-# even with an optimized release build!
+# Generates a symbol table that is very helpful in debugging crashes
 # Cross reference symbol.txt with the addresses displayed in the crash handler
 symbol.txt: out.bin
 	$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n out.elf > symbol.txt
 
 boot/sega.o: boot/rom_head.bin
-	@echo "AS $<"
-	@$(AS) $(ASFLAGS) boot/sega.s -o $@
+	@echo "AS boot/sega.s"
+	@$(CC) $(INCS) -c -x assembler-with-cpp -Wa,-m68000,--register-prefix-optional,--bitwise-or boot/sega.s -o $@
 
 boot/rom_head.bin: boot/rom_head.c
 	@echo "CC $<"
-	@$(CC) $(CFLAGS) $(INCS) -nostdlib -Wl,--oformat=binary $< -o $@
+	@$(CC) $(CFLAGS) $(INCS) -fno-builtin -Wl,-nostdlib,--entry=0,--oformat=binary $< -o $@
 
 %.bin: %.elf
 	@echo "Stripping ELF header..."
