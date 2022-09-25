@@ -23,11 +23,8 @@ endif
 
 .PHONY: all clean
 
-ifeq ($(UNAME_S),Darwin)
 all: $(SJASM)
-else
-all: $(SJASM) $(Z80ASM)
-endif
+#all: $(SJASM) $(Z80ASM)
 
 $(SJASM): $(TOOLSBIN)
 	rm -rf sjasm

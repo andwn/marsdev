@@ -1,4 +1,4 @@
-# Sample Makefile for Marsdev (Non-SGDK version)
+# Sample Makefile for Marsdev (Non-SGDK + Newlib)
 
 # Default paths, can be overridden by setting MARSDEV before calling make
 MARSDEV ?= ${HOME}/mars
@@ -16,7 +16,7 @@ OBJC = $(MARSBIN)/m68k-elf-objcopy
 # Some files needed are in a versioned directory
 GCC_VER := $(shell $(CC) -dumpversion)
 
-# Need the LTO plugin so NM can dump our symbol table
+# Need the LTO plugin path so NM can dump our symbol table
 PLUGIN   = $(MARSDEV)/m68k-elf/libexec/gcc/m68k-elf/$(GCC_VER)
 LTO_SO   = liblto_plugin.so
 ifeq ($(OS),Windows_NT)
@@ -29,19 +29,23 @@ INCS    += -I$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER)/include
 INCS    += -I$(MARSDEV)/m68k-elf/m68k-elf/include
 
 # Libraries: GCC + Newlib
-# If you plan on using Newlib, uncomment the line with -lnosys
 LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER) -lgcc
 LIBS    += -L$(MARSDEV)/m68k-elf/m68k-elf/lib -lnosys
 
-# Any C or C++ standard should be fine here as long as GCC support it
+# Any C or C++ standard should be fine here as long as GCC supports it
+# GCC 10+ by default fails to link if you don't declare header variables extern,
+# and -fcommon reverts to the old behavior (needed to compile SGDK)
 CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding -fcommon
 CXXFLAGS = -m68000 -Wall -Wextra -std=c++17 -ffreestanding
 
-# Extra options set by debug or release target
-OPTIONS  = 
+# Another useful GAS flag is --bitwise-or, but it breaks SGDK
 ASFLAGS  = -m68000 --register-prefix-optional
-LDFLAGS  = -T $(MARSDEV)/ldscripts/md.ld -nostdlib
 
+# -nostartfiles disables the c runtime startup code
+# -nostdlib unsets -lc, so when using Newlib don't set that option
+LDFLAGS  = -T $(MARSDEV)/ldscripts/md.ld -nostartfiles
+
+# Collect source files in the src directory
 CS    = $(wildcard src/*.c)
 CPPS  = $(wildcard src/*.cpp)
 SS    = $(wildcard src/*.s)
@@ -53,6 +57,7 @@ ASMO  = $(RESS:.res=.o)
 ASMO += $(Z80S:.s80=.o)
 ASMO += $(CS:%.c=asmout/%.s)
 
+# Need to keep the .elf to extract the symbol table from it
 .SECONDARY: out.elf
 
 .PHONY: all release asm debug

@@ -35,11 +35,11 @@
 # C++ is not extensively tested but all non-STL features are expected to work
 # Go support has been dropped as it requires a beefy runtime to do anything useful
 
-GCC_VER      ?= 10.3.0
-BINUTILS_VER ?= 2.36.1
-NEWLIB_VER   ?= 1.20.0
+GCC_VER      ?= 12.2.0
+BINUTILS_VER ?= 2.39
+NEWLIB_VER   ?= 4.2.0.20211231
 
-GNU_MIRROR   ?= https://mirrors.tripadvisor.com/gnu
+GNU_MIRROR   ?= https://ftp.gnu.org/gnu/
 
 GCC_DIR       = gcc-$(GCC_VER)
 BINUTILS_DIR  = binutils-$(BINUTILS_VER)
@@ -62,12 +62,14 @@ TARGET  = $(ARCH)-elf
 PREFIX  = $(MARSDEV)/$(TARGET)
 PATH   := $(PREFIX)/bin:$(PATH)
 LOGDIR := $(shell pwd)
+LANGS  ?= c
 
 .PHONY: all all-newlib clean
 
+all: LANGS1P = LANGS
 all: mk-binutils mk-gcc $(LDSCRIPTS)
 
-all-newlib: LANGS ?= c
+all-newlib: LANGS1P = c
 all-newlib: mk-binutils mk-gcc mk-newlib mk-gcc2 $(LDSCRIPTS)
 
 mk-binutils: $(BINUTILS_DIR)
@@ -97,7 +99,7 @@ mk-gcc:
 	cd $(BUILD_DIR) && \
 		../configure --target=$(TARGET) --prefix=$(PREFIX) \
 		--libdir=$(MARSDEV)/$(TARGET)/lib --libexecdir=$(MARSDEV)/$(TARGET)/libexec \
-		--enable-languages=c $(CPU_ARGS) \
+		--enable-languages=$(LANGS1P) $(CPU_ARGS) \
 		--without-headers --disable-libssp \
 		--disable-threads --disable-tls --disable-multilib \
 		--enable-shared=no --disable-nls --disable-werror \
