@@ -42,7 +42,7 @@ void SMAP_drawArea(u16 x, u16 y, u16 w, u16 h) {
 		for(u16 by = y; by < y + h; by++) {
 			for(u16 bx = x; bx < x + w; bx++) {
 				t = (layer ? SMAP_getUpperTile(bx, by) : SMAP_getTile(bx, by)) * 2;
-				b = TILE_USERINDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
+				b = TILE_USER_INDEX + (t / TS_WIDTH * TS_WIDTH * 2) + (t % TS_WIDTH);
 				xx = (bx * 2) % 64;
 				yy = (by * 2) % 32;
 				VDP_setTileMapXY(plan, TILE_ATTR_FULL(PAL2,0,0,0,b), 			xx, 	yy);
