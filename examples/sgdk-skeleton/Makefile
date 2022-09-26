@@ -97,14 +97,17 @@ boot/sega.o: boot/rom_head.bin
 	@echo "AS boot/sega.s"
 	@$(CC) $(INCS) -c -x assembler-with-cpp -Wa,-m68000,--register-prefix-optional,--bitwise-or boot/sega.s -o $@
 
-boot/rom_head.bin: boot/rom_head.c
+boot/rom_head.bin: boot/rom_head.o
+	$(OBJC) -O binary $< $@
+	
+boot/rom_head.o: boot/rom_head.c
 	@echo "CC $<"
-	@$(CC) $(CFLAGS) $(INCS) -fno-builtin -Wl,-nostdlib,--entry=0,--oformat=binary $< -o $@
+	@$(CC) $(CFLAGS) $(INCS) -c $< -o $@
 
 %.bin: %.elf
 	@echo "Stripping ELF header..."
 	@$(OBJC) -O binary $< temp.bin
-	@dd if=temp.bin of=$@ bs=8192 conv=sync
+	@dd if=temp.bin of=$@ bs=8K conv=sync
 	@rm -f temp.bin
 
 %.elf: boot/sega.o $(OBJS)
