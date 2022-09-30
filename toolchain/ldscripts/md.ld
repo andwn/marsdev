@@ -45,7 +45,7 @@ SECTIONS
 {
   .text 0x00000000 :
   {
-    *(.text .text.*)
+    KEEP(*(.text.keepboot)) *(.text.*) *(.text)
     . = ALIGN(0x4);
      __CTOR_LIST__ = .;
     ___CTOR_LIST__ = .;

@@ -81,7 +81,7 @@
  *      will be accessed using BANK_getFarData(..) method (mapper.c). That may impact performance quite a bit
  *      it's why it's disabled by default if you don't require bank switch.
  */
-#define ENABLE_BANK_SWITCH  0
+#define ENABLE_BANK_SWITCH  1
 
 /**
  *  \brief

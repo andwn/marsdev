@@ -1,4 +1,4 @@
-GDB_VER = 9.2
+GDB_VER = 12.1
 GDB_DIR = gdb-$(GDB_VER)
 GDB_PKG = $(GDB_DIR).tar.gz
 
@@ -38,7 +38,7 @@ $(GDB_DIR): $(GDB_PKG)
 	tar xf $(GDB_PKG)
 
 $(GDB_PKG):
-	@wget https://mirrors.tripadvisor.com/gnu/gdb/$(GDB_PKG)
+	@wget https://ftp.gnu.org/gnu/gdb/$(GDB_PKG)
 
 clean:
 	rm -rf $(GDB_DIR)

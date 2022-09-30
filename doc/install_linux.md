@@ -29,6 +29,12 @@ If you plan on using `flamewing-tools`:
  * RedHat: `yum install cmake boost-devel`
  * Arch: `pacman -S cmake boost`
  * Gentoo: `emerge dev-libs/boost`
+
+If you plan on using `m68k-gdb` and/or `sh-gdb`:
+ * Debian: `apt install libgmp-dev`
+ * RedHat: `yum install libgmp-devel`
+ * Arch: `pacman -S gmp`
+ * Gentoo: `emerge dev-libs/gmp`
  
 ### Option 1: Just extract the latest release
 

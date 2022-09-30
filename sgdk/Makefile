@@ -20,14 +20,23 @@ tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(XGMROOMBUILDER) $(SIZEBND) $(LZ4W) $(AP
 libmd:
 	cp -f Makefile.libmd SGDK/Makefile
 	if [ -f "config.h" ]; then cp -f config.h SGDK/inc/config.h; fi
-	# Release version
+	# Release version (default)
 	$(MAKE) -C SGDK clean
 	$(MAKE) -C SGDK
 	cp -f SGDK/libmd.a $(MARSDEV)/m68k-elf/lib/libmd.a
-	# Debug version
+	# Debug version (default)
 	$(MAKE) -C SGDK clean
 	$(MAKE) -C SGDK debug
 	cp -f SGDK/libmd-debug.a $(MARSDEV)/m68k-elf/lib/libmd-debug.a
+	if [ -f "config-far.h" ]; then cp -f config-far.h SGDK/inc/config.h; fi
+	# Release version (bank switch)
+	$(MAKE) -C SGDK clean
+	$(MAKE) -C SGDK
+	cp -f SGDK/libmd.a $(MARSDEV)/m68k-elf/lib/libmd-far.a
+	# Debug version (bank switch)
+	$(MAKE) -C SGDK clean
+	$(MAKE) -C SGDK debug
+	cp -f SGDK/libmd-debug.a $(MARSDEV)/m68k-elf/lib/libmd-far-debug.a
 	# Copy headers
 	cp -f SGDK/inc/*.h $(MARSDEV)/m68k-elf/include/
 	cp -f SGDK/res/*.h $(MARSDEV)/m68k-elf/include/
