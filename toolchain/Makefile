@@ -83,7 +83,9 @@ mk-binutils-$(ARCH):
 		$(CPU_ARGS) \
 		--enable-install-libbfd --enable-shared=no --disable-nls --disable-werror \
 		> $(LOGDIR)/binutils-$(ARCH).log 2>&1
-	$(MAKE) -C $(BUILD_DIR) all install-strip \
+	$(MAKE) -C $(BUILD_DIR) all -j$(shell nproc --all) \
+		>> $(LOGDIR)/binutils-$(ARCH).log 2>&1
+	$(MAKE) -C $(BUILD_DIR) install-strip \
 		>> $(LOGDIR)/binutils-$(ARCH).log 2>&1
 	@touch mk-binutils-$(ARCH)
 	@rm -rf $(BUILD_DIR)
@@ -104,7 +106,9 @@ mk-gcc-$(ARCH):
 		--disable-threads --disable-tls --disable-multilib \
 		--enable-shared=no --disable-nls --disable-werror \
 		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
-	$(MAKE) -C $(BUILD_DIR) all install-strip \
+	$(MAKE) -C $(BUILD_DIR) all -j$(shell nproc --all) \
+		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
+	$(MAKE) -C $(BUILD_DIR) install-strip \
 		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
 	@touch mk-gcc-$(ARCH)
 	@rm -rf $(BUILD_DIR)
@@ -120,7 +124,9 @@ mk-newlib-$(ARCH):
 		$(CPU_ARGS) \
 		--disable-multilib --disable-nls --disable-werror \
 		> $(LOGDIR)/newlib-$(ARCH).log 2>&1
-	$(MAKE) -C $(BUILD_DIR) all install \
+	$(MAKE) -C $(BUILD_DIR) all -j$(shell nproc --all) \
+		>> $(LOGDIR)/newlib-$(ARCH).log 2>&1
+	$(MAKE) -C $(BUILD_DIR) install \
 		>> $(LOGDIR)/newlib-$(ARCH).log 2>&1
 	@touch mk-newlib-$(ARCH)
 	@rm -rf $(BUILD_DIR)
@@ -139,7 +145,9 @@ mk-gcc2-$(ARCH):
 		--disable-threads --disable-tls --disable-multilib \
 		--enable-shared=no --disable-nls --disable-werror \
 		> $(LOGDIR)/gcc2-$(ARCH).log 2>&1
-	$(MAKE) -C $(BUILD_DIR) all install-strip \
+	$(MAKE) -C $(BUILD_DIR) all -j$(shell nproc --all) \
+		>> $(LOGDIR)/gcc2-$(ARCH).log 2>&1
+	$(MAKE) -C $(BUILD_DIR) install-strip \
 		>> $(LOGDIR)/gcc2-$(ARCH).log 2>&1
 	@touch mk-gcc2-$(ARCH)
 	@rm -rf $(BUILD_DIR)
