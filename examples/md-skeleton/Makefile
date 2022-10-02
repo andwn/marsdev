@@ -55,11 +55,7 @@ ASMO  = $(RESS:.res=.o)
 ASMO += $(Z80S:.s80=.o)
 ASMO += $(CS:%.c=asmout/%.s)
 
-# Need to keep the .elf to extract the symbol table from it
-.SECONDARY: out.elf
-
 .PHONY: all release asm debug
-
 all: release
 
 release: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
@@ -77,19 +73,18 @@ debug: out.bin symbol.txt
 # Generates a symbol table that is very helpful in debugging crashes
 # Cross reference symbol.txt with the addresses displayed in the crash handler
 symbol.txt: out.bin
-	$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n out.elf > symbol.txt
-
-boot.o:
-	$(AS) $(ASFLAGS) boot.s -o $@
+	@echo "Creating symbol.txt"
+	@$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n out.elf > symbol.txt
 
 %.bin: %.elf
 	@echo "Stripping ELF header..."
 	@$(OBJC) -O binary $< temp.bin
-	@dd if=temp.bin of=$@ bs=8192 conv=sync
+	@dd if=temp.bin of=$@ bs=8K conv=sync
 	@rm -f temp.bin
 
-%.elf: boot.o $(OBJS)
-	$(CC) -o $@ $(LDFLAGS) boot.o $(OBJS) $(LIBS)
+%.elf: $(OBJS)
+	@echo "Linking $@"
+	@$(CC) -o $@ $(LDFLAGS) $(OBJS) $(LIBS)
 
 %.o: %.c
 	@echo "CC $<"
@@ -111,7 +106,6 @@ asmout/%.s: %.c
 	$(CC) $(CCFLAGS) $(OPTIONS) $(INCS) -S $< -o $@
 
 .PHONY: clean
-
 clean:
 	rm -f $(OBJS) out.bin out.elf symbol.txt boot.o
 	rm -rf asmout

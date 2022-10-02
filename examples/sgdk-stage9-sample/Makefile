@@ -67,10 +67,7 @@ OBJS += $(SS:.s=.o)
 ASMO  = $(RESS:.res=.o)
 ASMO += $(CS:%.c=asmout/%.s)
 
-.SECONDARY: out.elf
-
 .PHONY: all release asm debug
-
 all: release
 
 release: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
@@ -91,7 +88,8 @@ debug: out.bin symbol.txt
 # Generates a symbol table that is very helpful in debugging crashes
 # Cross reference symbol.txt with the addresses displayed in the crash handler
 symbol.txt: out.bin
-	$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n out.elf > symbol.txt
+	@echo "Creating symbol.txt"
+	@$(NM) --plugin=$(PLUGIN)/$(LTO_SO) -n out.elf > symbol.txt
 
 boot/sega.o: boot/rom_head.bin
 	@echo "AS boot/sega.s"
@@ -102,7 +100,7 @@ boot/rom_head.bin: boot/rom_head.o
 	
 boot/rom_head.o: boot/rom_head.c
 	@echo "CC $<"
-	@$(CC) $(CFLAGS) $(INCS) -c $< -o $@
+	@$(CC) $(CCFLAGS) $(INCS) -c $< -o $@
 
 %.bin: %.elf
 	@echo "Stripping ELF header..."
@@ -111,7 +109,8 @@ boot/rom_head.o: boot/rom_head.c
 	@rm -f temp.bin
 
 %.elf: boot/sega.o $(OBJS)
-	$(CC) -o $@ $(LDFLAGS) boot/sega.o $(OBJS) $(LIBS)
+	@echo "Linking $@"
+	@$(CC) -o $@ $(LDFLAGS) boot/sega.o $(OBJS) $(LIBS)
 
 %.o: %.c
 	@echo "CC $<"
@@ -136,7 +135,6 @@ asmout/%.s: %.c
 	$(CC) $(CCFLAGS) $(OPTIONS) $(INCS) -S $< -o $@
 
 .PHONY: clean
-
 clean:
 	rm -f $(OBJS) out.bin out.elf symbol.txt
 	rm -f boot/sega.o boot/rom_head.o boot/rom_head.bin

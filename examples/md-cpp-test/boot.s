@@ -40,7 +40,7 @@ RomStart:
 
 RomHeader:
         .ascii	"SEGA MEGA DRIVE "		/* First 4 bytes must be "SEGA" */
-		.ascii	"GRIND   2019.DEC"		/* Copyright and date */
+		.ascii	"GRIND   2022.OCT"		/* Copyright and date */
 		.ascii	"Example Project                                 " /* JP Name */
 		.ascii	"Example Project                                 " /* EN Name */
 		.ascii	"GM CHANGEME-XX"		/* Serial No. */

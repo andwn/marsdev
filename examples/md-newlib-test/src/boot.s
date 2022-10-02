@@ -18,7 +18,7 @@ v_err_ext2: ds.w 1
 v_err_sr:	ds.w 1
 v_err_type:	ds.b 1
 
-.section .text
+.section .text.keepboot
 
     .org    0x00000000					/* Forces linker to put us at the beginning */
 

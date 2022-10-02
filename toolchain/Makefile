@@ -141,7 +141,6 @@ mk-gcc2-$(ARCH):
 	   	--libdir=$(MARSDEV)/$(TARGET)/lib --libexecdir=$(MARSDEV)/$(TARGET)/libexec \
 		--enable-languages=$(LANGS) $(CPU_ARGS) \
 		--without-headers --with-newlib --disable-libssp \
-		--disable-libstacktrace --disable-libstdcxx \
 		--disable-threads --disable-tls --disable-multilib \
 		--enable-shared=no --disable-nls --disable-werror \
 		> $(LOGDIR)/gcc2-$(ARCH).log 2>&1
