@@ -72,7 +72,7 @@ LANGS  ?= c
 
 .PHONY: all all-newlib clean
 
-all: LANGS1P = LANGS
+all: LANGS1P = $(LANGS)
 all: mk-gcc-$(ARCH) $(LDSCRIPTS)
 
 all-newlib: LANGS1P = c
@@ -102,7 +102,7 @@ mk-gcc-$(ARCH):
 	@echo "+++ Building $(GCC_DIR) for $(ARCH)..."
 	cd $(GCC_DIR) && ./contrib/download_prerequisites \
 		> $(LOGDIR)/gcc-$(ARCH).log 2>&1
-#	patch -p0 < libcc1_suse_fix.patch
+	#-patch -p0 < libcc1_suse_fix.patch
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
 		../configure --target=$(TARGET) --prefix=$(PREFIX) \
