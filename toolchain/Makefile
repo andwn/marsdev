@@ -58,6 +58,12 @@ ifeq ($(ARCH),sh)
 	CPU_ARGS = --with-endian=big --with-cpu=m2
 endif
 
+ifeq ($(shell uname),Darwin)
+	NPROC := $(shell sysctl -n hw.logicalcpu)
+else
+	NPROC := $(shell nproc --all)
+endif
+
 TARGET  = $(ARCH)-elf
 PREFIX  = $(MARSDEV)/$(TARGET)
 PATH   := $(PREFIX)/bin:$(PATH)
@@ -83,7 +89,7 @@ mk-binutils-$(ARCH):
 		$(CPU_ARGS) \
 		--enable-install-libbfd --enable-shared=no --disable-nls --disable-werror \
 		> $(LOGDIR)/binutils-$(ARCH).log 2>&1
-	$(MAKE) -C $(BUILD_DIR) all -j$(shell nproc --all) \
+	$(MAKE) -C $(BUILD_DIR) all -j$(NPROC) \
 		>> $(LOGDIR)/binutils-$(ARCH).log 2>&1
 	$(MAKE) -C $(BUILD_DIR) install-strip \
 		>> $(LOGDIR)/binutils-$(ARCH).log 2>&1
@@ -106,7 +112,7 @@ mk-gcc-$(ARCH):
 		--disable-threads --disable-tls --disable-multilib \
 		--enable-shared=no --disable-nls --disable-werror \
 		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
-	$(MAKE) -C $(BUILD_DIR) all -j$(shell nproc --all) \
+	$(MAKE) -C $(BUILD_DIR) all -j$(NPROC) \
 		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
 	$(MAKE) -C $(BUILD_DIR) install-strip \
 		>> $(LOGDIR)/gcc-$(ARCH).log 2>&1
@@ -124,7 +130,7 @@ mk-newlib-$(ARCH):
 		$(CPU_ARGS) \
 		--disable-multilib --disable-nls --disable-werror \
 		> $(LOGDIR)/newlib-$(ARCH).log 2>&1
-	$(MAKE) -C $(BUILD_DIR) all -j$(shell nproc --all) \
+	$(MAKE) -C $(BUILD_DIR) all -j$(NPROC) \
 		>> $(LOGDIR)/newlib-$(ARCH).log 2>&1
 	$(MAKE) -C $(BUILD_DIR) install \
 		>> $(LOGDIR)/newlib-$(ARCH).log 2>&1
@@ -144,7 +150,7 @@ mk-gcc2-$(ARCH):
 		--disable-threads --disable-tls --disable-multilib \
 		--enable-shared=no --disable-nls --disable-werror \
 		> $(LOGDIR)/gcc2-$(ARCH).log 2>&1
-	$(MAKE) -C $(BUILD_DIR) all -j$(shell nproc --all) \
+	$(MAKE) -C $(BUILD_DIR) all -j$(NPROC) \
 		>> $(LOGDIR)/gcc2-$(ARCH).log 2>&1
 	$(MAKE) -C $(BUILD_DIR) install-strip \
 		>> $(LOGDIR)/gcc2-$(ARCH).log 2>&1
