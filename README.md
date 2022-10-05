@@ -73,7 +73,7 @@ If your IDE lets you configure what the build/run buttons do, just have it run s
 
 ### I don't have WSL
 
-[!Stop using XP](doc/xp.jpg)
+![Stop using XP](doc/xp.jpg)
 
 There are two supported versions of Windows and both support WSL.
 I think that someone who is already insistent on using an out-of-date Windows
@@ -84,7 +84,7 @@ should not have any gripes with using an out-of-date toolchain instead of this o
 
 GCC is a big boy so we just have to be patient. Alternatively:
 
-[!Parallel builds](doc/cores.png)
+![Parallel builds](doc/cores.png)
 
 
 ## Things to do
