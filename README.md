@@ -1,4 +1,4 @@
-## Marsdev
+# Marsdev
 
 Cross platform Mega Drive / 32X toolchain and Makefile abuse.
 
@@ -75,19 +75,17 @@ If your IDE lets you configure what the build/run buttons do, just have it run s
 
 ![Stop using XP](doc/xp.jpg)
 
-There are two supported versions of Windows and both support WSL.
-I think that someone who is already insistent on using an out-of-date Windows
-should not have any gripes with using an out-of-date toolchain instead of this one.
+MSYS2 might still work, but it's a pain to use and maintain.
 
 
 ### This takes so long to compile!
 
-GCC is a big boy so we just have to be patient. Alternatively:
+GCC is a big boy so we just have to be patient. Alternatively,
 
 ![Parallel builds](doc/cores.png)
 
 
-## Things to do
+# Things to do
 
  - [x] Self-host a mirror for the toolchain
  - [x] Checksum for downloaded files
