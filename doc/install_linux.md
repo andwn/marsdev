@@ -7,7 +7,7 @@ Some package names may be off, but you should be able to solve this.
 ### Dependencies
 
 For the minimal install:
- * Debian: `apt install build-essential texinfo curl`
+ * Debian: `apt install build-essential texinfo wget`
  * RedHat: `yum install gcc gcc-c++ texinfo-tex`
  * Arch: `pacman -S base-devel texinfo`
  * Gentoo: `emerge sys-apps/texinfo`
