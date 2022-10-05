@@ -43,20 +43,20 @@
 MARS_MIRROR     ?= https://tenshi.skychase.zone/
 USE_MARS_MIRROR ?= true
 
-GCC_VER      ?= 12.2.0
 BINUTILS_VER ?= 2.39
+GCC_VER      ?= 12.2.0
 NEWLIB_VER   ?= 4.2.0.20211231
 
-GCC_DIR       = gcc-$(GCC_VER)
 BINUTILS_DIR  = binutils-$(BINUTILS_VER)
+GCC_DIR       = gcc-$(GCC_VER)
 NEWLIB_DIR    = newlib-$(NEWLIB_VER)
 
-GCC_PKG       = $(GCC_DIR).tar.xz
 BINUTILS_PKG  = $(BINUTILS_DIR).tar.xz
+GCC_PKG       = $(GCC_DIR).tar.xz
 NEWLIB_PKG    = $(NEWLIB_DIR).tar.gz
 
-GCC_SHA       = e549cf9cf3594a00e27b6589d4322d70e0720cdd213f39beb4181e06926230ff
 BINUTILS_SHA  = 645c25f563b8adc0a81dbd6a41cffbf4d37083a382e02d5d3df4f65c09516d00
+GCC_SHA       = e549cf9cf3594a00e27b6589d4322d70e0720cdd213f39beb4181e06926230ff
 NEWLIB_SHA    = c3a0e8b63bc3bef1aeee4ca3906b53b3b86c8d139867607369cb2915ffc54435
 
 # ISL, GMP, MPC, and MPFR are libraries required to compile GCC.
@@ -83,6 +83,15 @@ GMP_SHA       = fd4829912cddd12f84181c3451cc752be224643e87fac497b69edddadc49b4f2
 MPC_SHA       = 17503d2c395dfcf106b622dc142683c1199431d095367c6aacba6eec30340459
 MPFR_SHA      = 0c98a3f1732ff6ca4ea690552079da9c597872d30e96ec28414ee23c95558a7f
 
+GCC_PREREQ = 
+ifeq ($(USE_MARS_MIRROR),true)
+	GCC_PREREQ += $(GCC_DIR)/isl
+	GCC_PREREQ += $(GCC_DIR)/gmp
+	GCC_PREREQ += $(GCC_DIR)/mpc
+	GCC_PREREQ += $(GCC_DIR)/mpfr
+endif
+
+# Linker scripts
 LDSCRIPTS = $(MARSDEV)/ldscripts
 
 ifeq ($(ARCH),m68k)
@@ -113,6 +122,8 @@ all: mk-gcc-$(ARCH) $(LDSCRIPTS)
 all-newlib: LANGS1P = c
 all-newlib: mk-gcc2-$(ARCH) $(LDSCRIPTS)
 
+# The BUILD_DIRs are split by CPU arch, so a clean is not required in between building both
+
 mk-binutils-$(ARCH): $(BINUTILS_DIR)
 mk-binutils-$(ARCH): BUILD_DIR=$(BINUTILS_DIR)/build-$(ARCH)
 mk-binutils-$(ARCH):
@@ -131,7 +142,7 @@ mk-binutils-$(ARCH):
 	@touch mk-binutils-$(ARCH)
 	@rm -rf $(BUILD_DIR)
 
-mk-gcc-$(ARCH): $(GCC_DIR) mk-binutils-$(ARCH)
+mk-gcc-$(ARCH): $(GCC_DIR) $(GCC_PREREQ) mk-binutils-$(ARCH)
 mk-gcc-$(ARCH): BUILD_DIR=$(GCC_DIR)/build-gcc1-$(ARCH)
 mk-gcc-$(ARCH): 
 	@echo "+++ Building $(GCC_DIR) for $(ARCH)..."
@@ -192,20 +203,38 @@ mk-gcc2-$(ARCH):
 	@touch mk-gcc2-$(ARCH)
 	@rm -rf $(BUILD_DIR)
 
-$(BINUTILS_DIR): $(BINUTILS_PKG)
-	tar xf $(BINUTILS_PKG)
 
-$(GCC_DIR): $(GCC_PKG)
-	tar xf $(GCC_PKG)
-	if [ $(USE_MARS_MIRROR) ]; then \
-		tar xf $(ISL_PKG) -C $(GCC_DIR) && mv $(GCC_DIR)/$(ISL_DIR) $(GCC_DIR)/isl ; \
-		tar xf $(GMP_PKG) -C $(GCC_DIR) && mv $(GCC_DIR)/$(GMP_DIR) $(GCC_DIR)/gmp ; \
-		tar xf $(MPC_PKG) -C $(GCC_DIR) && mv $(GCC_DIR)/$(MPC_DIR) $(GCC_DIR)/mpc ; \
-		tar xf $(MPFR_PKG) -C $(GCC_DIR) && mv $(GCC_DIR)/$(MPFR_DIR) $(GCC_DIR)/mpfr ; \
-	fi
+# Handling for GCC prerequisites manually if necessary
 
-$(NEWLIB_DIR): $(NEWLIB_PKG)
-	tar xf $(NEWLIB_PKG)
+$(GCC_DIR)/isl: $(ISL_PKG) $(GCC_DIR)
+	tar xf $< && mv $(ISL_DIR) $@
+	
+$(GCC_DIR)/gmp: $(GMP_PKG) $(GCC_DIR)
+	tar xf $< && mv $(GMP_DIR) $@
+	
+$(GCC_DIR)/mpc: $(MPC_PKG) $(GCC_DIR)
+	tar xf $< && mv $(MPC_DIR) $@
+	
+$(GCC_DIR)/mpfr: $(MPFR_PKG) $(GCC_DIR)
+	tar xf $< && mv $(MPFR_DIR) $@
+
+$(ISL_PKG):
+	@wget $(MARS_MIRROR)$(ISL_PKG)
+	@echo "$(ISL_SHA) $(ISL_PKG)" | sha256sum -c
+	
+$(GMP_PKG):
+	@wget $(MARS_MIRROR)$(GMP_PKG)
+	@echo "$(GMP_SHA) $(GMP_PKG)" | sha256sum -c
+	
+$(MPC_PKG):
+	@wget $(MARS_MIRROR)$(MPC_PKG)
+	@echo "$(MPC_SHA) $(MPC_PKG)" | sha256sum -c
+	
+$(MPFR_PKG):
+	@wget $(MARS_MIRROR)$(MPFR_PKG)
+	@echo "$(MPFR_SHA) $(MPFR_PKG)" | sha256sum -c
+	
+# Download packages from mirror
 
 $(BINUTILS_PKG):
 	@if [ ! $(USE_MARS_MIRROR) ]; then \
@@ -218,19 +247,10 @@ $(BINUTILS_PKG):
 $(GCC_PKG):
 	@if [ ! $(USE_MARS_MIRROR) ]; then \
 		wget https://ftp.gnu.org/gnu/gcc/gcc-$(GCC_VER)/$(GCC_PKG) ; \
-		echo "$(GCC_SHA) $(GCC_PKG)" | sha256sum -c ; \
 	else \
 		wget $(MARS_MIRROR)$(GCC_PKG) ; \
-		echo "$(GCC_SHA) $(GCC_PKG)" | sha256sum -c ; \
-		wget $(MARS_MIRROR)$(ISL_PKG) ; \
-		echo "$(ISL_SHA) $(ISL_PKG)" | sha256sum -c ; \
-		wget $(MARS_MIRROR)$(GMP_PKG) ; \
-		echo "$(GMP_SHA) $(GMP_PKG)" | sha256sum -c ; \
-		wget $(MARS_MIRROR)$(MPC_PKG) ; \
-		echo "$(MPC_SHA) $(MPC_PKG)" | sha256sum -c ; \
-		wget $(MARS_MIRROR)$(MPFR_PKG) ; \
-		echo "$(MPFR_SHA) $(MPFR_PKG)" | sha256sum -c ; \
 	fi
+	@echo "$(GCC_SHA) $(GCC_PKG)" | sha256sum -c
 
 $(NEWLIB_PKG):
 	@if [ ! $(USE_MARS_MIRROR) ]; then \
@@ -240,11 +260,23 @@ $(NEWLIB_PKG):
 	fi
 	@echo "$(NEWLIB_SHA) $(NEWLIB_PKG)" | sha256sum -c
 
+# Extract source packages with tar
+
+$(BINUTILS_DIR): $(BINUTILS_PKG)
+	tar xf $(BINUTILS_PKG)
+
+$(GCC_DIR): $(GCC_PKG)
+	tar xf $(GCC_PKG)
+
+$(NEWLIB_DIR): $(NEWLIB_PKG)
+	tar xf $(NEWLIB_PKG)
+
+
 $(LDSCRIPTS):
 	cp -rf ldscripts/ $(LDSCRIPTS)
 
 clean:
-	rm -rf $(GCC_DIR)
 	rm -rf $(BINUTILS_DIR)
+	rm -rf $(GCC_DIR)
 	rm -rf $(NEWLIB_DIR)
 	rm -f mk-binutils-* mk-gcc-* mk-newlib-* mk-gcc2-*
