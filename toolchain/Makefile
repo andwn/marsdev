@@ -112,6 +112,7 @@ TARGET  = $(ARCH)-elf
 PREFIX  = $(MARSDEV)/$(TARGET)
 PATH   := $(PREFIX)/bin:$(PATH)
 LOGDIR := $(shell pwd)
+SHASUM := shasum -a 256 -c
 LANGS  ?= c
 
 .PHONY: all all-newlib clean
@@ -220,19 +221,19 @@ $(GCC_DIR)/mpfr: $(MPFR_PKG) $(GCC_DIR)
 
 $(ISL_PKG):
 	@wget $(MARS_MIRROR)$(ISL_PKG)
-	@echo "$(ISL_SHA) $(ISL_PKG)" | sha256sum -c
+	@echo "$(ISL_SHA) *$(ISL_PKG)" | $(SHASUM)
 	
 $(GMP_PKG):
 	@wget $(MARS_MIRROR)$(GMP_PKG)
-	@echo "$(GMP_SHA) $(GMP_PKG)" | sha256sum -c
+	@echo "$(GMP_SHA) *$(GMP_PKG)" | $(SHASUM)
 	
 $(MPC_PKG):
 	@wget $(MARS_MIRROR)$(MPC_PKG)
-	@echo "$(MPC_SHA) $(MPC_PKG)" | sha256sum -c
+	@echo "$(MPC_SHA) *$(MPC_PKG)" | $(SHASUM)
 	
 $(MPFR_PKG):
 	@wget $(MARS_MIRROR)$(MPFR_PKG)
-	@echo "$(MPFR_SHA) $(MPFR_PKG)" | sha256sum -c
+	@echo "$(MPFR_SHA) *$(MPFR_PKG)" | $(SHASUM)
 	
 # Download packages from mirror
 
@@ -242,7 +243,7 @@ $(BINUTILS_PKG):
 	else \
 		wget $(MARS_MIRROR)$(BINUTILS_PKG) ; \
 	fi
-	@echo "$(BINUTILS_SHA) $(BINUTILS_PKG)" | sha256sum -c
+	@echo "$(BINUTILS_SHA) *$(BINUTILS_PKG)" | $(SHASUM)
 
 $(GCC_PKG):
 	@if [ ! $(USE_MARS_MIRROR) ]; then \
@@ -250,7 +251,7 @@ $(GCC_PKG):
 	else \
 		wget $(MARS_MIRROR)$(GCC_PKG) ; \
 	fi
-	@echo "$(GCC_SHA) $(GCC_PKG)" | sha256sum -c
+	@echo "$(GCC_SHA) *$(GCC_PKG)" | $(SHASUM)
 
 $(NEWLIB_PKG):
 	@if [ ! $(USE_MARS_MIRROR) ]; then \
@@ -258,7 +259,7 @@ $(NEWLIB_PKG):
 	else \
 		wget $(MARS_MIRROR)$(NEWLIB_PKG) ; \
 	fi
-	@echo "$(NEWLIB_SHA) $(NEWLIB_PKG)" | sha256sum -c
+	@echo "$(NEWLIB_SHA) *$(NEWLIB_PKG)" | $(SHASUM)
 
 # Extract source packages with tar
 
