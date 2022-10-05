@@ -1,4 +1,4 @@
-## Installation on Windows 7/8.1/10/11
+## Installation on Windows 7/8.1
 
 These are installation steps for users who do not have access to WSL (Windows Subsystem for Linux),
 or people who just prefer not to use it. For WSL, follow the Linux instructions instead.
@@ -13,7 +13,7 @@ Follow the instructions carefully to make sure the packages are up to date.
 ### Install required packages
 
 Open up a "MSYS2 MinGW 64-bit" terminal and enter the following:
- - `pacman -S make git mingw-w64-x86_64-toolchain texinfo tar diffutils patch`
+ - `pacman -S make git mingw-w64-x86_64-toolchain texinfo tar wget`
 
 Note: All of these instructions should also work in the 32-bit terminal if you replace `x86_64` with `i686`.
 
@@ -32,14 +32,6 @@ If you plan on using `flamewing-tools`:
  - `pacman -S mingw-w64-x86_64-cmake mingw-w64-x86_64-boost`
 
 
-### Option 1: Just extract the latest release
+### Start compiling targets
 
-If you download the latest release, you can extract it to your MSYS home directory.
-By default, that is in `C:\msys64\home\yourname`.
-
-That's it. You should be able to build any of the example projects.
-
-
-### Option 2: Compile the toolchain yourself
-
-Follow the [compilation instructions](compiling.md)
+Check the [Target Reference](targets.md)

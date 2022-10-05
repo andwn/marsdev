@@ -5,17 +5,10 @@ Cross platform Mega Drive / 32X toolchain and Makefile abuse.
 
 ## Installation
 
-(TODO: Reorganize the install/compile docs into just an "Installation Guide" and "Target Reference")
+Follow the [Installation Guide](doc/install.md) to get started.
 
-Follow the guide for your OS:
- - [Windows 7/8.1](doc/install_windows.md) (Deprecated, please use WSL instead)
- - [MacOS 10.14+](doc/install_macos.md)
- - [Linux or WSL](doc/install_linux.md)
-
-
-## Compiling
-
-[Compiling Marsdev](doc/compiling.md)
+Marsdev is split into several targets so you can build just the parts you need.
+For more information about each of them, read the [Target Reference](doc/targets.md).
 
 
 ## Examples
