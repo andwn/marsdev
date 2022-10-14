@@ -1,7 +1,7 @@
 # Marsdev Installation Guide
 
 
-## Windows Users
+### Windows Users
 
 I highly recommend you use [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 and follow the Linux instructions here.
@@ -9,7 +9,7 @@ As a last resort for those unable to use WSL for whatever reason,
 [there is MSYS2](install_msys_legacy.md).
 
 
-## Mac Users
+### Mac Users
 
 First off, you need the Xcode command line tools (not the whole IDE).
 You can install it by running this in your terminal:
@@ -42,7 +42,7 @@ If you plan on using `sgdk`:
  * Gentoo: `emerge dev-java/openjdk`
 
 
-### Compilation
+## Compilation
 
 Clone the repo:
  - `git clone https://github.com/andwn/marsdev`
