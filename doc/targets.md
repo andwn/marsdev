@@ -6,9 +6,9 @@ Before you begin make sure you followed the [installation steps](install.md).
 ### Dependencies for all targets
 
  * Debian: `apt install build-essential texinfo wget`
- * RedHat: `yum install gcc gcc-c++ texinfo-tex`
+ * RedHat: `yum install gcc gcc-c++ texinfo-tex wget`
  * Arch: `pacman -S base-devel texinfo wget`
- * Gentoo: `emerge sys-apps/texinfo`
+ * Gentoo: `emerge sys-apps/texinfo net-misc/wget`
  * MacOS: `xcode-select --install`
 
 

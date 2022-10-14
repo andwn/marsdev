@@ -18,6 +18,9 @@ You can install it by running this in your terminal:
 I use [homebrew](https://brew.sh/) to install the other packages, so install that.
 You're on your own here if you don't want to use homebrew.
 
+For the toolchain, wget is needed to download the tarballs:
+ - `brew install wget`
+
 If you plan on using `sgdk`:
  - `brew install java`
  - Open `~/.zshrc` (or `~/.bashrc` if you still use bash) and add the line:
@@ -31,9 +34,9 @@ Note: If you don't know what distro you are using, assume it is Ubuntu and try t
 
 For the minimal install:
  * Debian: `apt install build-essential texinfo wget`
- * RedHat: `yum install gcc gcc-c++ texinfo-tex`
+ * RedHat: `yum install gcc gcc-c++ texinfo-tex wget`
  * Arch: `pacman -S base-devel texinfo wget`
- * Gentoo: `emerge sys-apps/texinfo`
+ * Gentoo: `emerge sys-apps/texinfo net-misc/wget`
 
 If you plan on using `sgdk`:
  * Debian: `apt install openjdk-11-jre`
@@ -51,7 +54,11 @@ Clone the repo:
 ---
 **NOTE**
 
-The default "install" location for Marsdev is `~/mars`. This path is defined in the `MARSDEV` environment variable. You can specify a different location by adding something like `MARSDEV=/opt/toolchains/megadrive` to any of the below commands. However, I highly recommend setting it somewhere that does not require the root user for writing to avoid having to run make with sudo. The `mars` directory is portable and easily moved somewhere else after the fact. All that has to be changed is the `MARSDEV` environment variable to the new path.
+The default "install" location for Marsdev is `~/mars`. This path is defined in the `MARSDEV` environment variable.
+You can specify a different location by adding something like `MARSDEV=/opt/toolchains/megadrive` to any of the below commands.
+However, I recommend setting it somewhere that does not require the root user for writing to avoid having to run make with sudo.
+The `mars` directory is portable and easily moved somewhere else after the fact.
+All that has to be changed is the `MARSDEV` environment variable to the new path.
 
 If you do opt to change the location, rather than specify the directory every time put this in your `~/.bashrc`/`~/.zshrc`/etc:
 
@@ -81,3 +88,4 @@ The "complete" toolchain the releases use:
 If everything succeeds you should be all set to copy one of the skeleton projects and start coding.
 
 For more details on what these targets do, check the [Target Reference](targets.md).
+
