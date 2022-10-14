@@ -48,6 +48,17 @@ Clone the repo:
  - `git clone https://github.com/andwn/marsdev`
  - `cd marsdev`
 
+---
+**NOTE**
+
+The default "install" location for Marsdev is `~/mars`. This path is defined in the `MARSDEV` environment variable. You can specify a different location by adding something like `MARSDEV=/opt/toolchains/megadrive` to any of the below commands. However, I highly recommend setting it somewhere that does not require the root user for writing to avoid having to run make with sudo. The `mars` directory is portable and easily moved somewhere else after the fact. All that has to be changed is the `MARSDEV` environment variable to the new path.
+
+If you do opt to change the location, rather than specify the directory every time put this in your `~/.bashrc`/`~/.zshrc`/etc:
+
+`export MARSDEV=/path/to/mars`
+
+---
+
 Use make to build the targets you want.
 The minimum for a typical SGDK dev is:
  - `make m68k-toolchain`

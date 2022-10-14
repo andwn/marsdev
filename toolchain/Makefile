@@ -273,7 +273,10 @@ $(NEWLIB_DIR): $(NEWLIB_PKG)
 	tar xf $(NEWLIB_PKG)
 
 
-$(LDSCRIPTS):
+$(MARSDEV):
+	mkdir -p $(MARSDEV)
+
+$(LDSCRIPTS): $(MARSDEV)
 	cp -rf ldscripts/ $(LDSCRIPTS)
 
 clean:
