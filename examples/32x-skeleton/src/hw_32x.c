@@ -9,13 +9,12 @@
  *
  * Altered for 32X by Chilly Willy
  */
-#include "types.h"
-#include "string.h"
+
 #include "32x.h"
 
-//#include <stdarg.h>
-//#include <stdio.h>
-//#include <string.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
 
 static int X = 0, Y = 0;
 static int MX = 40, MY = 25;
@@ -377,8 +376,7 @@ void Hw32xScreenPrintf(const char *format, ...)
    char     buff[256];
 
    va_start(opt, format);
-   //vsnprintf(buff, sizeof(buff), format, opt);
-   vsprintf(buff, format, opt);
+   vsnprintf(buff, (size_t)sizeof(buff), format, opt);
    va_end(opt);
    Hw32xScreenPuts(buff);
 }

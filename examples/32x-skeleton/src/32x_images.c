@@ -5,10 +5,9 @@
 * 3/3/2012
 *
 */
-//#include <stdlib.h>
-//#include <string.h>
+#include <stdlib.h>
+#include <string.h>
 #include "types.h"
-#include "string.h"
 #include "32x.h"
 #include "lzss_decode.h"
 

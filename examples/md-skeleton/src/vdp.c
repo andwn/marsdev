@@ -1,4 +1,7 @@
-#include "md.h"
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include "vdp.h"
 
 const uint32_t TILE_BLANK[8] = {};
 const uint16_t BLANK_DATA[0x80] = {};
@@ -21,6 +24,11 @@ extern const uint32_t FONT_TILES[];
 static volatile uint16_t* const vdp_data_port = (uint16_t*) 0xC00000;
 static volatile uint16_t* const vdp_ctrl_port = (uint16_t*) 0xC00004;
 static volatile uint32_t* const vdp_ctrl_wide = (uint32_t*) 0xC00004;
+
+uint8_t SCREEN_HEIGHT;
+uint8_t SCREEN_HALF_H;
+uint8_t FPS;
+uint8_t pal_mode;
 
 // Palette vars
 static uint16_t pal_current[64];
@@ -225,7 +233,7 @@ uint16_t vdp_fade_step() {
 			if(cB != nB) { pal_current[i] += cB < nB ? 0x200 : -0x200; colors_changed++; }
 		}
 		if(!colors_changed) {
-			pal_fading = 0;
+			pal_fading = false;
 			return 0;
 		}
 		vdp_dma_cram((uint32_t) pal_current, 0, 64);
@@ -236,7 +244,7 @@ uint16_t vdp_fade_step() {
 void vdp_fade(const uint16_t *src, const uint16_t *dst, uint16_t speed, uint8_t async) {
     if(src) vdp_colors(0, src, 64);
     if(dst) vdp_colors_next(0, dst, 64);
-	pal_fading = 1;
+	pal_fading = true;
 	pal_fadespeed = speed;
 	pal_fadecnt = 0;
     if(!async) {

@@ -68,9 +68,9 @@ int main() {
 	//VDP_setEnable(0);
 	//VDP_setPlanSize(64, 32);
 	// Load sample tiles & palettes
-	PAL_setPalette(PAL0, PAL_Character.data, CPU);
-	PAL_setPalette(PAL2, PAL_Tiny16.data, CPU);
-	VDP_loadTileSet(&TS_Tiny16, TILE_USER_INDEX, DMA);
+	VDP_setPalette(PAL0, PAL_Character.data);
+	VDP_setPalette(PAL2, PAL_Tiny16.data);
+	VDP_loadTileSet(&TS_Tiny16, TILE_USERINDEX, DMA);
 	player.sprite = SPR_addSprite(&SPR_Character, player.x, player.y, TILE_ATTR(PAL0,0,0,0));
 	SMAP_loadData(MAP_World);
 	SMAP_drawArea(camera.x / BLOCK_SIZE, camera.y / BLOCK_SIZE, 21, 15);

@@ -5,8 +5,7 @@
 ; breaks: af
 ;****************************************************************************
 
-;PollPCM: macro
-    macro PollPCM
+PollPCM: macro
     ld a, ($4000)
     rrca
     rst $08
@@ -22,8 +21,7 @@
 ; breaks ..... AF
 ;****************************************************************************
 
-;BankSwitch: macro
-    macro BankSwitch
+BankSwitch: macro
     ld (hl), a
     rrca
     ld (hl), a
