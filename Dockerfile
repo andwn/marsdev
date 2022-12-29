@@ -6,8 +6,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
     apt install -y git build-essential texinfo curl wget \
     openjdk-17-jdk-headless libpng-dev cmake libboost-all-dev \
-    autoconf automake libtool libboost-dev && \
-    apt clean
+    autoconf automake libtool libboost-dev libgmp-dev \
+    && apt clean
 
 ENV MARSDEV=/marsdev/mars
 ENV GENDEV=$MARSDEV
