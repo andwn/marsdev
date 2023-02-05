@@ -1,6 +1,5 @@
-TOOLSBIN = $(MARSDEV)/bin
-
-SJASM     = $(TOOLSBIN)/sjasm
+MARSDEV   = $(MARS_BUILD_DIR)
+SJASM     = $(MARSDEV)/m68k-elf/bin/sjasm
 SJBRANCH ?= v0.39
 
 # Use homebrew's gettext on macOS, for autopoint
@@ -22,14 +21,11 @@ endif
 
 all: $(SJASM)
 
-$(SJASM): $(TOOLSBIN)
+$(SJASM):
 	rm -rf sjasm
 	git clone https://github.com/konamiman/sjasm --branch $(SJBRANCH)
 	cd sjasm/Sjasm && $(MAKE)
 	cp -f sjasm/Sjasm/sjasm $(SJASM)
-
-$(TOOLSBIN):
-	mkdir -p $(TOOLSBIN)
 
 clean:
 	rm -rf sjasm

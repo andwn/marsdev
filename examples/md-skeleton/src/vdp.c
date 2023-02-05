@@ -15,6 +15,11 @@ const uint16_t PAL_FullWhite[64] = {
 	0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE,0xEEE
 };
 
+uint8_t SCREEN_HEIGHT;
+uint8_t SCREEN_HALF_H;
+uint8_t FPS;
+uint8_t pal_mode;
+
 // Must be declared as an array instead of a pointer
 extern const uint32_t FONT_TILES[];
 

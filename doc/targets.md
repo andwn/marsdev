@@ -14,7 +14,7 @@ Before you begin make sure you followed the [installation steps](install.md).
 
 ## m68k-toolchain(-newlib) / sh-toolchain(-newlib)
 
- - `m68k-toolchain` builds a GCC cross compiler toolchain for Motorola 68000 (Mega Drive)
+ - `m68k-toolchain` builds a GCC cross-compiler toolchain for Motorola 68000 (Mega Drive)
  - `m68k-toolchain-newlib` builds the toolchain with Newlib (C standard library) support
  - `sh-toolchain` and `sh-toolchain-newlib` do the same for SH-2 (32X, Saturn)
 

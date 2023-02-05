@@ -36,10 +36,12 @@
 # C++ is not extensively tested but all non-STL features are expected to work.
 # Go support has been dropped as it requires a beefy runtime to do anything useful.
 
+MARSDEV = $(MARS_BUILD_DIR)
+
 # == Mars Mirror vs Public Mirrors ==
 # I set up a VPS with all the required packages in a flat folder.
 # SHA-256 sums are checked after downloading in case it gets dorobo'd.
-# Pass USE_MARS_MIRROR=false to use the GNU/Sourceware public ones instead.
+# Pass USE_MARS_MIRROR=false to use the GNU/Sourceware public ones ins -f makefile.gentead.
 MARS_MIRROR     ?= https://tenshi.skychase.zone/
 USE_MARS_MIRROR ?= true
 
@@ -91,9 +93,6 @@ ifeq ($(USE_MARS_MIRROR),true)
 	GCC_PREREQ += $(GCC_DIR)/mpfr
 endif
 
-# Linker scripts
-LDSCRIPTS = $(MARSDEV)/ldscripts
-
 ifeq ($(ARCH),m68k)
 	CPU_ARGS = --with-cpu=m68000
 endif
@@ -118,10 +117,10 @@ LANGS  ?= c
 .PHONY: all all-newlib clean
 
 all: LANGS1P = $(LANGS)
-all: mk-gcc-$(ARCH) $(LDSCRIPTS)
+all: mk-gcc-$(ARCH)
 
 all-newlib: LANGS1P = c
-all-newlib: mk-gcc2-$(ARCH) $(LDSCRIPTS)
+all-newlib: mk-gcc2-$(ARCH)
 
 # The BUILD_DIRs are split by CPU arch, so a clean is not required in between building both
 
@@ -276,8 +275,6 @@ $(NEWLIB_DIR): $(NEWLIB_PKG)
 $(MARSDEV):
 	mkdir -p $(MARSDEV)
 
-$(LDSCRIPTS): $(MARSDEV)
-	cp -rf ldscripts/ $(LDSCRIPTS)
 
 clean:
 	rm -rf $(BINUTILS_DIR)

@@ -1,15 +1,20 @@
-MARSBIN  = $(MARSDEV)/m68k-elf/bin
-TOOLSBIN = $(MARSDEV)/bin
+MARSDEV = $(MARS_BUILD_DIR)
+GDK     = $(MARSDEV)/m68k-elf
+INC     = $(GDK)/inc
+BIN     = $(GDK)/bin
+LIB     = $(GDK)/lib
 
-BINTOS         = $(TOOLSBIN)/bintos
-RESCOMP        = $(TOOLSBIN)/rescomp.jar
-XGMTOOL        = $(TOOLSBIN)/xgmtool
-XGMROMBUILDER  = $(TOOLSBIN)/xgmRomBuilder.jar
-SIZEBND        = $(TOOLSBIN)/sizebnd.jar
-LZ4W           = $(TOOLSBIN)/lz4w.jar
-APJ            = $(TOOLSBIN)/apj.jar
+BINTOS         = $(BIN)/bintos
+RESCOMP        = $(BIN)/rescomp.jar
+XGMTOOL        = $(BIN)/xgmtool
+XGMROMBUILDER  = $(BIN)/xgmRomBuilder.jar
+SIZEBND        = $(BIN)/sizebnd.jar
+LZ4W           = $(BIN)/lz4w.jar
+APJ            = $(BIN)/apj.jar
 
-SGDK_VER ?= v1.80
+export PATH   := $(BIN):$(PATH)
+
+SGDK_VER ?= master
 
 .PHONY: all tools libmd clean
 
@@ -18,50 +23,51 @@ all: SGDK tools libmd
 tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(XGMROOMBUILDER) $(SIZEBND) $(LZ4W) $(APJ)
 
 libmd:
-	cp -f Makefile.libmd SGDK/Makefile
-	if [ -f "config.h" ]; then cp -f config.h SGDK/inc/config.h; fi
-	# Release version (default)
-	$(MAKE) -C SGDK clean
-	$(MAKE) -C SGDK
-	cp -f SGDK/libmd.a $(MARSDEV)/m68k-elf/lib/libmd.a
-	# Debug version (default)
-	$(MAKE) -C SGDK clean
-	$(MAKE) -C SGDK debug
-	cp -f SGDK/libmd-debug.a $(MARSDEV)/m68k-elf/lib/libmd-debug.a
-	if [ -f "config-far.h" ]; then cp -f config-far.h SGDK/inc/config.h; fi
-	# Release version (bank switch)
-	$(MAKE) -C SGDK clean
-	$(MAKE) -C SGDK
-	cp -f SGDK/libmd.a $(MARSDEV)/m68k-elf/lib/libmd-far.a
-	# Debug version (bank switch)
-	$(MAKE) -C SGDK clean
-	$(MAKE) -C SGDK debug
-	cp -f SGDK/libmd-debug.a $(MARSDEV)/m68k-elf/lib/libmd-far-debug.a
-	# Copy headers
-	cp -f SGDK/inc/*.h $(MARSDEV)/m68k-elf/include/
-	cp -f SGDK/res/*.h $(MARSDEV)/m68k-elf/include/
-	
+	# Copy SGDK files to toolchain
+	cp -rf SGDK/inc $(GDK)/
+	cp -rf SGDK/res $(GDK)/
+	cp -rf SGDK/src $(GDK)/
+	cp -f SGDK/common.mk $(GDK)/
+	cp -f SGDK/makelib.gen $(GDK)/
+	cp -f SGDK/makefile.gen $(GDK)/
+	cp -f SGDK/md.ld $(GDK)/
+	# Bank switched - release & debug
+	cp -f config-far.h $(INC)/config.h
+	$(MAKE) -C $(GDK) -f makelib.gen cleanrelease
+	$(MAKE) -C $(GDK) -f makelib.gen release
+	mv -f $(LIB)/libmd.a $(LIB)/libmd_far.a
+	$(MAKE) -C $(GDK) -f makelib.gen cleandebug
+	$(MAKE) -C $(GDK) -f makelib.gen debug
+	mv -f $(LIB)/libmd_debug.a $(LIB)/libmd_far_debug.a
+	# Non-bank switched - release & debug
+	cp -f config.h $(INC)/config.h
+	$(MAKE) -C $(GDK) -f makelib.gen cleanrelease
+	$(MAKE) -C $(GDK) -f makelib.gen release
+	$(MAKE) -C $(GDK) -f makelib.gen cleandebug
+	$(MAKE) -C $(GDK) -f makelib.gen debug
+	# Clean intermediate files only
+	$(MAKE) -C $(GDK) -f makelib.gen cleanobj cleandep cleanlst
+
 SGDK:
 	git clone --branch $(SGDK_VER) https://github.com/Stephane-D/SGDK
-	# Stef forgot to include stdint so xgmtool fails to compile
-	echo "#include <stdint.h>" > incfix.txt
-	cat incfix.txt SGDK/tools/xgmtool/src/xgmtool.c > incfix.c
-	mv -f incfix.c SGDK/tools/xgmtool/src/xgmtool.c
+	# Linux native branch in common.mk breaks LTO plugin, this is a workaround
+	mv -f SGDK/common.mk SGDK/common.mk.bak
+	cp -f common.mk SGDK/common.mk
 
 # Tools
 
 $(BINTOS):
 	gcc SGDK/tools/bintos/src/bintos.c -o $@
-	
+
 $(RESCOMP):
 	cp -f SGDK/bin/rescomp.jar $@
-	
+
 $(XGMTOOL):
 	cd SGDK/tools/xgmtool/src && gcc *.c -I../inc -lm -o $@
 
 $(XGMROMBUILDER):
 	cp -f SGDK/bin/xgmRomBuilder.jar $@
-	
+
 $(SIZEBND):
 	cp -f SGDK/bin/sizebnd.jar $@
 
@@ -70,9 +76,6 @@ $(LZ4W):
 
 $(APJ):
 	cp -f SGDK/bin/apj.jar $@
-
-$(TOOLSBIN):
-	mkdir -p $(TOOLSBIN)
 
 clean:
 	rm -rf SGDK

@@ -32,7 +32,7 @@ If you plan on using `sgdk`:
 
 Note: If you don't know what distro you are using, assume it is Ubuntu and try the Debian commands.
 
-For the minimal install:
+For the minimal installation:
  * Debian: `apt install build-essential texinfo wget`
  * RedHat: `yum install gcc gcc-c++ texinfo-tex wget`
  * Arch: `pacman -S base-devel texinfo wget`
@@ -54,15 +54,13 @@ Clone the repo:
 ---
 **NOTE**
 
-The default "install" location for Marsdev is `~/mars`. This path is defined in the `MARSDEV` environment variable.
-You can specify a different location by adding something like `MARSDEV=/opt/toolchains/megadrive` to any of the below commands.
-However, I recommend setting it somewhere that does not require the root user for writing to avoid having to run make with sudo.
-The `mars` directory is portable and easily moved somewhere else after the fact.
-All that has to be changed is the `MARSDEV` environment variable to the new path.
+There are two variables that control which directory Marsdev is built and installed:
+ - `MARS_BUILD_DIR` = (REPOSITORY_ROOT)/mars
+ - `MARS_INSTALL_DIR` = /opt/toolchains/mars
 
-If you do opt to change the location, rather than specify the directory every time put this in your `~/.bashrc`/`~/.zshrc`/etc:
+If you wish to change the location of either, use an export command like this:
 
-`export MARSDEV=/path/to/mars`
+`export MARS_INSTALL_DIR=/path/to/mars`
 
 ---
 

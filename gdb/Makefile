@@ -1,3 +1,5 @@
+MARSDEV = $(MARS_BUILD_DIR)
+
 GDB_VER = 12.1
 GDB_DIR = gdb-$(GDB_VER)
 GDB_PKG = $(GDB_DIR).tar.gz

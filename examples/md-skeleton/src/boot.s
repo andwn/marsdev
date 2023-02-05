@@ -1,13 +1,13 @@
 .section .data
 
 /* .globl exposes symbols to the linker, and may be referred to in C code as extern */
-	.globl v_err_reg
-	.globl v_err_pc
-	.globl v_err_addr
-	.globl v_err_ext1
-	.globl v_err_ext2
-	.globl v_err_sr
-	.globl v_err_type
+        .globl v_err_reg
+        .globl v_err_pc
+        .globl v_err_addr
+        .globl v_err_ext1
+        .globl v_err_ext2
+        .globl v_err_sr
+        .globl v_err_type
 
 /* Used for the crash handler (see error.c and the error handlers below) */
 v_err_reg:	ds.l 16
@@ -24,43 +24,43 @@ v_err_type:	ds.b 1
 
 RomStart:
         dc.l    0x000000				/* Initial stack pointer address */
-		dc.l	_start					/* Program start address */
+        dc.l	_start					/* Program start address */
         dc.l    BusError				/* Not thrown on MD */
-		dc.l	AddressError			/* Thrown when a W or L instruction uses an odd address */
-		dc.l	IllegalInst				/* Thrown when the CPU encounters an invalid instruction */
-		dc.l	ZeroDivide				/* Thrown when DIV receives a 0 on the left hand side */
-		dc.l	0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		dc.l	0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		dc.l	ExtInt, 0				/* External Interrupt */
-		dc.l	HBlank, 0				/* Horizontal Blank Interrupt */
-		dc.l	VBlank, 0				/* Vertical Blank Interrupt */
-	.rept 8
-		dc.l	0, 0, 0, 0
-	.endr
+        dc.l	AddressError			        /* Thrown when a W or L instruction uses an odd address */
+        dc.l	IllegalInst				/* Thrown when the CPU encounters an invalid instruction */
+        dc.l	ZeroDivide				/* Thrown when DIV receives a 0 on the left hand side */
+        dc.l	0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        dc.l	0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        dc.l	ExtInt, 0				/* External Interrupt */
+        dc.l	HBlank, 0				/* Horizontal Blank Interrupt */
+        dc.l	VBlank, 0				/* Vertical Blank Interrupt */
+    .rept 8
+        dc.l	0, 0, 0, 0
+    .endr
 
 RomHeader:
         .ascii	"SEGA MEGA DRIVE "		/* First 4 bytes must be "SEGA" */
-		.ascii	"GRIND   2019.DEC"		/* Copyright and date */
-		.ascii	"Example Project                                 " /* JP Name */
-		.ascii	"Example Project                                 " /* EN Name */
-		.ascii	"GM CHANGEME-XX"		/* Serial No. */
-		dc.w	0
-		.ascii	"J               "		/* Controller support */
-		dc.l	0x000000				/* ROM Start */
-		dc.l	0x3FFFFF				/* ROM End (4MB) */
-		dc.l	0xFF0000				/* RAM Start */
-		dc.l	0xFFFFFF				/* RAM End (64KB) */
-		.ascii	"RA"					/* "RA" to enable SRAM, "  " to disable */
-		dc.w	0xF820					/* SRAM writes to odd bytes */
-		dc.l	0x200001				/* SRAM Start */
-		dc.l	0x20FFFF				/* SRAM End (32KB) */
-		.ascii	"            "
-		.ascii	"                                        "
-		.ascii	"JUE             "		/* Region */
+        .ascii	"GRIND   2019.DEC"		/* Copyright and date */
+        .ascii	"Example Project                                 " /* JP Name */
+        .ascii	"Example Project                                 " /* EN Name */
+        .ascii	"GM CHANGEME-XX"		/* Serial No. */
+        dc.w	0
+        .ascii	"J               "		/* Controller support */
+        dc.l	0x000000				/* ROM Start */
+        dc.l	0x3FFFFF				/* ROM End (4MB) */
+        dc.l	0xFF0000				/* RAM Start */
+        dc.l	0xFFFFFF				/* RAM End (64KB) */
+        .ascii	"RA"					/* "RA" to enable SRAM, "  " to disable */
+        dc.w	0xF820					/* SRAM writes to odd bytes */
+        dc.l	0x200001				/* SRAM Start */
+        dc.l	0x20FFFF				/* SRAM End (32KB) */
+        .ascii	"            "
+        .ascii	"                                        "
+        .ascii	"JUE             "		/* Region */
 
 _start:
         move    #0x2700,sr              /* Disable interrupts */
-		move.b	(0xA10001),d0           /* Check console version */
+        move.b	(0xA10001),d0           /* Check console version */
         andi.b  #0x0F,d0                /* Version 0 = skip TMSS */
         beq.s   NoTMSS
         move.l  (0x100),0xA14000        /* Write 'SEGA' to TMSS register */
@@ -93,19 +93,19 @@ NoCopy:
 /* Error handling */
 
 BusError:
-		move.b #0,(v_err_type)
+        move.b #0,(v_err_type)
         bra.s  AddressDump
 
 AddressError:
-		move.b #1,(v_err_type)
+        move.b #1,(v_err_type)
         bra.s  AddressDump
 
 IllegalInst:
-		move.b #2,(v_err_type)
+        move.b #2,(v_err_type)
         bra.s  IllegalDump
 
 ZeroDivide:
-		move.b #3,(v_err_type)
+        move.b #3,(v_err_type)
         bra.s  ZeroDump
 
 AddressDump:
@@ -142,7 +142,7 @@ RegDump:
 /* Standard interrupts */
 
 ExtInt:
-		rte
+        rte
 		
 HBlank:
         rte

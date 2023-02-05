@@ -1,9 +1,8 @@
 # Sample Makefile for Marsdev (No SGDK, No Newlib)
 
 # Default paths, can be overridden by setting MARSDEV before calling make
-MARSDEV ?= ${HOME}/mars
+MARSDEV ?= /opt/toolchains/mars
 MARSBIN  = $(MARSDEV)/m68k-elf/bin
-TOOLSBIN = $(MARSDEV)/bin
 
 # GCC and Binutils
 CC   = $(MARSBIN)/m68k-elf-gcc
@@ -33,7 +32,7 @@ LIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER) -lgcc
 # Any C or C++ standard should be fine here as long as GCC supports it
 # GCC 10+ by default fails to link if you don't declare header variables extern,
 # and -fcommon reverts to the old behavior (needed to compile SGDK)
-CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding -fcommon
+CCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding
 CXXFLAGS = -m68000 -Wall -Wextra -std=c++17 -ffreestanding
 
 # Another useful GAS flag is --bitwise-or, but it breaks SGDK
@@ -41,7 +40,7 @@ ASFLAGS  = -m68000 --register-prefix-optional
 
 # -nostartfiles disables the c runtime startup code
 # -nostdlib unsets -lc, so when using Newlib don't set that option
-LDFLAGS  = -T $(MARSDEV)/ldscripts/md.ld -nostdlib
+LDFLAGS  = -T megadrive.ld -nostdlib
 
 # Collect source files in the src directory
 CS    = $(wildcard src/*.c)

@@ -3,9 +3,9 @@
 #define SCREEN_HALF_W 160
 
 // On PAL the screen height is 16 pixels more, so these can't be constants
-uint8_t SCREEN_HEIGHT;
-uint8_t SCREEN_HALF_H;
-uint8_t FPS;
+extern uint8_t SCREEN_HEIGHT;
+extern uint8_t SCREEN_HALF_H;
+extern uint8_t FPS;
 
 typedef struct {
     int16_t y;
@@ -74,7 +74,7 @@ extern const uint16_t PAL_FadeOutBlue[64];
 // FullWhite is used for a TSC instruction that flashes the screen white
 extern const uint16_t PAL_FullWhite[64];
 // Remember the pal mode flag so we don't have to read the control port every time
-uint8_t pal_mode;
+extern uint8_t pal_mode;
 
 // Set defaults, clear everything
 void vdp_init();

@@ -1,4 +1,5 @@
-MARSBIN = $(MARSDEV)/bin
+MARSDEV = $(MARS_BUILD_DIR)
+MARSBIN = $(MARSDEV)/m68k-elf/bin
 
 MDTILER  = $(MARSBIN)/mdtiler
 MIDI2ESF = $(MARSBIN)/midi2esf

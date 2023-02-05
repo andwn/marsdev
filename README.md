@@ -1,13 +1,13 @@
 # Marsdev
 
-Cross platform Mega Drive / 32X toolchain and Makefile abuse.
+Cross-platform Mega Drive / 32X toolchain and Makefile abuse.
 
 
 ## Installation
 
 Follow the [Installation Guide](doc/install.md) to get started.
 
-Marsdev is split into several targets so you can build just the parts you need.
+Marsdev is split into several targets, so you can build just the parts you need.
 For more information about each of them, read the [Target Reference](doc/targets.md).
 
 
@@ -26,13 +26,14 @@ Should be as easy as a `make` for any of them.
  - `sudo apt install -y git build-essential texinfo wget openjdk-11-jre`
  - `git clone https://github.com/andwn/marsdev && cd marsdev`
  - `make m68k-toolchain z80-tools sgdk`
+ - `sudo make install`
  - Copy out the `examples/sgdk-skeleton` project and start coding.
 
 
 ### What is the difference between this and the other Genesis/Mega Drive toolchains?
 
 SGDK's bundled toolchain only works on Windows, and Gendev only on Linux.
-The goal originally was to have something I could use on all of the "big 3" platforms,
+The goal originally was to have something I could use on all the "big 3" platforms,
 but now with WSL it's a moot point and I only have to worry about the Unix-likes.
 So here are the main things I am aiming for these days:
 
@@ -40,18 +41,18 @@ So here are the main things I am aiming for these days:
  - Support more hosts than just x86_64
  - Make as much of the toolchain optional as possible
 
-The intention of letting users cherry pick targets is to be easy to integrate into
+The intention of letting users cherry-pick targets is to be easy to integrate into
 other devkits or frameworks, while also being usable on its own.
 
 
 ### Can I build a Gendev project with Marsdev or vice-versa?
 
-In theory you would only have to set GENDEV and MARSDEV to the same place, but every project is different.
+In theory, you would only have to set GENDEV and MARSDEV to the same place, but every project is different.
 
 
 ### How do I use this with my favorite IDE?
 
-There are so many of these and they all have different places you have to go to configure paths.
+There are so many of these, and they all have different places you have to go to configure paths.
 In general the only thing you should NEED to do, is point it to the headers.
 
  * GCC Headers: `$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GCC_VER)/include`
@@ -73,7 +74,7 @@ MSYS2 might still work, but it's a pain to use and maintain.
 
 ### This takes so long to compile!
 
-GCC is a big boy so we just have to be patient. Alternatively,
+GCC is a big boy, so we just have to be patient. Alternatively,
 
 ![Parallel builds](doc/cores.png)
 
