@@ -52,18 +52,20 @@ else
 		CP = cp
 		MKDIR = mkdir
 
-		AR := $(PREFIX)ar
-		CC := $(PREFIX)gcc
-		LD := $(PREFIX)ld
-		NM := $(PREFIX)nm
-		OBJCPY := $(PREFIX)objcopy
-		ASMZ80 := sjasm
-		MACCER := mac68k
-		BINTOS := bintos
+# -- Start of marsdev override --
+		AR := $(BIN)/$(PREFIX)ar
+		CC := $(BIN)/$(PREFIX)gcc
+		LD := $(BIN)/$(PREFIX)ld
+		NM := $(BIN)/$(PREFIX)nm
+		OBJCPY := $(BIN)/$(PREFIX)objcopy
+		ASMZ80 := $(BIN)/sjasm
+		MACCER := $(BIN)/mac68k
+		BINTOS := $(BIN)/bintos
 
 		GCC_VER := $(shell $(CC) -dumpversion)
 		LTO_PLUGIN := --plugin=$(GDK)/libexec/gcc/m68k-elf/$(GCC_VER)/liblto_plugin.so
 		LIBGCC := -L$(LIB)/gcc/m68k-elf/$(GCC_VER) -lgcc
+# -- End of marsdev override --
 	endif
 endif
 

@@ -1,8 +1,7 @@
-MARSDEV = $(MARS_BUILD_DIR)
-GDK     = $(MARSDEV)/m68k-elf
-INC     = $(GDK)/inc
-BIN     = $(GDK)/bin
-LIB     = $(GDK)/lib
+GDK := $(MARS_BUILD_DIR)/m68k-elf
+INC := $(GDK)/inc
+BIN := $(GDK)/bin
+LIB := $(GDK)/lib
 
 BINTOS         = $(BIN)/bintos
 RESCOMP        = $(BIN)/rescomp.jar
@@ -12,17 +11,16 @@ SIZEBND        = $(BIN)/sizebnd.jar
 LZ4W           = $(BIN)/lz4w.jar
 APJ            = $(BIN)/apj.jar
 
-export PATH   := $(BIN):$(PATH)
-
 SGDK_VER ?= master
+SGDK_OPT ?= default
 
-.PHONY: all tools libmd clean
+.PHONY: all tools libmd samples clean
 
 all: SGDK tools libmd
 
 tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(XGMROOMBUILDER) $(SIZEBND) $(LZ4W) $(APJ)
 
-libmd:
+libmd: SGDK
 	# Copy SGDK files to toolchain
 	cp -rf SGDK/inc $(GDK)/
 	cp -rf SGDK/res $(GDK)/
@@ -31,16 +29,8 @@ libmd:
 	cp -f SGDK/makelib.gen $(GDK)/
 	cp -f SGDK/makefile.gen $(GDK)/
 	cp -f SGDK/md.ld $(GDK)/
-	# Bank switched - release & debug
-	cp -f config-far.h $(INC)/config.h
-	$(MAKE) -C $(GDK) -f makelib.gen cleanrelease
-	$(MAKE) -C $(GDK) -f makelib.gen release
-	mv -f $(LIB)/libmd.a $(LIB)/libmd_far.a
-	$(MAKE) -C $(GDK) -f makelib.gen cleandebug
-	$(MAKE) -C $(GDK) -f makelib.gen debug
-	mv -f $(LIB)/libmd_debug.a $(LIB)/libmd_far_debug.a
-	# Non-bank switched - release & debug
-	cp -f config.h $(INC)/config.h
+	# release & debug
+	cp -f config-$(SGDK_OPT).h $(INC)/config.h
 	$(MAKE) -C $(GDK) -f makelib.gen cleanrelease
 	$(MAKE) -C $(GDK) -f makelib.gen release
 	$(MAKE) -C $(GDK) -f makelib.gen cleandebug
@@ -54,27 +44,55 @@ SGDK:
 	mv -f SGDK/common.mk SGDK/common.mk.bak
 	cp -f common.mk SGDK/common.mk
 
+# SGDK Samples
+# If a sample is commented, it fails to build (out of date or special hardware required)
+
+$(GDK)/lib/libmd.a: libmd
+	@true
+
+samples: SGDK $(GDK)/lib/libmd.a
+	cd SGDK/sample/basics/hello-world && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/basics/image && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/bench && make -f $(GDK)/makefile.gen
+	cd 'SGDK/sample/bitmap/cube 3D' && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/bitmap/partic && make -f $(GDK)/makefile.gen
+	#cd SGDK/sample/console && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/demo/bad-apple && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/demo/starfield-donut && make -f $(GDK)/makefile.gen
+	#cd SGDK/sample/flash-save && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/fx/h-int/scaling && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/fx/h-int/wobble && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/fx/hilight-shadow && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/fx/scroll/linescroll && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/joy-test && make -f $(GDK)/makefile.gen
+	#cd SGDK/sample/megawifi && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/multitasking && make -f $(GDK)/makefile.gen
+	#cd SGDK/sample/platformer && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/sonic && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/sound && make -f $(GDK)/makefile.gen
+	#cd SGDK/sample/xgm-player && make -f $(GDK)/makefile.gen
+
 # Tools
 
-$(BINTOS):
+$(BINTOS): SGDK
 	gcc SGDK/tools/bintos/src/bintos.c -o $@
 
-$(RESCOMP):
+$(RESCOMP): SGDK
 	cp -f SGDK/bin/rescomp.jar $@
 
-$(XGMTOOL):
+$(XGMTOOL): SGDK
 	cd SGDK/tools/xgmtool/src && gcc *.c -I../inc -lm -o $@
 
-$(XGMROMBUILDER):
+$(XGMROMBUILDER): SGDK
 	cp -f SGDK/bin/xgmRomBuilder.jar $@
 
-$(SIZEBND):
+$(SIZEBND): SGDK
 	cp -f SGDK/bin/sizebnd.jar $@
 
-$(LZ4W):
+$(LZ4W): SGDK
 	cp -f SGDK/bin/lz4w.jar $@
 
-$(APJ):
+$(APJ): SGDK
 	cp -f SGDK/bin/apj.jar $@
 
 clean:

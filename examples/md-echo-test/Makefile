@@ -1,6 +1,5 @@
-MARSDEV  ?= ${HOME}/mars
-MARSBIN   = $(MARSDEV)/m68k-elf/bin
-TOOLSBIN  = $(MARSDEV)/bin
+MARSDEV ?= /opt/toolchains/mars
+MARSBIN  = $(MARSDEV)/m68k-elf/bin
 
 # m68k toolchain
 CC = $(MARSBIN)/m68k-elf-gcc
@@ -10,15 +9,15 @@ NM = $(MARSBIN)/m68k-elf-nm
 OC = $(MARSBIN)/m68k-elf-objcopy
 
 # z80 assembler
-AS80 = $(TOOLSBIN)/sjasm
+AS80 = $(MARSBIN)/sjasm
 
 # mdtools
-MDTILER = $(TOOLSBIN)/mdtiler
-SLZ     = $(TOOLSBIN)/slz
-UFTC    = $(TOOLSBIN)/uftc
-MML2ESF = $(TOOLSBIN)/mml2esf
-PCM2EWF = $(TOOLSBIN)/pcm2ewf
-TFI2EIF = $(TOOLSBIN)/tfi2eif
+MDTILER = $(MARSBIN)/mdtiler
+SLZ     = $(MARSBIN)/slz
+UFTC    = $(MARSBIN)/uftc
+MML2ESF = $(MARSBIN)/mml2esf
+PCM2EWF = $(MARSBIN)/pcm2ewf
+TFI2EIF = $(MARSBIN)/tfi2eif
 
 # internal tools
 RESGEN = bin/resgen
@@ -38,7 +37,7 @@ INCS = -Isrc -Ires
 LIBS = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(GENGCC_VER) -lgcc
 CCFLAGS = -m68000 -Wall -Wextra -std=c99 -c -fno-builtin -fshort-enums
 ASFLAGS = -m68000 --register-prefix-optional
-LDFLAGS = -T $(MARSDEV)/ldscripts/sgdk.ld -nostdlib
+LDFLAGS = -T megadrive.ld -nostdlib
 
 # resources
 RES_AUDIO=$(wildcard res/bgm/*)

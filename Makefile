@@ -7,17 +7,20 @@ MARS_INSTALL_DIR ?= /opt/toolchains/mars
 export MARS_BUILD_DIR
 export MARS_INSTALL_DIR
 
-.PHONY: all m68k-toolchain m68k-toolchain-newlib sh-toolchain sh-toolchain-newlib
-.PHONY: m68k-gdb sh-gdb z80-tools sik-tools flamewing-tools x68k-tools sgdk
+.PHONY: m68k-toolchain m68k-toolchain-newlib m68k-toolchain-full m68k-gdb
+.PHONY: sh-toolchain sh-toolchain-newlib sh-toolchain-full sh-gdb
+.PHONY: all z80-tools sik-tools flamewing-tools x68k-tools sgdk sgdk-samples
 
 all: m68k-toolchain z80-tools sgdk
 
 m68k-toolchain:
-	echo $(MARS_BUILD_DIR)
 	$(MAKE) -C toolchain ARCH=m68k
 
 m68k-toolchain-newlib:
 	$(MAKE) -C toolchain all-newlib ARCH=m68k
+
+m68k-toolchain-full:
+	$(MAKE) -C toolchain all-newlib ARCH=m68k LANGS=c,c++
 
 m68k-gdb:
 	$(MAKE) -C gdb ARCH=m68k
@@ -27,6 +30,9 @@ sh-toolchain:
 
 sh-toolchain-newlib:
 	$(MAKE) -C toolchain all-newlib ARCH=sh
+
+sh-toolchain-full:
+	$(MAKE) -C toolchain all-newlib ARCH=sh LANGS=c,c++
 
 sh-gdb:
 	$(MAKE) -C gdb ARCH=sh
@@ -44,7 +50,10 @@ x68k-tools:
 	$(MAKE) -C x68k-tools
 
 sgdk:
-	$(MAKE) -C sgdk
+	$(MAKE) -C sgdk SGDK_VER=master SGDK_OPT=default
+
+sgdk-samples:
+	$(MAKE) -C sgdk samples
 
 
 .PHONY: install
@@ -57,8 +66,8 @@ install:
 	@echo "export GDK=$(MARS_INSTALL_DIR)/m68k-elf" >> $(MARS_INSTALL_DIR)/mars.sh
 	@chmod +x $(MARS_INSTALL_DIR)/mars.sh
 	@echo "Marsdev has been installed to $(MARS_INSTALL_DIR)."
-	@echo "Run the following script to set the proper environment variables before building your projects:"
-	@echo "$(MARS_INSTALL_DIR)/mars.sh"
+	@echo "Run the following to set the proper environment variables before building your projects:"
+	@echo "source $(MARS_INSTALL_DIR)/mars.sh"
 
 
 .PHONY: clean toolchain-clean gdb-clean tools-clean sgdk-clean
