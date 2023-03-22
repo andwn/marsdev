@@ -11,12 +11,30 @@ SIZEBND        = $(BIN)/sizebnd.jar
 LZ4W           = $(BIN)/lz4w.jar
 APJ            = $(BIN)/apj.jar
 
+SJASM     = $(BIN)/sjasm
+SJBRANCH ?= v0.39
+
 SGDK_VER ?= master
 SGDK_OPT ?= default
 
+# Use homebrew's gettext on macOS, for autopoint
+ifeq ($(OS),Windows_NT)
+else
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Darwin)
+		export PATH := /usr/local/opt/gettext/bin:$(PATH)
+	endif
+endif
+
+# OSX sed fails without the '', and GNU fails with, coolbeans
+SED_FIX=
+ifeq ($(shell uname -s),Darwin)
+	SED_FIX=''
+endif
+
 .PHONY: all tools libmd samples clean
 
-all: SGDK tools libmd
+all: $(SJASM) SGDK tools libmd
 
 tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(XGMROOMBUILDER) $(SIZEBND) $(LZ4W) $(APJ)
 
@@ -39,7 +57,7 @@ libmd: SGDK
 	$(MAKE) -C $(GDK) -f makelib.gen cleanobj cleandep cleanlst
 
 SGDK:
-	git clone --branch $(SGDK_VER) https://github.com/Stephane-D/SGDK
+	git clone --depth=1 --branch $(SGDK_VER) https://github.com/Stephane-D/SGDK
 	# Linux native branch in common.mk breaks LTO plugin, this is a workaround
 	mv -f SGDK/common.mk SGDK/common.mk.bak
 	cp -f common.mk SGDK/common.mk
@@ -74,6 +92,12 @@ samples: SGDK $(GDK)/lib/libmd.a
 
 # Tools
 
+$(SJASM):
+	rm -rf sjasm
+	git clone https://github.com/konamiman/sjasm --depth=1 --branch $(SJBRANCH)
+	cd sjasm/Sjasm && $(MAKE)
+	cp -f sjasm/Sjasm/sjasm $(SJASM)
+
 $(BINTOS): SGDK
 	gcc SGDK/tools/bintos/src/bintos.c -o $@
 
@@ -96,4 +120,4 @@ $(APJ): SGDK
 	cp -f SGDK/bin/apj.jar $@
 
 clean:
-	rm -rf SGDK
+	rm -rf SGDK sjasm

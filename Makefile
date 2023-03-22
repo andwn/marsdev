@@ -9,7 +9,7 @@ export MARS_INSTALL_DIR
 
 .PHONY: m68k-toolchain m68k-toolchain-newlib m68k-toolchain-full
 .PHONY: sh-toolchain sh-toolchain-newlib sh-toolchain-full
-.PHONY: all z80-tools sik-tools flamewing-tools x68k-tools sgdk sgdk-samples
+.PHONY: all x68k-tools sgdk sgdk-samples
 
 all: m68k-toolchain z80-tools sgdk
 
@@ -30,15 +30,6 @@ sh-toolchain-newlib:
 
 sh-toolchain-full:
 	$(MAKE) -C toolchain all-newlib ARCH=sh LANGS=c,c++
-
-z80-tools:
-	$(MAKE) -C z80-tools
-
-sik-tools:
-	$(MAKE) -C sik-tools
-
-flamewing-tools:
-	$(MAKE) -C flamewing-tools
 
 x68k-tools:
 	$(MAKE) -C x68k-tools
@@ -77,9 +68,6 @@ toolchain-clean:
 	$(MAKE) -C toolchain clean
 
 tools-clean:
-	$(MAKE) -C z80-tools clean
-	$(MAKE) -C sik-tools clean
-	$(MAKE) -C flamewing-tools clean
 	$(MAKE) -C x68k-tools clean
 
 sgdk-clean:

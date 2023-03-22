@@ -3,6 +3,9 @@
 *.elf
 *.bin
 *.32x
+*.lst
+*.old
+*.bak
 resources.h
 symbol.txt
 
@@ -11,6 +14,7 @@ symbol.txt
 *.tar.xz
 *.zip
 
+.idea/
 toolchain/gcc-*/
 toolchain/binutils-*/
 toolchain/newlib-*/

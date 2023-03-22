@@ -41,7 +41,7 @@ MARSDEV = $(MARS_BUILD_DIR)
 # == Mars Mirror vs Public Mirrors ==
 # I set up a VPS with all the required packages in a flat folder.
 # SHA-256 sums are checked after downloading in case it gets dorobo'd.
-# Pass USE_MARS_MIRROR=false to use the GNU/Sourceware public ones ins -f makefile.gentead.
+# Pass USE_MARS_MIRROR=false to use the GNU/Sourceware public ones instead.
 MARS_MIRROR     ?= https://tenshi.skychase.zone/
 USE_MARS_MIRROR ?= true
 
@@ -150,7 +150,6 @@ mk-gcc-$(ARCH):
 		cd $(GCC_DIR) && ./contrib/download_prerequisites \
 			> $(LOGDIR)/gcc-$(ARCH).log 2>&1 ; \
 	fi
-	#-patch -p0 < libcc1_suse_fix.patch
 	@mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
 		../configure --target=$(TARGET) --prefix=$(PREFIX) \

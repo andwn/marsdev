@@ -4,18 +4,95 @@
 
 [English](README.md) | 日本語
 
+## ビルドとインストール
 
-## インストール方
+### 1. 前提条件
 
-最初に[インストールガイド](doc/install-ja.md)を読んでください。
+お使いのOSに応じて、以下のパッケージをインストールしてください：
+ * Debian: `apt install build-essential texinfo wget`
+ * RedHat: `yum install gcc gcc-c++ texinfo-tex wget`
+ * Arch: `pacman -S base-devel texinfo wget`
+ * Gentoo: `emerge sys-apps/texinfo net-misc/wget`
+ * macOS: `xcode-select --install && brew install wget`
 
-Marsdevはいくつかのターゲットに分かれているので、必要な部分だけビルドできます。
-それぞれの詳細については、[ターゲットリファレンス](doc/targets.md)にあります。
+
+### 2. GCC Toolchain
+
+GitHubからクローンして：
+ - `git clone https://github.com/andwn/marsdev`
+ - `cd marsdev`
+
+---
+**注意**
+
+Marsdevがどのディレクトリでビルドされ、インストールされるかを制御する2つの変数がある：
+ - `MARS_BUILD_DIR` = (REPOSITORY_ROOT)/mars
+ - `MARS_INSTALL_DIR` = /opt/toolchains/mars
+
+どちらかの場所を変更したければ、次のようなエクスポートコマンドを使用できる：
+ - `export MARS_INSTALL_DIR=/path/to/mars`
+
+また、デフォルトでは、GNUツールチェイン・ソースパッケージは私がホストするミラーからダウンロードされます。
+代わりに公式のGNU/Sourcewareサーバから取得するよう、次のように指定できる。
+`USE_MARS_MIRROR=false`
+
+---
+
+GCCをビルドするには3つの選択肢がある：
+ - `make m68k-toolchain` - Cだけ、Newlibがない
+ - `make m68k-toolchain-newlib` - Cだけ、Newlibもある
+ - `make m68k-toolchain-full` - CとC++、Newlibもある
+
+32Xためビルドしたければ、`sh-toolchain` も必要です。
+選択肢は同じで、上記のコマンドの `m68k` を `sh` に置き換えられる。
+
+
+### 3. (Optional) SGDK
+
+SGDKはJavaを必要とするので、インストールして：
+ * Debian: `apt install openjdk-11-jre`
+ * RedHat: `yum install java-11-openjdk`
+ * Arch: `pacman -S jdk11-openjdk`
+ * Gentoo: `emerge dev-java/openjdk`
+ * macOS: `brew install java`
+
+---
+**Note for macOS**
+
+OpenJDKはPATHに追加しなければならない：
+ - `~/.zshrc` (まだbashを使用していれば `~/.bashrc`) を開き、次の行を追加して：
+    - `export PATH="/usr/local/opt/openjdk/bin:$PATH"`
+ - ターミナルを再起動してか、`source ~/.zshrc` を実行して
+
+---
+
+SGDKをビルドして：
+ - `make sgdk`
+
+SGDKの特定のバージョンは、`SGDK_VER=<git tag>` で指定できる。
+しかし、デフォルト以外のバージョンでの動作は保証できない。
+最新の変更をテストしたい冒険者は、`SGDK_VER=master`も指定できる。
+
+
+### 4. (Optional) X68000 Tools
+
+X68000ツールをビルドして：
+ - `make x68k-tools`
+
+A GCC/GAS compatible version of libdos is built, along with Newlib glue so the
+C runtime can be used on Human68k.
+
+
+### 5. インストール
+
+`sudo make install`だけ必要。
+説明書のパスを覚えておいて、`~/.bashrc`（または`~/.zshrc`）に追加することを検討してください。
+
 
 ## 例プロジェクト
 
 `examples`というディレクトリには、自分のプロジェクトの基盤となる様々なサンプル・プロジェクトが含まれています。
-それぞれの詳細については、[例プロジェクトのREADME](examples/README-ja.md)を参照してください。
+それぞれの詳細については、[例プロジェクトのREADME](examples/README.md)を参照してください。
 
 ビルドするには、`make`コマンドを実行するのような簡単なはずです。
 
@@ -29,18 +106,6 @@ Marsdevはいくつかのターゲットに分かれているので、必要な�
  - `make m68k-toolchain z80-tools sgdk`
  - `sudo make install`
  - そして `examples/sgdk-skeleton` をどこかにコーピーしてコーぢングして始まって。
-
-
-### 他のメガドライブ用ツールチェーンと何が違うのでしょうか？
-
-順不同：
-
-- SGDKはオプションで、Binutils+GCCのみ必要です
-- Newlib対応、オプション（*-toolchain-newlibというターゲット）もある
-- 32X対応のSH-2ツールチェインが構築可能
-- SGDKのサンプルのほとんどをビルド可能
-- ARMホストでの作業を想定している
-- （実験）Human68kのプログラムが作れる
 
 
 ### どうやってIDEと使えるのだろうか？
@@ -58,12 +123,11 @@ IDEでビルドとランボタンの動作を設定できるのであれば、�
  * Run: `/path/to/an/emulator out.bin`
 
 
-### WSLを持っていない
+### What about Windows?
 
-![Stop using XP](doc/xp.jpg)
-
-もしSGDKだけを使うのであれば、代わりにGitHubのSGDK公式リポジトリを使ったほうがいいです。
-そうでない場合はDockerを使ってみてください。
+Windows10か11を持っていれば、[WSL](https://learn.microsoft.com/ja-jp/windows/wsl/install)
+でインストールしたほうが良いです。
+古い方法は[MSYS2](doc/install_msys_legacy.md)ですけど、私は使ってやめた。
 
 
 ### コンパイルにすごく時間がかかるんだよねー
@@ -73,12 +137,5 @@ GCCはとても大きいので、我慢するしかないですね。
 
 # 予定したこと
 
- - [x] Self-host a mirror for the toolchain
- - [x] Checksum for downloaded files
- - [x] Fix SGDK skeleton so its Makefile can build Stef's samples
- - [ ] C++ example
- - [ ] この文書化を日本語で翻訳する (Reorganize the English first though)
- - [ ] Include tools necessary for Mega CD and an example project
- - [ ] Write out some information about the C ABI, and how it changes with -mshort
  - [ ] Finish porting the important parts of libdos and getting Newlib to work with it
  - [ ] Investigate Rust support after GCC13 is released
