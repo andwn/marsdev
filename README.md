@@ -1,6 +1,8 @@
 # Marsdev
 
-Cross-platform Mega Drive / 32X toolchain and Makefile abuse.
+Cross-platform Mega Drive / 32X / X68K toolchain and Makefile abuse.
+
+English | [日本語](README-ja.md)
 
 
 ## Installation
@@ -32,22 +34,19 @@ Should be as easy as a `make` for any of them.
 
 ### What is the difference between this and the other Genesis/Mega Drive toolchains?
 
-SGDK's bundled toolchain only works on Windows, and Gendev only on Linux.
-The goal originally was to have something I could use on all the "big 3" platforms,
-but now with WSL it's a moot point and I only have to worry about the Unix-likes.
-So here are the main things I am aiming for these days:
+In no particular order:
 
- - Keep up to date with GCC and SGDK
- - Support more hosts than just x86_64
- - Make as much of the toolchain optional as possible
-
-The intention of letting users cherry-pick targets is to be easy to integrate into
-other devkits or frameworks, while also being usable on its own.
+ - SGDK is optional, only bare bones Binutils+GCC are required
+ - Newlib support, also optional (*-toolchain-newlib targets)
+ - SH-2 toolchain can be built for 32X support
+ - Can build most of SGDK's samples
+ - Expected to work on ARM hosts
+ - (Experimental) Support for creating Human68K programs
 
 
 ### Can I build a Gendev project with Marsdev or vice-versa?
 
-In theory, you would only have to set GENDEV and MARSDEV to the same place, but every project is different.
+Not easily. Try comparing your Makefile to one of the example projects.
 
 
 ### How do I use this with my favorite IDE?
@@ -74,18 +73,17 @@ MSYS2 might still work, but it's a pain to use and maintain.
 
 ### This takes so long to compile!
 
-GCC is a big boy, so we just have to be patient. Alternatively,
-
-![Parallel builds](doc/cores.png)
+GCC is a big boy, so we just have to be patient.
 
 
 # Things to do
 
  - [x] Self-host a mirror for the toolchain
  - [x] Checksum for downloaded files
- - [ ] Fix SGDK skeleton so its Makefile can build Stef's samples
+ - [x] Fix SGDK skeleton so its Makefile can build Stef's samples
  - [ ] C++ example
  - [ ] この文書化を日本語で翻訳する (Reorganize the English first though)
  - [ ] Include tools necessary for Mega CD and an example project
  - [ ] Write out some information about the C ABI, and how it changes with -mshort
- - [ ] Investigate how difficult a Human68k target would be (Xfile binaries, dos.h porting, etc)
+ - [ ] Finish porting the important parts of libdos and getting Newlib to work with it
+ - [ ] Investigate Rust support after GCC13 is released

@@ -1,9 +1,8 @@
 # Sample Makefile for Marsdev (No SGDK, With Newlib)
 
 # Default paths, can be overridden by setting MARSDEV before calling make
-MARSDEV ?= ${HOME}/mars
+MARSDEV ?= /opt/toolchains/mars
 MARSBIN  = $(MARSDEV)/m68k-elf/bin
-TOOLSBIN = $(MARSDEV)/bin
 
 # GCC and Binutils
 CC   = $(MARSBIN)/m68k-elf-gcc
@@ -43,7 +42,7 @@ ASFLAGS  = -m68000 --register-prefix-optional
 
 # -nostartfiles disables the c runtime startup code
 # -nostdlib unsets -lc, so when using Newlib don't set that option
-LDFLAGS  = -T $(MARSDEV)/ldscripts/md.ld -nostartfiles
+LDFLAGS  = -T megadrive.ld -nostartfiles
 
 # Collect source files in the src directory
 CS    = $(wildcard src/*.c)

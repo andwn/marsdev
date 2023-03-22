@@ -81,7 +81,7 @@ The "complete" toolchain the releases use:
  - `make z80-tools`
  - `make sgdk`
  - `make sik-tools`
- - `make flamewing-tools`
+ - `make x68k-tools`
 
 If everything succeeds you should be all set to copy one of the skeleton projects and start coding.
 

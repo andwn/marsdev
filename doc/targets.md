@@ -108,20 +108,3 @@ None
  * Arch: `pacman -S cmake boost`
  * Gentoo: `emerge dev-libs/boost`
  * MacOS: `brew install cmake boost`
-
-
-## m68k-gdb / sh-gdb
-
-GNU Debuggers for Motorola 68000 or SH-2. I don't use or test these.
-
-#### Requires Target
-
-`m68k-toolchain` and/or `sh-toolchain`
-
-#### Additional Dependencies
-
- * Debian: `apt install libgmp-dev`
- * RedHat: `yum install libgmp-devel`
- * Arch: `pacman -S gmp`
- * Gentoo: `emerge dev-libs/gmp`
- 
