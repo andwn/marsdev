@@ -37,6 +37,7 @@ OBJS += $(SS:.s=.o)
 all: $(TARGET).a
 	cp -f libdos.a $(MARSLIB)/
 	cp -f elf2x.py $(MARSBIN)/
+	cp -f human68k.ld $(MARSLIB)/
 
 %.a: $(OBJS)
 	$(AR) rcs --plugin=$(PLUGIN) $@ $(OBJS)

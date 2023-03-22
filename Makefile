@@ -44,20 +44,22 @@ sgdk-samples:
 .PHONY: install
 
 install:
-	mkdir -p $(MARS_INSTALL_DIR)
+	@mkdir -p $(MARS_INSTALL_DIR)
 	cp -rf $(MARS_BUILD_DIR)/* $(MARS_INSTALL_DIR)
-	echo "#!/bin/sh" > $(MARS_INSTALL_DIR)/mars.sh
-	echo "export MARSDEV=$(MARS_INSTALL_DIR)" >> $(MARS_INSTALL_DIR)/mars.sh
-	echo "export GDK=$(MARS_INSTALL_DIR)/m68k-elf" >> $(MARS_INSTALL_DIR)/mars.sh
-	chmod +x $(MARS_INSTALL_DIR)/mars.sh
-	@if [ -z "${LANG##*ja_JP*}" ]; then ;\
-	  @echo "Marsdevは$(MARS_INSTALL_DIR)にインストールしました。" ;\
-	  @echo "プロジェクトをコンパイルする前に、適切な環境変数を設定するために以下のコマンドを実行してください:" ;\
-	else ;\
-	  @echo "Marsdev has been installed to $(MARS_INSTALL_DIR)." ;\
-	  @echo "Run the following to set the proper environment variables before building your projects:" ;\
+	@echo "#!/bin/sh" > $(MARS_INSTALL_DIR)/mars.sh
+	@echo "export MARSDEV=$(MARS_INSTALL_DIR)" >> $(MARS_INSTALL_DIR)/mars.sh
+	@echo "export GDK=$(MARS_INSTALL_DIR)/m68k-elf" >> $(MARS_INSTALL_DIR)/mars.sh
+	@chmod +x $(MARS_INSTALL_DIR)/mars.sh
+	@echo "--------------------------------------------------------------------------------"
+	@if [ -z "${LANG##*ja_JP*}" ]; then \
+	  echo "Marsdevは$(MARS_INSTALL_DIR)にインストールしました。" ;\
+	  echo "プロジェクトをコンパイルする前に、適切な環境変数を設定するために以下のコマンドを実行してください:" ;\
+	else \
+	  echo "Marsdev has been installed to $(MARS_INSTALL_DIR)." ;\
+	  echo "Run the following to set the proper environment variables before building your projects:" ;\
 	fi
 	@echo "source $(MARS_INSTALL_DIR)/mars.sh"
+	@echo "--------------------------------------------------------------------------------"
 
 
 .PHONY: clean toolchain-clean tools-clean sgdk-clean
