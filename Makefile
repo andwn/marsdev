@@ -66,14 +66,13 @@ install:
 	@echo "--------------------------------------------------------------------------------"
 
 
-.PHONY: clean toolchain-clean gdb-clean tools-clean sgdk-clean
-clean: toolchain-clean gdb-clean tools-clean sgdk-clean
+.PHONY: clean toolchain-clean tools-clean sgdk-clean
+clean: toolchain-clean tools-clean sgdk-clean
 
 toolchain-clean:
 	$(MAKE) -C toolchain clean
 
 tools-clean:
-	$(MAKE) -C z80-tools clean
 	$(MAKE) -C sik-tools clean
 	$(MAKE) -C flamewing-tools clean
 	$(MAKE) -C x68k-tools clean
