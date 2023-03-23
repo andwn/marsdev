@@ -74,15 +74,12 @@ A specific version of SGDK can be specified with `SGDK_VER=<git tag>`,
 but I cannot guarantee versions other than the default to work.
 Adventurous people who want to test the latest changes can specify `SGDK_VER=master` too.
 
-### 4. (Optional) X68000 Tools
+### 4. (Optional) Other Tools
 
-You should skip this step if you don't know what a X68000 is.
-
-Build X68k tools:
- - `make x68k-tools`
-
-A GCC/GAS compatible version of libdos is built, along with Newlib glue so the
-C runtime can be used on Human68k.
+The following targets are also available:
+ - `make x68k-tools` - Sharp X68000 compatibility
+ - `make sik-tools` - Contains mdtiler and some Echo stuff (req. libpng)
+ - `make flamewing-tools` - Compression tools for data in Sonic games (req. cmake + boost)
 
 
 ### 5. Install

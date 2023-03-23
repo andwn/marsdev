@@ -16,7 +16,7 @@
  * macOS: `xcode-select --install && brew install wget`
 
 
-### 2. GCC Toolchain
+### 2. GCC ツールチェーン
 
 GitHubからクローンして：
  - `git clone https://github.com/andwn/marsdev`
@@ -47,7 +47,7 @@ GCCをビルドするには3つの選択肢がある：
 選択肢は同じで、上記のコマンドの `m68k` を `sh` に置き換えられる。
 
 
-### 3. (Optional) SGDK
+### 3. (自由に選択) SGDK
 
 SGDKはJavaを必要とするので、インストールして：
  * Debian: `apt install openjdk-11-jre`
@@ -57,7 +57,7 @@ SGDKはJavaを必要とするので、インストールして：
  * macOS: `brew install java`
 
 ---
-**Note for macOS**
+**注意：macOSについて**
 
 OpenJDKはPATHに追加しなければならない：
  - `~/.zshrc` (まだbashを使用していれば `~/.bashrc`) を開き、次の行を追加して：
@@ -74,13 +74,12 @@ SGDKの特定のバージョンは、`SGDK_VER=<git tag>` で指定できる。
 最新の変更をテストしたい冒険者は、`SGDK_VER=master`も指定できる。
 
 
-### 4. (Optional) X68000 Tools
+### 4. (自由に選択) 他のツール
 
-X68000ツールをビルドして：
- - `make x68k-tools`
-
-A GCC/GAS compatible version of libdos is built, along with Newlib glue so the
-C runtime can be used on Human68k.
+以下のターゲットも用意されています：
+ - `make x68k-tools` - シャープX68000の互換性
+ - `make sik-tools` - mdtiler といくつかの Echo を含む (libpng が必要)。
+ - `make flamewing-tools` - ソニックゲームのデータ圧縮ツール (cmake + boost が必要)
 
 
 ### 5. インストール

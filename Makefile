@@ -9,8 +9,7 @@ export MARS_INSTALL_DIR
 
 .PHONY: m68k-toolchain m68k-toolchain-newlib m68k-toolchain-full
 .PHONY: sh-toolchain sh-toolchain-newlib sh-toolchain-full
-.PHONY: all x68k-tools sgdk sgdk-samples
-
+.PHONY: all z80-tools sik-tools flamewing-tools x68k-tools sgdk sgdk-samples
 all: m68k-toolchain z80-tools sgdk
 
 m68k-toolchain:
@@ -34,6 +33,12 @@ sh-toolchain-full:
 x68k-tools:
 	$(MAKE) -C x68k-tools
 
+sik-tools:
+	$(MAKE) -C sik-tools
+
+flamewing-tools:
+	$(MAKE) -C flamewing-tools
+
 sgdk:
 	$(MAKE) -C sgdk
 
@@ -42,7 +47,6 @@ sgdk-samples:
 
 
 .PHONY: install
-
 install:
 	@mkdir -p $(MARS_INSTALL_DIR)
 	cp -rf $(MARS_BUILD_DIR)/* $(MARS_INSTALL_DIR)
@@ -62,14 +66,16 @@ install:
 	@echo "--------------------------------------------------------------------------------"
 
 
-.PHONY: clean toolchain-clean tools-clean sgdk-clean
-
-clean: toolchain-clean tools-clean sgdk-clean
+.PHONY: clean toolchain-clean gdb-clean tools-clean sgdk-clean
+clean: toolchain-clean gdb-clean tools-clean sgdk-clean
 
 toolchain-clean:
 	$(MAKE) -C toolchain clean
 
 tools-clean:
+	$(MAKE) -C z80-tools clean
+	$(MAKE) -C sik-tools clean
+	$(MAKE) -C flamewing-tools clean
 	$(MAKE) -C x68k-tools clean
 
 sgdk-clean:
