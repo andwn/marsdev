@@ -40,6 +40,7 @@ void exit(int status) {
     __fd_exit_clean();
     _dos_exit2(status);
 }
+void _exit(int status) { exit(status); }
 
 int fork(void) {
     errno = ENOSYS;

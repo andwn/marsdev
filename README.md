@@ -100,7 +100,8 @@ Should be as easy as a `make` for any of them.
 
 ### Can I build a Gendev project with Marsdev or vice-versa?
 
-Not easily. Try comparing your Makefile to one of the example projects.
+Not easily. You'll need to mess with the Makefile to get it working.
+Start by comparing your current Makefile to one of the example projects.
 
 
 ### How do I use this with my favorite IDE?
@@ -127,6 +128,17 @@ As a last resort for those unable to use WSL for whatever reason,
 If you don't like any of these options you must really love Windows,
 and are better off sticking to vanilla SGDK, as it is meant to be used in Windows.
 
+
+### I don't like installing to /opt. I want the old ~/mars way back
+
+That's easy.
+1. `export MARS_BUILD_DIR=${HOME}/mars`
+2. Do steps 1 - 4 normally
+3. Skip the installation step, instead add to your `~/.bashrc`:
+```
+export MARSDEV=${HOME}/mars
+export GDK=${MARSDEV}/m68k-elf
+```
 
 ### This takes so long to compile!
 

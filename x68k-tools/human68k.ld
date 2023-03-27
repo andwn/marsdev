@@ -40,4 +40,7 @@ SECTIONS
     _end = .;
     __bss_end = .;
   }
+
+  __stack_size = 0x8000;
+  __heap_size = 0x10000;
 }

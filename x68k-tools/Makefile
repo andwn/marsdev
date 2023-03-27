@@ -38,6 +38,7 @@ all: $(TARGET).a
 	cp -f libdos.a $(MARSLIB)/
 	cp -f elf2x.py $(MARSBIN)/
 	cp -f human68k.ld $(MARSLIB)/
+	cp -rf include/* $(MARSDEV)/m68k-elf/m68k-elf/include/
 
 %.a: $(OBJS)
 	$(AR) rcs --plugin=$(PLUGIN) $@ $(OBJS)
