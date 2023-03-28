@@ -7,8 +7,8 @@ MARS_INSTALL_DIR ?= /opt/toolchains/mars
 export MARS_BUILD_DIR
 export MARS_INSTALL_DIR
 
-.PHONY: m68k-toolchain m68k-toolchain-newlib m68k-toolchain-full
-.PHONY: sh-toolchain sh-toolchain-newlib sh-toolchain-full
+.PHONY: m68k-toolchain m68k-toolchain-newlib
+.PHONY: sh-toolchain sh-toolchain-newlib
 .PHONY: all sik-tools x68k-tools sgdk sgdk-samples
 all: m68k-toolchain sgdk
 
@@ -18,17 +18,11 @@ m68k-toolchain: m68k-gcc-toolchain
 m68k-toolchain-newlib: m68k-gcc-toolchain
 	$(MAKE) -C $< all install INSTALL_DIR=$(MARS_BUILD_DIR)/m68k-elf
 
-m68k-toolchain-full: m68k-gcc-toolchain
-	$(MAKE) -C $< all install LANGS=c,c++ INSTALL_DIR=$(MARS_BUILD_DIR)/m68k-elf
-
 sh-toolchain: sh-gcc-toolchain
 	$(MAKE) -C $< without-newlib install INSTALL_DIR=$(MARS_BUILD_DIR)/sh-elf
 
 sh-toolchain-newlib: sh-gcc-toolchain
 	$(MAKE) -C $< all install INSTALL_DIR=$(MARS_BUILD_DIR)/sh-elf
-
-sh-toolchain-full: sh-gcc-toolchain
-	$(MAKE) -C $< all install LANGS=c,c++ INSTALL_DIR=$(MARS_BUILD_DIR)/sh-elf
 
 x68k-tools:
 	$(MAKE) -C x68k-tools
@@ -79,8 +73,8 @@ install:
 clean: toolchain-clean tools-clean sgdk-clean
 
 toolchain-clean:
-	if [ -f m68k-gcc-toolchain ]; then $(MAKE) -C m68k-gcc-toolchain clean; fi
-	if [ -f sh-gcc-toolchain ]; then $(MAKE) -C sh-gcc-toolchain clean; fi
+	if [ -d m68k-gcc-toolchain ]; then $(MAKE) -C m68k-gcc-toolchain clean; fi
+	if [ -d sh-gcc-toolchain ]; then $(MAKE) -C sh-gcc-toolchain clean; fi
 
 tools-clean:
 	$(MAKE) -C sik-tools clean

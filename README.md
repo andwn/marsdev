@@ -33,16 +33,11 @@ There are two variables that control which directory Marsdev is built and instal
 If you wish to change the location of either, use an export command like this:
  - `export MARS_INSTALL_DIR=/path/to/mars`
 
-Also by default, the GNU toolchain source packages are downloaded from a mirror I host.
-You can specify to grab them from the official GNU/Sourceware servers instead with
-`USE_MARS_MIRROR=false`.
-
 ---
 
-You have 3 options for building GCC:
- - `make m68k-toolchain` - C support only, without Newlib
- - `make m68k-toolchain-newlib` - C support only, with Newlib
- - `make m68k-toolchain-full` - C and C++ support, with Newlib
+You have 2 options for building GCC:
+ - `make m68k-toolchain` - Without Newlib
+ - `make m68k-toolchain-newlib` - With Newlib
 
 For 32X, the `sh` toolchain must also be built.
 The options are the same, swapping out `m68k` in the commands above with `sh`.

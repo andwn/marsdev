@@ -32,16 +32,11 @@ Marsdevがどのディレクトリでビルドされ、インストールされ�
 どちらかの場所を変更したければ、次のようなエクスポートコマンドを使用できる：
  - `export MARS_INSTALL_DIR=/path/to/mars`
 
-また、デフォルトでは、GNUツールチェイン・ソースパッケージは私がホストするミラーからダウンロードされます。
-代わりに公式のGNU/Sourcewareサーバから取得するよう、次のように指定できる。
-`USE_MARS_MIRROR=false`
-
 ---
 
-GCCをビルドするには3つの選択肢がある：
- - `make m68k-toolchain` - Cだけ、Newlibがない
- - `make m68k-toolchain-newlib` - Cだけ、Newlibもある
- - `make m68k-toolchain-full` - CとC++、Newlibもある
+GCCをビルドするには2つの選択肢がある：
+ - `make m68k-toolchain` - Newlibがない
+ - `make m68k-toolchain-newlib` - Newlibがある
 
 32Xためビルドしたければ、`sh-toolchain` も必要です。
 選択肢は同じで、上記のコマンドの `m68k` を `sh` に置き換えられる。

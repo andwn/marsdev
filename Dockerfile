@@ -4,9 +4,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Install prerequisites
 RUN apt update && \
-    apt install -y git build-essential texinfo curl wget \
-    openjdk-17-jdk-headless libpng-dev cmake libboost-all-dev \
-    autoconf automake libtool libboost-dev libgmp-dev \
+    apt install -y git build-essential texinfo wget \
+    openjdk-17-jdk-headless libpng-dev \
     && apt clean
 
 ENV MARSDEV=/marsdev/mars
@@ -26,18 +25,15 @@ COPY ./ marsdev/
 WORKDIR /work/marsdev
 
 #RUN make MARS_BUILD_DIR=$MARSDEV m68k-toolchain clean
-#RUN make MARS_BUILD_DIR=$MARSDEV m68k-toolchain-newlib clean
-RUN make MARS_BUILD_DIR=$MARSDEV m68k-toolchain-full clean
+RUN make MARS_BUILD_DIR=$MARSDEV m68k-toolchain-newlib clean
 
 #RUN make MARS_BUILD_DIR=$MARSDEV sh-toolchain clean
-#RUN make MARS_BUILD_DIR=$MARSDEV sh-toolchain-newlib clean
-RUN make MARS_BUILD_DIR=$MARSDEV sh-toolchain-full clean
+RUN make MARS_BUILD_DIR=$MARSDEV sh-toolchain-newlib clean
 
 RUN make MARS_BUILD_DIR=$MARSDEV sgdk
 
 RUN make MARS_BUILD_DIR=$MARSDEV x68k-tools
 RUN make MARS_BUILD_DIR=$MARSDEV sik-tools
-RUN make MARS_BUILD_DIR=$MARSDEV flamewing-tools
 
 WORKDIR /
 
