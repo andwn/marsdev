@@ -24,16 +24,16 @@ sh-toolchain: sh-gcc-toolchain
 sh-toolchain-newlib: sh-gcc-toolchain
 	$(MAKE) -C $< all install INSTALL_DIR=$(MARS_BUILD_DIR)/sh-elf
 
-x68k-tools:
+x68k-tools: dep-m68k-newlib
 	$(MAKE) -C x68k-tools
 
 sik-tools:
 	$(MAKE) -C sik-tools
 
-sgdk:
+sgdk: dep-m68k-toolchain
 	$(MAKE) -C sgdk
 
-sgdk-samples:
+sgdk-samples: dep-sgdk
 	$(MAKE) -C sgdk samples
 
 
@@ -41,6 +41,9 @@ sgdk-samples:
 
 m68k-gcc-toolchain:
 	git clone https://github.com/andwn/m68k-gcc-toolchain
+	@if [ -d sh-gcc-toolchain ]; then \
+		cp sh-gcc-toolchain/*.tar.* m68k-gcc-toolchain/; \
+	fi
 
 sh-gcc-toolchain:
 	git clone https://github.com/andwn/sh-gcc-toolchain
@@ -49,6 +52,24 @@ sh-gcc-toolchain:
 	fi
 
 
+# Touch files for handling dependencies
+
+dep-m68k-toolchain: m68k-toolchain
+	@touch $@
+dep-m68k-newlib: m68k-toolchain-newlib
+	@touch $@
+	@touch dep-m68k-toolchain
+dep-sh-toolchain: sh-toolchain
+	@touch $@
+dep-sh-newlib: sh-toolchain-newlib
+	@touch $@
+	@touch dep-sh-toolchain
+dep-sgdk: sgdk
+	@touch $@
+
+
+# Install step
+
 .PHONY: install
 install:
 	@mkdir -p $(MARS_INSTALL_DIR)
@@ -56,6 +77,8 @@ install:
 	@echo "#!/bin/sh" > $(MARS_INSTALL_DIR)/mars.sh
 	@echo "export MARSDEV=$(MARS_INSTALL_DIR)" >> $(MARS_INSTALL_DIR)/mars.sh
 	@echo "export GDK=$(MARS_INSTALL_DIR)/m68k-elf" >> $(MARS_INSTALL_DIR)/mars.sh
+	@echo "export PATH=\"$PATH:$(MARS_INSTALL_DIR)/m68k-elf/bin\"" >> $(MARS_INSTALL_DIR)/mars.sh
+	@echo "export PATH=\"$PATH:$(MARS_INSTALL_DIR)/sh-elf/bin\"" >> $(MARS_INSTALL_DIR)/mars.sh
 	@chmod +x $(MARS_INSTALL_DIR)/mars.sh
 	@echo "--------------------------------------------------------------------------------"
 	@if [ -z "${LANG##*ja_JP*}" ]; then \
@@ -69,17 +92,12 @@ install:
 	@echo "--------------------------------------------------------------------------------"
 
 
-.PHONY: clean toolchain-clean tools-clean sgdk-clean
-clean: toolchain-clean tools-clean sgdk-clean
-
-toolchain-clean:
+.PHONY: clean
+clean:
 	if [ -d m68k-gcc-toolchain ]; then $(MAKE) -C m68k-gcc-toolchain clean; fi
 	if [ -d sh-gcc-toolchain ]; then $(MAKE) -C sh-gcc-toolchain clean; fi
-
-tools-clean:
 	$(MAKE) -C sik-tools clean
 	$(MAKE) -C x68k-tools clean
-
-sgdk-clean:
 	$(MAKE) -C sgdk clean
-
+	rm -rf $(MARS_BUILD_DIR)
+	rm -f dep-*
