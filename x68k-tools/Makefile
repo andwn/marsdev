@@ -1,59 +1,31 @@
 MARSDEV = $(MARS_BUILD_DIR)
-MARSCPU = m68k-elf
-MARSGCC = $(MARSDEV)/$(MARSCPU)
-MARSBIN = $(MARSDEV)/$(MARSCPU)/bin
-MARSLIB = $(MARSDEV)/$(MARSCPU)/lib
+MARSBIN = $(MARSDEV)/m68k-elf/bin
+MARSINC = $(MARSDEV)/m68k-elf/include
+MARSLIB = $(MARSDEV)/m68k-elf/lib
 
-TARGET = libdos
+LIBDOS   = $(MARSLIB)/libdos.a
+PNG2XSP  = $(MARSBIN)/png2xsp
 
-# GCC and Binutils
-CC      = $(MARSBIN)/$(MARSCPU)-gcc
-AS      = $(MARSBIN)/$(MARSCPU)-as
-AR      = $(MARSBIN)/$(MARSCPU)-ar
-RANLIB  = $(MARSBIN)/$(MARSCPU)-ranlib
+.PHONY: all clean
 
-# LTO plugin path
-GCC_VER := $(shell $(CC) -dumpversion)
-PLUGIN   = $(MARSGCC)/libexec/gcc/$(MARSCPU)/$(GCC_VER)/liblto_plugin.so
+all: $(LIBDOS) $(PNG2XSP)
 
-INCS     = -I$(MARSGCC)/lib/gcc/$(MARSCPU)/$(GCC_VER)/include
-INCS    += -I$(MARSGCC)/$(MARSCPU)/include
-INCS    += -Iinclude
+libdos-gcc:
+	git clone https://github.com/andwn/libdos-gcc
 
-LIBS     = -L$(MARSGCC)/lib/gcc/$(MARSCPU)/$(GCC_VER) -lgcc
-LIBS    += -L$(MARSGCC)/$(MARSCPU)/lib -lc -lnosys
+png2xsp:
+	git clone https://github.com/mikejmoffitt/png2xsp
 
-CCFLAGS  = -m68000 -std=gnu99 -Wall -Wextra
-CCFLAGS += -O2 -fomit-frame-pointer #-flto -fuse-linker-plugin
+$(LIBDOS): libdos-gcc $(MARSBIN)
+	$(MAKE) -C libdos-gcc
+	cp -f libdos-gcc/libdos.a $(LIBDOS)
 
-ASFLAGS := -m68000 --register-prefix-optional --bitwise-or
+$(PNG2XSP): png2xsp $(MARSBIN)
+	$(MAKE) -C png2xsp
+	cp -f png2xsp/png2xsp $(PNG2XSP)
 
-CS    = $(wildcard *.c)
-SS    = $(wildcard *.s)
-OBJS  = $(CS:.c=.o)
-OBJS += $(SS:.s=.o)
+$(MARSBIN):
+	mkdir -p $(MARSBIN)
 
-.PHONY: all
-all: $(TARGET).a
-	cp -f libdos.a $(MARSLIB)/
-	cp -f elf2x.py $(MARSBIN)/
-	cp -f human68k.ld $(MARSLIB)/
-	cp -rf include/* $(MARSDEV)/m68k-elf/m68k-elf/include/
-
-%.a: $(OBJS)
-	$(AR) rcs --plugin=$(PLUGIN) $@ $(OBJS)
-	$(RANLIB) --plugin=$(PLUGIN) $@
-
-%.o: %.c
-	$(CC) -o $@ $(CCFLAGS) $(INCS) -c $<
-
-%.o: %.s
-	$(AS) -o $@ $(ASFLAGS) $<
-
-.PHONY: test
-test: all
-	make -C test
-
-.PHONY: clean
 clean:
-	rm -f $(OBJS) $(TARGET).a
+	rm -rf libdos-gcc png2xsp
