@@ -1,3 +1,7 @@
+ifeq ($(shell /sbin/ldconfig -p | grep libpng),)
+  $(error "'libpng' not found. Make sure the 'libpng-dev' package is installed.")
+endif
+
 MARSDEV = $(MARS_BUILD_DIR)
 MARSBIN = $(MARSDEV)/m68k-elf/bin
 

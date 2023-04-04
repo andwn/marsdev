@@ -1,11 +1,16 @@
 *.log
 *.o
+*.a
+*.lib
 *.elf
 *.bin
 *.32x
+*.gen
 *.lst
 *.old
 *.bak
+dep-*
+mk-*
 resources.h
 symbol.txt
 
@@ -15,11 +20,14 @@ symbol.txt
 *.zip
 
 .idea/
-toolchain/gcc-*/
-toolchain/binutils-*/
-toolchain/newlib-*/
-z80-tools/sjasm/
+.vscode/
+Session.vim
+
+bin/
+out/
+mars/
+*-gcc-toolchain/
+sgdk/sjasm/
 sgdk/SGDK/
 sik-tools/mdtools/
-flamewing-tools/mdcomp/
-flamewing-tools/mdtools/
+

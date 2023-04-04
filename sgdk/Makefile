@@ -1,3 +1,7 @@
+ifeq ($(shell which java),)
+  $(error "'java' not found. Make sure a Java runtime is installed.")
+endif
+
 GDK := $(MARS_BUILD_DIR)/m68k-elf
 INC := $(GDK)/inc
 BIN := $(GDK)/bin

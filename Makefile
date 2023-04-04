@@ -2,15 +2,21 @@
 # Multiplatform Mega Drive toolchain builder and installer
 # This is the 'main' Makefile that calls others in their own subdirectories
 
+ifeq ($(shell which makeinfo),)
+  $(error "'makeinfo' not found. Make sure the 'texinfo' package is installed.")
+endif
+ifeq ($(shell which wget),)
+  $(error "'wget' not found. Make sure the 'wget' package is installed.")
+endif
+
 MARS_BUILD_DIR   ?= $(shell pwd)/mars
 MARS_INSTALL_DIR ?= /opt/toolchains/mars
 export MARS_BUILD_DIR
 export MARS_INSTALL_DIR
 
-.PHONY: m68k-toolchain m68k-toolchain-newlib
-.PHONY: sh-toolchain sh-toolchain-newlib
-.PHONY: all sik-tools x68k-tools sgdk sgdk-samples
-all: m68k-toolchain sgdk
+.PHONY: m68k-toolchain m68k-toolchain-newlib sh-toolchain sh-toolchain-newlib
+.PHONY: sik-tools x68k-tools sgdk sgdk-samples all 32x x68k
+all: sgdk
 
 m68k-toolchain: m68k-gcc-toolchain
 	$(MAKE) -C $< without-newlib install INSTALL_DIR=$(MARS_BUILD_DIR)/m68k-elf
