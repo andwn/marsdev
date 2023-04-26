@@ -70,6 +70,8 @@ If your IDE lets you configure what the build/run buttons do, just have it run s
 
 MSYS2 might still work, but it's a pain to use and maintain.
 
+_Try using Docker. It works. It's effective. You can do it._
+
 
 ### This takes so long to compile!
 
