@@ -30,16 +30,16 @@ sh-toolchain: sh-gcc-toolchain
 sh-toolchain-newlib: sh-gcc-toolchain
 	$(MAKE) -C $< all install INSTALL_DIR=$(MARS_BUILD_DIR)/sh-elf
 
-x68k-tools: dep-m68k-newlib
+x68k-tools:
 	$(MAKE) -C x68k-tools
 
 sik-tools:
 	$(MAKE) -C sik-tools
 
-sgdk: dep-m68k-toolchain
+sgdk:
 	$(MAKE) -C sgdk
 
-sgdk-samples: dep-sgdk
+sgdk-samples:
 	$(MAKE) -C sgdk samples
 
 
@@ -58,22 +58,6 @@ sh-gcc-toolchain:
 	fi
 
 
-# Touch files for handling dependencies
-
-dep-m68k-toolchain: m68k-toolchain
-	@touch $@
-dep-m68k-newlib: m68k-toolchain-newlib
-	@touch $@
-	@touch dep-m68k-toolchain
-dep-sh-toolchain: sh-toolchain
-	@touch $@
-dep-sh-newlib: sh-toolchain-newlib
-	@touch $@
-	@touch dep-sh-toolchain
-dep-sgdk: sgdk
-	@touch $@
-
-
 # Install step
 
 .PHONY: install
@@ -87,7 +71,7 @@ install:
 	@echo "export PATH=\"$PATH:$(MARS_INSTALL_DIR)/sh-elf/bin\"" >> $(MARS_INSTALL_DIR)/mars.sh
 	@chmod +x $(MARS_INSTALL_DIR)/mars.sh
 	@echo "--------------------------------------------------------------------------------"
-	@if [ -z "${LANG##*ja_JP*}" ]; then \
+	@if [ ! -z "${LANG##*ja_JP*}" ]; then \
 		echo "Marsdevは$(MARS_INSTALL_DIR)にインストールしました。" ;\
 		echo "プロジェクトをコンパイルする前に、適切な環境変数を設定するために以下のコマンドを実行してください:" ;\
 	else \
@@ -106,4 +90,3 @@ clean:
 	$(MAKE) -C x68k-tools clean
 	$(MAKE) -C sgdk clean
 	rm -rf $(MARS_BUILD_DIR)
-	rm -f dep-*
