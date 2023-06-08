@@ -8,7 +8,7 @@
 
 ### 1. 前提条件
 
-お使いのOSに応じて、以下のパッケージをインストールしてください：
+OSによって、以下のパッケージをインストールしてください：
  * Debian: `apt install build-essential texinfo wget`
  * RedHat: `yum install gcc gcc-c++ texinfo-tex wget`
  * Arch: `pacman -S base-devel texinfo wget`
@@ -26,10 +26,10 @@ GitHubからクローンして：
 **注意**
 
 Marsdevがどのディレクトリでビルドされ、インストールされるかを制御する2つの変数がある：
- - `MARS_BUILD_DIR` = (REPOSITORY_ROOT)/mars
+ - `MARS_BUILD_DIR` = (このリポジトリのROOT)/mars
  - `MARS_INSTALL_DIR` = /opt/toolchains/mars
 
-どちらかの場所を変更したければ、次のようなエクスポートコマンドを使用できる：
+どちらかの場所を変更したいの場合は、次のエクスポートコマンドとかを使用できる：
  - `export MARS_INSTALL_DIR=/path/to/mars`
 
 ---
@@ -74,7 +74,6 @@ SGDKの特定のバージョンは、`SGDK_VER=<git tag>` で指定できる。
 以下のターゲットも用意されています：
  - `make x68k-tools` - シャープX68000の互換性
  - `make sik-tools` - mdtiler といくつかの Echo を含む (libpng が必要)。
- - `make flamewing-tools` - ソニックゲームのデータ圧縮ツール (cmake + boost が必要)
 
 
 ### 5. インストール
@@ -129,7 +128,6 @@ Windows10か11を持っていれば、[WSL](https://learn.microsoft.com/ja-jp/wi
 GCCはとても大きいので、我慢するしかないですね。
 
 
-# 予定したこと
+# 予定こと
 
  - [ ] Finish porting the important parts of libdos and getting Newlib to work with it
- - [ ] Investigate Rust support after GCC13 is released

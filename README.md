@@ -97,7 +97,14 @@ Should be as easy as a `make` for any of them.
 
 Not easily. You'll need to mess with the Makefile to get it working.
 Start by comparing your current Makefile to one of the example projects.
+The [Migration](doc/migration.md) document may be helpful here.
 
+### How can I tell if an issue I'm having with SGDK is caused by Marsdev?
+
+It should be possible to compile your project as-is with an official SGDK release.
+The included Makefile is just a wrapper for `make -f $GDK/makefile.gen`.
+
+If the issue persists, it's SGDK's fault. If the issue is fixed, it's Marsdev's fault.
 
 ### How do I use this with my favorite IDE?
 
@@ -116,12 +123,14 @@ If your IDE lets you configure what the build/run buttons do, just have it run s
 
 ### What about Windows?
 
-I highly recommend you use [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
-and follow the Linux instructions.
-As a last resort for those unable to use WSL for whatever reason,
-[there is MSYS2](doc/install_msys_legacy.md).
-If you don't like any of these options you must really love Windows,
-and are better off sticking to vanilla SGDK, as it is meant to be used in Windows.
+I highly recommend using [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+and follow the instructions for Debian.
+You could also try using the Dockerfile, although that is contributed by others
+and I don't test it myself.
+I used to use [MSYS2](doc/install_msys_legacy.md), but how slow and clunky it is can not be overstated.
+
+An addendum, if you are just here to use SGDK and don't use Linux or macOS then
+I think Marsdev will be of little benefit to you anyway.
 
 
 ### I don't like installing to /opt. I want the old ~/mars way back
@@ -143,4 +152,3 @@ GCC is a big boy, so we just have to be patient.
 # Things to do
 
  - [ ] Finish porting the important parts of libdos and getting Newlib to work with it
- - [ ] Investigate Rust support after GCC13 is released
