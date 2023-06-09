@@ -67,8 +67,8 @@ install:
 	@echo "#!/bin/sh" > $(MARS_INSTALL_DIR)/mars.sh
 	@echo "export MARSDEV=$(MARS_INSTALL_DIR)" >> $(MARS_INSTALL_DIR)/mars.sh
 	@echo "export GDK=$(MARS_INSTALL_DIR)/m68k-elf" >> $(MARS_INSTALL_DIR)/mars.sh
-	@echo "export PATH=\"$PATH:$(MARS_INSTALL_DIR)/m68k-elf/bin\"" >> $(MARS_INSTALL_DIR)/mars.sh
-	@echo "export PATH=\"$PATH:$(MARS_INSTALL_DIR)/sh-elf/bin\"" >> $(MARS_INSTALL_DIR)/mars.sh
+	@echo "export PATH=\"$$PATH:$(MARS_INSTALL_DIR)/m68k-elf/bin\"" >> $(MARS_INSTALL_DIR)/mars.sh
+	@echo "export PATH=\"$$PATH:$(MARS_INSTALL_DIR)/sh-elf/bin\"" >> $(MARS_INSTALL_DIR)/mars.sh
 	@chmod +x $(MARS_INSTALL_DIR)/mars.sh
 	@echo "--------------------------------------------------------------------------------"
 	@if [ ! -z "${LANG##*ja_JP*}" ]; then \

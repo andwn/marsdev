@@ -14,6 +14,7 @@ SECTIONS
     *(.text.*) *(.text)
     . = ALIGN(2);
     *(.rodata .rodata.*)
+	. = ALIGN(2);
   } > rom
   _stext = SIZEOF (.text);
 
@@ -21,8 +22,8 @@ SECTIONS
   AT ( LOADADDR (.text) + SIZEOF (.text) )
   {
     *(.data .data.*)
-    _edata = .;
     . = ALIGN(2);
+    _edata = .;
   } > ram
   _sdata = SIZEOF (.data);
 

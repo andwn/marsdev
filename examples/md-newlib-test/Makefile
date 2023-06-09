@@ -59,12 +59,10 @@ ASMO += $(CS:%.c=asmout/%.s)
 .PHONY: all release asm debug
 all: release
 
-release: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
-release: OPTIONS += -fshort-enums -flto -fuse-linker-plugin
+release: OPTIONS  = -O0 -fno-web -fno-gcse -fomit-frame-pointer
 release: out.bin symbol.txt
 
-asm: OPTIONS  = -O3 -fno-web -fno-gcse -fno-unit-at-a-time -fomit-frame-pointer
-asm: OPTIONS += -fshort-enums
+asm: OPTIONS  = -O0 -fno-web -fno-gcse -fomit-frame-pointer
 asm: asm-dir $(ASMO)
 
 # Gens-KMod, BlastEm and UMDK support GDB tracing, enabled by this target

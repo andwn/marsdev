@@ -14,6 +14,7 @@ SECTIONS
     *(.text.*) *(.text)
     . = ALIGN(2);
     *(.rodata .rodata.*)
+	. = ALIGN(2);
   } > rom
   _stext = SIZEOF (.text);
 

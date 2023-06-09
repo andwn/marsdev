@@ -40,6 +40,14 @@ int read(int file, char *ptr, int len) {
 	return 0;
 }
 
+extern uint32_t __end;
+void* sbrk(intptr_t incr) {
+	static uintptr_t current_break = (uintptr_t)&__end;
+	uintptr_t old_break = current_break;
+	current_break += incr;
+	return (void*) old_break;
+}
+
 // This will direct stdout and stderr to draw font tiles on plane A,
 // between rows 16 and 26, and wrap text longer than 36 characters
 #define CONSOLE_X1 2
@@ -64,3 +72,4 @@ int write(int file, const char *ptr, int len) {
 	}
 	return len;
 }
+
