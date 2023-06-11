@@ -1,5 +1,8 @@
+ifeq ($(shell which ldconfig),)
+else
 ifeq ($(shell /sbin/ldconfig -p | grep libpng),)
   $(error "'libpng' not found. Make sure the 'libpng-dev' package is installed.")
+endif
 endif
 
 MARSDEV = $(MARS_BUILD_DIR)
