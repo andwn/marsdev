@@ -52,7 +52,7 @@ libmd: SGDK
 	cp -f SGDK/makefile.gen $(GDK)/
 	cp -f SGDK/md.ld $(GDK)/
 	# release & debug
-	cp -f config-$(SGDK_OPT).h $(INC)/config.h
+	#cp -f config-$(SGDK_OPT).h $(INC)/config.h
 	$(MAKE) -C $(GDK) -f makelib.gen cleanrelease
 	$(MAKE) -C $(GDK) -f makelib.gen release
 	$(MAKE) -C $(GDK) -f makelib.gen cleandebug
