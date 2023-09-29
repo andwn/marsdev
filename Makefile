@@ -16,7 +16,7 @@ export MARS_INSTALL_DIR
 
 .PHONY: m68k-toolchain m68k-toolchain-newlib sh-toolchain sh-toolchain-newlib
 .PHONY: sik-tools x68k-tools sgdk sgdk-samples all 32x x68k
-all: sgdk
+all: m68k-toolchain sgdk
 
 m68k-toolchain: m68k-gcc-toolchain
 	$(MAKE) -C $< without-newlib install INSTALL_DIR=$(MARS_BUILD_DIR)/m68k-elf
