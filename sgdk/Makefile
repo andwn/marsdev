@@ -14,6 +14,7 @@ XGMROMBUILDER  = $(BIN)/xgmRomBuilder.jar
 SIZEBND        = $(BIN)/sizebnd.jar
 LZ4W           = $(BIN)/lz4w.jar
 APJ            = $(BIN)/apj.jar
+XGM2TOOL       = $(BIN)xgm2tool.jar
 
 SJASM     = $(BIN)/sjasm
 SJBRANCH ?= v0.39
@@ -40,7 +41,7 @@ endif
 
 all: $(SJASM) SGDK tools libmd
 
-tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(XGMROOMBUILDER) $(SIZEBND) $(LZ4W) $(APJ)
+tools: $(BINTOS) $(RESCOMP) $(XGMTOOL) $(XGM2TOOL) $(XGMROOMBUILDER) $(SIZEBND) $(LZ4W) $(APJ)
 
 libmd: SGDK
 	# Copy SGDK files to toolchain
@@ -122,6 +123,9 @@ $(LZ4W): SGDK
 
 $(APJ): SGDK
 	cp -f SGDK/bin/apj.jar $@
+
+$(XGM2TOOL): SGDK
+	cp -f SGDK/bin/xgm2tool.jar $@
 
 clean:
 	rm -rf SGDK sjasm
