@@ -14,7 +14,7 @@ XGMROMBUILDER  = $(BIN)/xgmRomBuilder.jar
 SIZEBND        = $(BIN)/sizebnd.jar
 LZ4W           = $(BIN)/lz4w.jar
 APJ            = $(BIN)/apj.jar
-XGM2TOOL       = $(BIN)xgm2tool.jar
+XGM2TOOL       = $(BIN)/xgm2tool.jar
 
 SJASM     = $(BIN)/sjasm
 SJBRANCH ?= v0.39
