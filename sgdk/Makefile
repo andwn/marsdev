@@ -66,7 +66,7 @@ SGDK:
 	# Linux native branch in common.mk breaks LTO plugin, this is a workaround
 	mv -f SGDK/common.mk SGDK/common.mk.bak
 	cp -f common.mk SGDK/common.mk
-	cp -f $(INC)/config.h config-default.h
+	cp -f SGDK/inc/config.h config-default.h
 
 # SGDK Samples
 # If a sample is commented, it fails to build (out of date or special hardware required)
