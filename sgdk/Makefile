@@ -53,7 +53,7 @@ libmd: SGDK
 	cp -f SGDK/makefile.gen $(GDK)/
 	cp -f SGDK/md.ld $(GDK)/
 	# release & debug
-	#cp -f config-$(SGDK_OPT).h $(INC)/config.h
+	cp -f config-$(SGDK_OPT).h $(INC)/config.h
 	$(MAKE) -C $(GDK) -f makelib.gen cleanrelease
 	$(MAKE) -C $(GDK) -f makelib.gen release
 	$(MAKE) -C $(GDK) -f makelib.gen cleandebug
@@ -66,6 +66,7 @@ SGDK:
 	# Linux native branch in common.mk breaks LTO plugin, this is a workaround
 	mv -f SGDK/common.mk SGDK/common.mk.bak
 	cp -f common.mk SGDK/common.mk
+	cp -f $(INC)/config.h config-default.h
 
 # SGDK Samples
 # If a sample is commented, it fails to build (out of date or special hardware required)
