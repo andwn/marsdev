@@ -99,10 +99,11 @@ samples: SGDK $(GDK)/lib/libmd.a
 # Tools
 
 $(SJASM):
+	mkdir -p $(BIN)
 	rm -rf sjasm
 	git clone https://github.com/konamiman/sjasm --depth=1 --branch $(SJBRANCH)
 	cd sjasm/Sjasm && $(MAKE)
-	cp -f sjasm/Sjasm/sjasm $(SJASM)
+	cp -f sjasm $(SJASM)
 
 $(BINTOS): SGDK
 	gcc SGDK/tools/bintos/src/bintos.c -o $@
