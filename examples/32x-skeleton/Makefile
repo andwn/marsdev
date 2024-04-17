@@ -58,19 +58,20 @@ MDLIBS     = -L$(MARSDEV)/m68k-elf/lib/gcc/m68k-elf/$(MDCC_VER) -lgcc
 SHLIBS     = -L$(MARSDEV)/sh-elf/lib/gcc/sh-elf/$(SHCC_VER) -lgcc
 #SHLIBS    += -L$(MARSDEV)/sh-elf/sh-elf/lib -lc -lnosys
 
-# Any C or C++ standard should be fine here as long as GCC support it
-MDCCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding -fshort-enums
-MDCXXFLAGS = -m68000 -Wall -Wextra -std=c++17 -ffreestanding -fshort-enums
-SHCCFLAGS  = -m2 -mb -Wall -Wextra -std=c99 -ffreestanding -fshort-enums
-SHCXXFLAGS = -m2 -mb -Wall -Wextra -std=c++17 -ffreestanding -fshort-enums
+# Any C or C++ standard should be fine here as long as GCC supports it
+MDCCFLAGS  = -m68000 -Wall -Wextra -std=c99 -ffreestanding
+MDCXXFLAGS = -m68000 -Wall -Wextra -std=c++17 -ffreestanding
+SHCCFLAGS  = -m2 -mb -Wall -Wextra -std=c99 -ffreestanding
+SHCXXFLAGS = -m2 -mb -Wall -Wextra -std=c++17 -ffreestanding
 
 # Assembler flags
 MDASFLAGS  = -m68000 --register-prefix-optional
 SHASFLAGS  = --small
 
 # Linker flags
-MDLDFLAGS  = -T $(MARSDEV)/ldscripts/md.ld -nostdlib
-SHLDFLAGS  = -T $(MARSDEV)/ldscripts/mars.ld -nostdlib
+MD0LDFLAGS  = -T m68k_crt0.ld -nostdlib
+MD1LDFLAGS  = -T m68k_crt1.ld -nostdlib
+SHLDFLAGS   = -T mars.ld -nostdlib
 
 # Extra options set by debug or release target
 MDEXTRA = 
@@ -118,11 +119,11 @@ symbol.txt: $(TARGET).32x
 
 m68k_crt0.bin: m68k_crt0.s
 	$(MDAS) $(MDASFLAGS) $< -o $@.o
-	$(MDLD) $(MDLDFLAGS) --oformat=binary $@.o -o $@
+	$(MDLD) $(MD0LDFLAGS) --oformat=binary $@.o -o $@
 
 m68k_crt1.bin: m68k_crt1.s $(MDOBJS)
 	$(MDAS) $(MDASFLAGS) m68k_crt1.s -o m68k_crt1.o
-	$(MDLD) -nostdlib -T md_crt1.ld --oformat=binary m68k_crt1.o $(MDOBJS) -o m68k_crt1.bin
+	$(MDLD) $(MD1LDFLAGS) --oformat=binary m68k_crt1.o $(MDOBJS) -o m68k_crt1.bin
 
 src_md/%.o: src_md/%.s
 	@echo "MDAS $<"
