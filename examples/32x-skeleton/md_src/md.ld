@@ -6,7 +6,7 @@ MEMORY {
 	ram (wx) : ORIGIN = 0x00FF0000, LENGTH = 64K
 }
 
-PROVIDE (__stack = 0x0100000);
+PROVIDE (__stack = 0x01000000);
 
 SECTIONS {
 	.text 0x008803F0 : {
