@@ -74,6 +74,7 @@ SGDKの特定のバージョンは、`SGDK_VER=<git tag>` で指定できる。
 以下のターゲットも用意されています：
  - `make x68k-tools` - シャープX68000の互換性
  - `make sik-tools` - mdtiler といくつかの Echo を含む (libpng が必要)。
+ - `make flamewing-tools` - 各種圧縮ツール (boost が必要)。
 
 
 ### 5. インストール

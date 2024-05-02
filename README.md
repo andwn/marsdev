@@ -1,6 +1,6 @@
 # Marsdev
 
-Cross-platform Mega Drive / 32X / X68K toolchain and Makefile abuse.
+Cross-platform Sega Mega Drive / Super 32X / Sharp X68000 toolchain.
 
 English | [日本語](README-ja.md)
 
@@ -74,7 +74,7 @@ Adventurous people who want to test the latest changes can specify `SGDK_VER=mas
 The following targets are also available:
  - `make x68k-tools` - Sharp X68000 compatibility
  - `make sik-tools` - Contains mdtiler and some Echo stuff (req. libpng)
- - `make flamewing-tools` - Compression tools for data in Sonic games (req. cmake + boost)
+ - `make flamewing-tools` - Compression tools for data in Sonic games (req. boost)
 
 
 ### 5. Install

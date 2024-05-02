@@ -15,7 +15,7 @@ export MARS_BUILD_DIR
 export MARS_INSTALL_DIR
 
 .PHONY: m68k-toolchain m68k-toolchain-newlib sh-toolchain sh-toolchain-newlib
-.PHONY: sik-tools x68k-tools sgdk sgdk-samples all 32x x68k
+.PHONY: sik-tools flamewing-tools x68k-tools sgdk sgdk-samples all 32x x68k
 all: m68k-toolchain sgdk
 
 m68k-toolchain: m68k-gcc-toolchain
@@ -35,6 +35,9 @@ x68k-tools:
 
 sik-tools:
 	$(MAKE) -C sik-tools
+
+flamewing-tools:
+	$(MAKE) -C flamewing-tools
 
 sgdk:
 	$(MAKE) -C sgdk
@@ -87,6 +90,7 @@ clean:
 	if [ -d m68k-gcc-toolchain ]; then $(MAKE) -C m68k-gcc-toolchain clean; fi
 	if [ -d sh-gcc-toolchain ]; then $(MAKE) -C sh-gcc-toolchain clean; fi
 	$(MAKE) -C sik-tools clean
+	$(MAKE) -C flamewing-tools clean
 	$(MAKE) -C x68k-tools clean
 	$(MAKE) -C sgdk clean
 	rm -rf $(MARS_BUILD_DIR)

@@ -19,7 +19,8 @@ XGM2TOOL       = $(BIN)/xgm2tool.jar
 SJASM     = $(BIN)/sjasm
 SJBRANCH ?= v0.39
 
-SGDK_VER ?= master
+SGDK_VER ?= __UNSET__
+SGDK_REV ?= 335af3fc5b95141c53b58c67093bb298d3d46958
 SGDK_OPT ?= default
 
 # Use homebrew's gettext on macOS, for autopoint
@@ -61,8 +62,14 @@ libmd: SGDK
 	# Clean intermediate files only
 	$(MAKE) -C $(GDK) -f makelib.gen cleanobj cleandep cleanlst
 
+# SGDK_VER takes precidence over SGDK_REV
 SGDK:
-	git clone --depth=1 --branch $(SGDK_VER) https://github.com/Stephane-D/SGDK
+	git clone https://github.com/Stephane-D/SGDK $@
+	if [ "$(SGDK_VER)" != "__UNSET__" ]; then \
+		cd $@ && git checkout $(SGDK_VER); \
+	elif [ -n "$(SGDK_REV)" ]; then \
+		cd $@ && git checkout $(SGDK_REV); \
+	fi
 	# Linux native branch in common.mk breaks LTO plugin, this is a workaround
 	mv -f SGDK/common.mk SGDK/common.mk.bak
 	cp -f common.mk SGDK/common.mk
