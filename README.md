@@ -7,7 +7,7 @@ English | [日本語](README-ja.md)
 
 ## Compile & Install
 
-### 1. Dependencies
+### 1.1 Dependencies
 
 Install the following packages, depending on your operating system:
   * Debian: `apt install build-essential texinfo wget`
@@ -33,6 +33,10 @@ There are two variables that control which directory Marsdev is built and instal
 If you wish to change the location of either, use an export command like this:
  - `export MARS_INSTALL_DIR=/path/to/mars`
 
+Also, it is **highly recommended** to use something like `-j8`, replacing the 8 with
+the number of CPU cores you have. I've run into weird unexplainable problems with `-j`
+by itself, so please specify a number.
+
 ---
 
 You have 2 options for building GCC:
@@ -41,6 +45,9 @@ You have 2 options for building GCC:
 
 For 32X, the `sh` toolchain must also be built.
 The options are the same, swapping out `m68k` in the commands above with `sh`.
+
+If you want a different GCC version, or to build specific languages:
+ - `make m68k-toolchain-newlib GCC_VER=12.4.0 LANGS=c,c++`
 
 
 ### 3. (Optional) SGDK
@@ -69,12 +76,23 @@ A specific version of SGDK can be specified with `SGDK_VER=<git tag>`,
 but I cannot guarantee versions other than the default to work.
 Adventurous people who want to test the latest changes can specify `SGDK_VER=master` too.
 
-### 4. (Optional) Other Tools
+### 4.1 (Optional) Other Tools
 
 The following targets are also available:
  - `make x68k-tools` - Sharp X68000 compatibility
- - `make sik-tools` - Contains mdtiler and some Echo stuff (req. libpng)
- - `make flamewing-tools` - Compression tools for data in Sonic games (req. boost)
+ - `make mdtools-sik` - Contains mdtiler and some Echo stuff (req. libpng)
+ - `make mdtools-flamewing` - Compression tools for data in Sonic games (req. boost)
+
+ ### 4.2 (Experimental) LLVM
+
+Need cmake, ninja and python3:
+ - Debian: `apt install cmake ninja-build python3`
+ - (TODO: Fill in the others)
+
+LLVM with clang for M68k can be built:
+ - `make m68k-llvm`
+ 
+Testing hasn't been done yet and examples/skeleton projects still need to be made.
 
 
 ### 5. Install
@@ -92,6 +110,21 @@ Should be as easy as a `make` for any of them.
 
 
 ## Occasionally Asked Questions
+
+### Whatever man, I just want to use SGDK on Linux
+
+Install:
+
+ - `sudo apt install -y git build-essential texinfo wget openjdk-11-jre`
+ - `git clone https://github.com/andwn/marsdev && cd marsdev`
+ - `make sgdk -j8`
+ - `sudo make install`
+
+Build:
+
+ - Grab the makefile from inside `examples/sgdk-skeleton` and drop it into your project.
+ - `source /opt/toolchains/mars/mars.sh`
+ - `make`
 
 ### Can I build a Gendev project with Marsdev or vice-versa?
 

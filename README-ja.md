@@ -32,6 +32,9 @@ Marsdevがどのディレクトリでビルドされ、インストールされ�
 どちらかの場所を変更したいの場合は、次のエクスポートコマンドとかを使用できる：
  - `export MARS_INSTALL_DIR=/path/to/mars`
 
+また、`-j8`のように、8をCPUコア数に置き換えて使用することを**強く推奨**します。
+私は`-j`だけでは説明のつかない奇妙な問題に遭遇したことがあるので、数を指定してください。
+
 ---
 
 GCCをビルドするには2つの選択肢がある：
@@ -41,6 +44,8 @@ GCCをビルドするには2つの選択肢がある：
 32Xためビルドしたければ、`sh-toolchain` も必要です。
 選択肢は同じで、上記のコマンドの `m68k` を `sh` に置き換えられる。
 
+別のGCCのバージョンが必要、または特定の言語をビルドしたいなら:
+ - `make m68k-toolchain-newlib GCC_VER=12.4.0 LANGS=c,c++`
 
 ### 3. (自由に選択) SGDK
 
@@ -69,12 +74,24 @@ SGDKの特定のバージョンは、`SGDK_VER=<git tag>` で指定できる。
 最新の変更をテストしたい冒険者は、`SGDK_VER=master`も指定できる。
 
 
-### 4. (自由に選択) 他のツール
+### 4.1 (自由に選択) 他のツール
 
 以下のターゲットも用意されています：
  - `make x68k-tools` - シャープX68000の互換性
- - `make sik-tools` - mdtiler といくつかの Echo を含む (libpng が必要)。
- - `make flamewing-tools` - 各種圧縮ツール (boost が必要)。
+ - `make mdtools-sik` - mdtiler といくつかの Echo を含む (libpng が必要)。
+ - `make mdtools-flamewing` - 各種圧縮ツール (boost が必要)。
+
+
+### 4.2 (実験的) LLVM
+
+cmake、ninjaとpython3が必要:
+ - Debian: `apt install cmake ninja-build python3`
+ - (TODO: 他のOS)
+
+M68k用のclang付きLLVMをビルド:
+ - `make m68k-llvm`
+ 
+テストはまだ行われておらず、サンプルやスケルトン・プロジェクトはまだ作られる必要があります。
 
 
 ### 5. インストール
@@ -97,7 +114,7 @@ SGDKの特定のバージョンは、`SGDK_VER=<git tag>` で指定できる。
 
  - `sudo apt install -y git build-essential texinfo wget openjdk-11-jre`
  - `git clone https://github.com/andwn/marsdev && cd marsdev`
- - `make m68k-toolchain z80-tools sgdk`
+ - `make sgdk -j8`
  - `sudo make install`
  - そして `examples/sgdk-skeleton` をどこかにコーピーしてコーぢングして始まって。
 
