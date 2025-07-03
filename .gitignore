@@ -26,8 +26,5 @@ Session.vim
 bin/
 out/
 mars/
-*-gcc-toolchain/
 sgdk/sjasm/
 sgdk/SGDK/
-sik-tools/mdtools/
-

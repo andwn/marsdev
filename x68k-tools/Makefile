@@ -11,10 +11,10 @@ PNG2XSP  = $(MARSBIN)/png2xsp
 all: $(LIBDOS) $(PNG2XSP)
 
 libdos-gcc:
-	git clone https://github.com/andwn/libdos-gcc
+	git submodule update --init
 
 png2xsp:
-	git clone https://github.com/mikejmoffitt/png2xsp
+	git submodule update --init
 
 $(LIBDOS): libdos-gcc $(MARSBIN)
 	$(MAKE) -C libdos-gcc
@@ -28,4 +28,5 @@ $(MARSBIN):
 	mkdir -p $(MARSBIN)
 
 clean:
-	rm -rf libdos-gcc png2xsp
+	$(MAKE) -C libdos-gcc clean
+	$(MAKE) -C png2xsp clean

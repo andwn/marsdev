@@ -1,0 +1,27 @@
+[submodule "m68k-gcc-toolchain"]
+	path = m68k-gcc-toolchain
+	url = https://github.com/andwn/m68k-gcc-toolchain
+[submodule "sh-gcc-toolchain"]
+	path = sh-gcc-toolchain
+	url = https://github.com/andwn/sh-gcc-toolchain
+[submodule "mdtools-sik/mdtools"]
+	path = mdtools-sik/mdtools
+	url = https://github.com/sikthehedgehog/mdtools
+[submodule "mdtools-sik/mdtiler-mod"]
+	path = mdtools-sik/mdtiler-mod
+	url = https://github.com/andwn/mdtiler-mod
+[submodule "mdtools-flamewing/mdcomp"]
+	path = mdtools-flamewing/mdcomp
+	url = https://github.com/flamewing/mdcomp
+[submodule "mdtools-flamewing/fmt"]
+	path = mdtools-flamewing/fmt
+	url = https://github.com/fmtlib/fmt
+[submodule "mdtools-flamewing/mdtools"]
+	path = mdtools-flamewing/mdtools
+	url = https://github.com/flamewing/mdtools
+[submodule "x68k-tools/libdos-gcc"]
+	path = x68k-tools/libdos-gcc
+	url = https://github.com/andwn/libdos-gcc
+[submodule "x68k-tools/png2xsp"]
+	path = x68k-tools/png2xsp
+	url = https://github.com/mikejmoffitt/png2xsp

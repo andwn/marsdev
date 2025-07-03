@@ -9,15 +9,6 @@
 MARSDEV = $(MARS_BUILD_DIR)
 MARSBIN = $(MARSDEV)/m68k-elf/bin
 
-MDCOMP_URI =https://github.com/flamewing/mdcomp
-MDCOMP_REV =26bfc205b96afe04e0941d3092865eaf6c972f81
-
-FMT_URI    =https://github.com/fmtlib/fmt
-FMT_REV    =df40e94673a0c8717f93879bbff423950047345b
-
-MDTOOLS_URI=https://github.com/flamewing/mdtools
-MDTOOLS_REV=e31db4e8636d78f82e55708532ba8236fb6ebbf5
-
 # mdcomp tools
 COMPCMP = $(MARSBIN)/compcmp
 COMPERX = $(MARSBIN)/comperx
@@ -109,16 +100,13 @@ $(ENITOOL): | fmt mdtools $(MARSBIN)
 # REPOSITORIES
 
 mdcomp:
-	git clone $(MDCOMP_URI) $@
-	cd $@ && git checkout $(MDCOMP_REV)
+	git submodule update --init
 
 fmt:
-	git clone $(FMT_URI) $@
-	cd $@ && git checkout $(FMT_REV)
+	git submodule update --init
 
 mdtools:
-	git clone $(MDTOOLS_URI) $@
-	cd $@ && git checkout $(MDTOOLS_REV)
+	git submodule update --init
 
 # DIRECTORIES
 
@@ -126,4 +114,4 @@ $(MARSBIN):
 	mkdir -p $(MARSBIN)
 
 clean:
-	rm -rf mdcomp fmt mdtools
+	

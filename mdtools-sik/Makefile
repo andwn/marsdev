@@ -8,6 +8,8 @@ endif
 MARSDEV = $(MARS_BUILD_DIR)
 MARSBIN = $(MARSDEV)/m68k-elf/bin
 
+MDTILERMOD  = $(MARSBIN)/mdtilermod
+
 MDTILER  = $(MARSBIN)/mdtiler
 MIDI2ESF = $(MARSBIN)/midi2esf
 MML2ESF  = $(MARSBIN)/mml2esf
@@ -23,13 +25,20 @@ ROMFIX   = $(MARSBIN)/romfix
 
 .PHONY: all clean
 
-all: $(MDTILER)
+all: $(MDTILERMOD) $(MDTILER)
 all: $(MIDI2ESF) $(MML2ESF) $(TFI2EIF) $(VGI2EIF) $(EIF2TFI) $(PCM2EWF) $(ECHO2VGM)
 all: $(SLZ) $(UFTC)
 all: $(HEADGEN) $(ROMFIX)
 
+mdtiler-mod:
+	git submodule update --init
+
 mdtools:
-	git clone https://github.com/sikthehedgehog/mdtools
+	git submodule update --init
+
+$(MDTILERMOD): mdtiler-mod $(MARSBIN)
+	$(MAKE) -C mdtiler-mod
+	cp -f mdtiler-mod/mdtiler $(MDTILERMOD)
 
 $(MDTILER): mdtools $(MARSBIN)
 	$(MAKE) -C mdtools/mdtiler/tool
@@ -83,4 +92,16 @@ $(MARSBIN):
 	mkdir -p $(MARSBIN)
 
 clean:
-	rm -rf mdtools
+	$(MAKE) -C mdtiler-mod clean
+	$(MAKE) -C mdtools/mdtiler/tool clean
+	$(MAKE) -C mdtools/midi2esf clean
+	$(MAKE) -C mdtools/mml2esf/tool clean
+	$(MAKE) -C mdtools/tfi2eif/tool clean
+	$(MAKE) -C mdtools/vgi2eif/tool clean
+	$(MAKE) -C mdtools/eif2tfi/tool clean
+	$(MAKE) -C mdtools/pcm2ewf/tool clean
+	$(MAKE) -C mdtools/echo2vgm clean
+	$(MAKE) -C mdtools/slz/tool clean
+	$(MAKE) -C mdtools/uftc/tool clean
+	$(MAKE) -C mdtools/headgen/tool clean
+	$(MAKE) -C mdtools/romfix clean

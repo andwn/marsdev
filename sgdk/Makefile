@@ -26,16 +26,17 @@ SGDK_OPT ?= default
 # Use homebrew's gettext on macOS, for autopoint
 ifeq ($(OS),Windows_NT)
 else
-	UNAME_S := $(shell uname -s)
-	ifeq ($(UNAME_S),Darwin)
-		export PATH := /usr/local/opt/gettext/bin:$(PATH)
-	endif
+  UNAME_S := $(shell uname -s)
+  ifeq ($(UNAME_S),Darwin)
+    export PATH := /usr/local/opt/gettext/bin:$(PATH)
+  endif
 endif
 
 # OSX sed fails without the '', and GNU fails with, coolbeans
-SED_FIX=
-ifeq ($(shell uname -s),Darwin)
-	SED_FIX=''
+ifeq ($(shell uname),Darwin)
+  SEDI := -i '.bak'
+else
+  SEDI := -i'.bak'
 endif
 
 .PHONY: all tools libmd samples clean
@@ -74,6 +75,9 @@ SGDK:
 	mv -f SGDK/common.mk SGDK/common.mk.bak
 	cp -f common.mk SGDK/common.mk
 	cp -f SGDK/inc/config.h config-default.h
+	# Fix compile error: conflicting types
+	sed $(SEDI) 's/const bool loop/const u8 loop/g' SGDK/inc/snd/pcm/snd_pcm.h
+	sed $(SEDI) 's/const bool loop/const u8 loop/g' SGDK/inc/snd/pcm/snd_pcm4.h
 
 # SGDK Samples
 # If a sample is commented, it fails to build (out of date or special hardware required)
