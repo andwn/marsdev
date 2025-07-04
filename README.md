@@ -20,7 +20,7 @@ Install the following packages, depending on your operating system:
 ### 2. GCC Toolchain
 
 Clone the repo:
- - `git clone https://github.com/andwn/marsdev`
+ - `git clone https://github.com/andwn/marsdev --recurse-submodules`
  - `cd marsdev`
 
 ---
@@ -32,6 +32,9 @@ There are two variables that control which directory Marsdev is built and instal
 
 If you wish to change the location of either, use an export command like this:
  - `export MARS_INSTALL_DIR=/path/to/mars`
+
+If you forget `--recurse-submodules` then run:
+ - `git submodule init && git submodule update`
 
 Also, it is **highly recommended** to use something like `-j8`, replacing the 8 with
 the number of CPU cores you have. I've run into weird unexplainable problems with `-j`

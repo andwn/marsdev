@@ -19,7 +19,7 @@ OSによって、以下のパッケージをインストールしてください
 ### 2. GCC ツールチェーン
 
 GitHubからクローンして：
- - `git clone https://github.com/andwn/marsdev`
+ - `git clone https://github.com/andwn/marsdev --recurse-submodules`
  - `cd marsdev`
 
 ---
