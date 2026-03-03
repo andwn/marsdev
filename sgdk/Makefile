@@ -20,7 +20,7 @@ SJASM     = $(BIN)/sjasm
 SJBRANCH ?= v0.39
 
 SGDK_VER ?= __UNSET__
-SGDK_REV ?= 335af3fc5b95141c53b58c67093bb298d3d46958
+SGDK_REV ?= cb114acadc454440fcddd616d9a7dd5a693b1b13
 SGDK_OPT ?= default
 
 # Use homebrew's gettext on macOS, for autopoint
@@ -56,12 +56,12 @@ libmd: SGDK
 	cp -f SGDK/md.ld $(GDK)/
 	# release & debug
 	cp -f config-$(SGDK_OPT).h $(INC)/config.h
-	$(MAKE) -C $(GDK) -f makelib.gen cleanrelease
+	$(MAKE) -C $(GDK) -f makelib.gen clean-release
 	$(MAKE) -C $(GDK) -f makelib.gen release
-	$(MAKE) -C $(GDK) -f makelib.gen cleandebug
+	$(MAKE) -C $(GDK) -f makelib.gen clean-debug
 	$(MAKE) -C $(GDK) -f makelib.gen debug
 	# Clean intermediate files only
-	$(MAKE) -C $(GDK) -f makelib.gen cleanobj cleandep cleanlst
+	$(MAKE) -C $(GDK) -f makelib.gen clean-task
 
 # SGDK_VER takes precidence over SGDK_REV
 SGDK:

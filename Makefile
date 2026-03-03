@@ -14,7 +14,7 @@ MARS_INSTALL_DIR ?= /opt/toolchains/mars
 export MARS_BUILD_DIR
 export MARS_INSTALL_DIR
 
-GCC_VER  ?= 15.1.0
+GCC_VER  ?= 15.2.0
 LLVM_VER ?= main
 
 .PHONY: all

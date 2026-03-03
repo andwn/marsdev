@@ -5,7 +5,7 @@ LIB := $(GDK)/lib
 
 SRC_LIB := $(GDK)/src
 RES_LIB := $(GDK)/res
-INCLUDE_LIB := $(GDK)/inc
+INC_LIB := $(GDK)/inc
 MAKEFILE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 MAKEFILE_DIR := $(subst \,/,$(MAKEFILE_DIR))
 
