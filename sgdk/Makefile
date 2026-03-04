@@ -90,10 +90,9 @@ $(GDK)/lib/libmd.a: libmd
 samples: SGDK $(GDK)/lib/libmd.a
 	cd SGDK/sample/basics/hello-world && make -f $(GDK)/makefile.gen
 	cd SGDK/sample/basics/image && make -f $(GDK)/makefile.gen
-	cd SGDK/sample/bench && make -f $(GDK)/makefile.gen
-	cd 'SGDK/sample/bitmap/cube 3D' && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/benchmark && make -f $(GDK)/makefile.gen
+	cd 'SGDK/sample/bitmap/cube-3D' && make -f $(GDK)/makefile.gen
 	cd SGDK/sample/bitmap/partic && make -f $(GDK)/makefile.gen
-	#cd SGDK/sample/console && make -f $(GDK)/makefile.gen
 	cd SGDK/sample/demo/bad-apple && make -f $(GDK)/makefile.gen
 	cd SGDK/sample/demo/starfield-donut && make -f $(GDK)/makefile.gen
 	#cd SGDK/sample/flash-save && make -f $(GDK)/makefile.gen
@@ -103,11 +102,12 @@ samples: SGDK $(GDK)/lib/libmd.a
 	cd SGDK/sample/fx/scroll/linescroll && make -f $(GDK)/makefile.gen
 	cd SGDK/sample/joy-test && make -f $(GDK)/makefile.gen
 	#cd SGDK/sample/megawifi && make -f $(GDK)/makefile.gen
-	cd SGDK/sample/multitasking && make -f $(GDK)/makefile.gen
-	#cd SGDK/sample/platformer && make -f $(GDK)/makefile.gen
-	cd SGDK/sample/sonic && make -f $(GDK)/makefile.gen
-	cd SGDK/sample/sound && make -f $(GDK)/makefile.gen
-	#cd SGDK/sample/xgm-player && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/sys/multitasking && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/sys/console && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/game/sonic && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/game/platformer && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/snd/sound-test && make -f $(GDK)/makefile.gen
+	cd SGDK/sample/snd/xgm-player && make -f $(GDK)/makefile.gen
 
 # Tools
 
