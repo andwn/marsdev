@@ -52,6 +52,7 @@ sh-newlib.d: sh-toolchain.d | sh-gcc-toolchain
 	touch $@
 
 .PHONY: m68k-llvm
+m68k-llvm: m68k-llvm.d
 m68k-llvm.d: | llvm-project
 	mkdir -p llvm-project/build
 	cd llvm-project/build && cmake -G Ninja -D CMAKE_BUILD_TYPE="Release" \
